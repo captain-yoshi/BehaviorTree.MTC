@@ -1,0 +1,15 @@
+<package format="3">
+  <name>behaviortree_mtc</name>
+  <version>0.1.0</version>
+  <description>Use MoveIt Task Constructor with BehaviorTree.CPP</description>
+
+  <maintainer email="captain.yoshisaur@gmail.com">Captain Yoshi</maintainer>
+  <license>MIT</license>
+  <author>Captain Yoshi</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>behaviortree_cpp</depend>
+  <depend>moveit_task_constructor_core</depend>
+
+</package>
