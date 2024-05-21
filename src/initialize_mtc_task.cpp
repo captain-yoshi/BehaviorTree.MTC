@@ -36,7 +36,7 @@ BT::NodeStatus InitializeMTCTask::tick()
 BT::PortsList InitializeMTCTask::providedPorts()
 {
   return {
-    BT::OutputPort<std::shared_ptr<MTC::Task>>(kPortTask, "{mtc_task}",
-                                               "MoveIt Task Constructor task."),
+    BT::OutputPort<MTC::TaskPtr>(kPortTask, "{mtc_task}",
+                                 "MoveIt Task Constructor task."),
   };
 }
