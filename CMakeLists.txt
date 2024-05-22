@@ -31,7 +31,7 @@ add_library(${PROJECT_NAME}
   src/move_mtc_stage_to_container.cpp
 )
 
-add_executable(btcpp_sample main.cpp)
+add_executable(bt_demo examples/bt_demo.cpp)
 
-target_include_directories(btcpp_sample PRIVATE ${catkin_INCLUDE_DIRS})
-target_link_libraries(btcpp_sample ${catkin_LIBRARIES})
+target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
