@@ -71,6 +71,7 @@ int main(int argc, char** argv)
     sleep_time.sleep();
   }
 
+  std::cout << "\n\nWaiting for shutdown, press CTRL-C to quit" << std::endl;
   ros::waitForShutdown();
 
   return 0;
