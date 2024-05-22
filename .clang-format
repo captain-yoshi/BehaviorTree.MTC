@@ -4,7 +4,7 @@ AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 2
 AlignEscapedNewlinesLeft: false
 AlignTrailingComments: true
-AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
@@ -14,7 +14,7 @@ BreakBeforeBinaryOperators: false
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: BeforeComma
 BinPackParameters: true
-ColumnLimit: 90
+ColumnLimit: 0
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 DerivePointerBinding: false
 PointerBindsToType: true

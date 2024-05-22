@@ -27,9 +27,18 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/initialize_mtc_task.cpp
   src/create_mtc_pipeline_planner.cpp
+  src/plan_mtc_task.cpp
+  src/create_mtc_current_state.cpp
+  src/move_mtc_stage_to_container.cpp
 )
+
 
 add_executable(test_bt_mtc main.cpp)
 
 target_include_directories(test_bt_mtc PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(test_bt_mtc ${PROJECT_NAME} ${catkin_LIBRARIES})
+  
+add_executable(bt_demo examples/bt_demo.cpp)
+
+target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})

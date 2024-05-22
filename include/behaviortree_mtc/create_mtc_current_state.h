@@ -2,16 +2,14 @@
 
 #include <behaviortree_cpp/bt_factory.h>
 
-
 namespace bt_mtc
 {
-class InitializeMTCTask : public BT::SyncActionNode
+class CreateMTCCurrentState : public BT::SyncActionNode
 {
 public:
-  InitializeMTCTask(const std::string& name, const BT::NodeConfig& config);
+  CreateMTCCurrentState(const std::string& name, const BT::NodeConfig& config);
 
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
 };
-}
-
+}  // namespace bt_mtc
