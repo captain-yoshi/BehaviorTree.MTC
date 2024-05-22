@@ -63,7 +63,6 @@ int main(int argc, char** argv)
 
   while(ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
   {
-    // ros::spinOnce();
     std::cout << "Start" << std::endl;
     status = tree.tickExactlyOnce();
     std::cout << status << std::endl;
