@@ -8,6 +8,7 @@ namespace MTC = moveit::task_constructor;
 namespace
 {
 constexpr auto kPortTask = "task";
+constexpr auto kPortContainer = "container";
 
 }  // namespace
 
@@ -18,19 +19,13 @@ InitializeMTCTask::InitializeMTCTask(const std::string& name,
 
 BT::NodeStatus InitializeMTCTask::tick()
 {
-  if(auto any_ptr = getLockedPortContent(kPortTask))
-  {
-    std::shared_ptr<MTC::Task> task = std::make_shared<MTC::Task>();
-    task->loadRobotModel();
+  std::shared_ptr<MTC::Task> task = std::make_shared<MTC::Task>();
+  task->loadRobotModel();
 
-    any_ptr.assign(task);
+  setOutput(kPortTask, task);
+  setOutput(kPortContainer, task->stages());
 
-    return NodeStatus::SUCCESS;
-  }
-  else
-  {
-    return NodeStatus::FAILURE;
-  }
+  return NodeStatus::SUCCESS;
 }
 
 BT::PortsList InitializeMTCTask::providedPorts()
@@ -38,5 +33,7 @@ BT::PortsList InitializeMTCTask::providedPorts()
   return {
     BT::OutputPort<MTC::TaskPtr>(kPortTask, "{mtc_task}",
                                  "MoveIt Task Constructor task."),
+    BT::OutputPort<MTC::ContainerBase*>(kPortContainer),
+
   };
 }
