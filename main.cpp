@@ -1,18 +1,25 @@
 #include "behaviortree_cpp/bt_factory.h"
+#include <behaviortree_mtc/create_mtc_pipeline_planner.h>
+#include <behaviortree_mtc/initialize_mtc_task.h>
+#include <ros/ros.h>
+
 
 using namespace BT;
+using namespace bt_mtc;
+//using namespace init;
 
 // clang-format off
 static const char* xml_text = R"(
 
  <root BTCPP_format="4" >
-
      <BehaviorTree ID="MainTree">
         <Sequence name="root">
             <AlwaysSuccess/>
             <SaySomething   message="this works too" />
             <ThinkWhatToSay text="{the_answer}"/>
             <SaySomething   message="{the_answer}" />
+            <InitializeMTCTask task="{mtc_task}" />
+            <CreatePipelinePlanner pipeline_planner="{pipeline_planner}"/>
         </Sequence>
      </BehaviorTree>
 
@@ -60,10 +67,18 @@ public:
   }
 };
 
-int main()
+int main(int argc, char** argv)
 {
+  ros::init(argc, argv, "mtc_tutorial");
+	ros::NodeHandle nh, pnh("~");
+
+	// Handle Task introspection requests from RViz & feedback during execution
+	ros::AsyncSpinner spinner(1);
+	spinner.start();
   BehaviorTreeFactory factory;
 
+  factory.registerNodeType<CreatePipelinePlanner>("CreatePipelinePlanner");
+  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
   factory.registerNodeType<SaySomething>("SaySomething");
   factory.registerNodeType<ThinkWhatToSay>("ThinkWhatToSay");
 

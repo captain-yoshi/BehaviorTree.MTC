@@ -1,15 +1,15 @@
 #include <behaviortree_mtc/initialize_mtc_task.h>
-
 #include <moveit/task_constructor/task.h>
 
 using namespace BT;
 namespace MTC = moveit::task_constructor;
+using namespace bt_mtc;
 
-namespace
-{
-constexpr auto kPortTask = "task";
+// namespace
+// {
+// constexpr auto kPortTask = "task";
 
-}  // namespace
+// }  // namespace
 
 InitializeMTCTask::InitializeMTCTask(const std::string& name,
                                      const BT::NodeConfig& config)
@@ -18,13 +18,14 @@ InitializeMTCTask::InitializeMTCTask(const std::string& name,
 
 BT::NodeStatus InitializeMTCTask::tick()
 {
-  if(auto any_ptr = getLockedPortContent(kPortTask))
+  if(auto any_ptr = getLockedPortContent("task"))
   {
+    printf("initializing");
     std::shared_ptr<MTC::Task> task = std::make_shared<MTC::Task>();
-    task->loadRobotModel();
+    task->loadRobotModel(); //manque des robot model pis tt.. on va attendre DAVID... je propose qu'on ajuste tout de suite notre sampler en changenat le nom et mettre les inputs avec les defaults possible.
 
     any_ptr.assign(task);
-
+    printf("task_intialized");
     return NodeStatus::SUCCESS;
   }
   else
@@ -36,7 +37,7 @@ BT::NodeStatus InitializeMTCTask::tick()
 BT::PortsList InitializeMTCTask::providedPorts()
 {
   return {
-    BT::OutputPort<std::shared_ptr<MTC::Task>>(kPortTask, "{mtc_task}",
+    BT::OutputPort<std::shared_ptr<MTC::Task>>("task", "{mtc_task}",
                                                "MoveIt Task Constructor task."),
   };
 }
