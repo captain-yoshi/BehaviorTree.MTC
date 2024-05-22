@@ -27,6 +27,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/initialize_mtc_task.cpp
   src/plan_mtc_task.cpp
+  src/create_mtc_current_state.cpp
 )
 
 add_executable(btcpp_sample main.cpp)
