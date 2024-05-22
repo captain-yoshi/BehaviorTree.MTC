@@ -3,6 +3,7 @@
 #include <moveit/task_constructor/task.h>
 
 using namespace BT;
+using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
 
 namespace

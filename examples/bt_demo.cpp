@@ -10,6 +10,7 @@
 #include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 using namespace BT;
+using namespace bt_mtc;
 
 // clang-format off
 static const char* xml_text = R"(

@@ -4,6 +4,7 @@
 #include <moveit/task_constructor/container.h>
 
 using namespace BT;
+using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
 
 namespace

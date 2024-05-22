@@ -3,6 +3,8 @@
 #include <memory>
 #include <stdexcept>
 
+namespace bt_mtc
+{
 namespace dirty
 {
 // if disabled, does not actually delete pointer
@@ -48,3 +50,4 @@ std::unique_ptr<T> sharedToUnique(std::shared_ptr<T>& shp)
 
   return std::move(up);
 }
+}  // namespace bt_mtc
