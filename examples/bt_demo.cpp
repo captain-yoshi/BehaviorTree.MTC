@@ -60,13 +60,14 @@ int main(int argc, char** argv)
   // Gives the user time to connect to Groot2
   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-  NodeStatus status = NodeStatus::IDLE;
+  std::cout << "Starting Behavior Tree" << std::endl;
+  std::cout << "======================" << std::endl;
 
+  NodeStatus status = NodeStatus::IDLE;
   while(ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
   {
-    std::cout << "Start" << std::endl;
     status = tree.tickExactlyOnce();
-    std::cout << status << std::endl;
+    std::cout << "Status = " << status << std::endl;
 
     ros::Duration sleep_time(0.01);
     sleep_time.sleep();
