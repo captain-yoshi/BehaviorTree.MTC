@@ -4,6 +4,7 @@
 #include <behaviortree_mtc/create_mtc_current_state.h>
 #include <behaviortree_mtc/move_mtc_stage_to_container.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
+#include <behaviortree_mtc/create_mtc_pipeline_planner.h>
 
 #include "behaviortree_cpp/bt_factory.h"
 #include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
@@ -22,6 +23,7 @@ static const char* xml_text = R"(
             <InitializeMTCTask        task="{mtc_task}" container="{container}" />
             <CreateMTCCurrentState    stage="{stage}" />
             <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
+            <CreatePipelinePlanner    pipeline_planner="{pipeline_planner}" />
             <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
         </Sequence>
      </BehaviorTree>
@@ -43,6 +45,7 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
+  factory.registerNodeType<CreatePipelinePlanner>("CreatePipelinePlanner");
 
   auto tree = factory.createTreeFromText(xml_text);
 
@@ -58,7 +61,7 @@ int main(int argc, char** argv)
   BT::FileLogger2 logger2(tree, "t12_logger2.btlog");
 
   // Gives the user time to connect to Groot2
-  std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 
   std::cout << "Starting Behavior Tree" << std::endl;
   std::cout << "======================" << std::endl;
