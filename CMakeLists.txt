@@ -29,6 +29,7 @@ add_library(${PROJECT_NAME}
   src/create_mtc_pipeline_planner.cpp
   src/plan_mtc_task.cpp
   src/create_mtc_current_state.cpp
+  src/create_mtc_pipeline_planner.cpp
   src/move_mtc_stage_to_container.cpp
 )
 
