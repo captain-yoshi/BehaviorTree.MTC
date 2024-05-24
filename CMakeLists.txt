@@ -32,12 +32,6 @@ add_library(${PROJECT_NAME}
   src/create_mtc_pipeline_planner.cpp
   src/move_mtc_stage_to_container.cpp
 )
-
-
-add_executable(test_bt_mtc main.cpp)
-
-target_include_directories(test_bt_mtc PRIVATE ${catkin_INCLUDE_DIRS} include)
-target_link_libraries(test_bt_mtc ${PROJECT_NAME} ${catkin_LIBRARIES})
   
 add_executable(bt_demo examples/bt_demo.cpp)
 
