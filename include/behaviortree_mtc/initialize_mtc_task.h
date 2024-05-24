@@ -2,7 +2,6 @@
 
 #include <behaviortree_cpp/bt_factory.h>
 
-
 namespace bt_mtc
 {
 class InitializeMTCTask : public BT::SyncActionNode
@@ -14,4 +13,3 @@ public:
   static BT::PortsList providedPorts();
 };
 }
-
