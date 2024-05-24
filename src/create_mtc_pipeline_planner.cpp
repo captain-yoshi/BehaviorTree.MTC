@@ -36,12 +36,11 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
     return NodeStatus::FAILURE;
   if(!getInput(kPortPlannerID, planner_id))
     return NodeStatus::FAILURE;
-  if(!getInput(kPortGoalJointTolerance, goal_joint_tolerance))
-    return NodeStatus::FAILURE;
   if(!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor))
     return NodeStatus::FAILURE;
   if(!getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
     return NodeStatus::FAILURE;
+  getInput(kPortGoalJointTolerance, goal_joint_tolerance);  //optional
 
   // Build solver
   auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(pipeline_id);
