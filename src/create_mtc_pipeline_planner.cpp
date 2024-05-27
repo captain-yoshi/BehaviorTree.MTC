@@ -60,9 +60,9 @@ BT::PortsList CreateMTCPipelinePlanner::providedPorts()
   return {
     BT::InputPort<std::string>(kPortPipelineID),
     BT::InputPort<std::string>(kPortPlannerID),
-    BT::InputPort<double>(kPortGoalJointTolerance, 1e-5, ""),
-    BT::InputPort<double>(kPortMaxVelocityScalingFactor),
-    BT::InputPort<double>(kPortMaxAccelerationScalingFactor),
+    BT::InputPort<double>(kPortGoalJointTolerance, 1e-4, "tolerance for reaching joint goals"),
+    BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
+    BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "cale down max acceleration by this factor"),
     BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver),
   };
 }
