@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(catkin REQUIRED COMPONENTS
     behaviortree_cpp
+    geometry_msgs
     moveit_task_constructor_core
 )
 
@@ -16,6 +17,7 @@ catkin_package(
     include
   CATKIN_DEPENDS
     behaviortree_cpp
+    geometry_msgs
     moveit_task_constructor_core
 )
 
@@ -25,6 +27,7 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
+  src/geometry_msgs.cpp
   src/initialize_mtc_task.cpp
   src/plan_mtc_task.cpp
   src/create_mtc_current_state.cpp
