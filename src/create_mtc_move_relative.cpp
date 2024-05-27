@@ -1,6 +1,8 @@
 #include <behaviortree_mtc/create_mtc_move_relative.h>
 #include <behaviortree_mtc/shared_to_unique.h>
 
+#include <behaviortree_mtc/std_containers.h>
+
 using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
