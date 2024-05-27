@@ -40,3 +40,8 @@ add_executable(bt_demo examples/bt_demo.cpp)
 
 target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(bt_move_relative examples/bt_move_relative.cpp)
+
+target_include_directories(bt_move_relative PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_move_relative ${PROJECT_NAME} ${catkin_LIBRARIES})
