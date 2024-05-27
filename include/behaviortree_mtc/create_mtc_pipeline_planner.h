@@ -8,7 +8,6 @@ class CreateMTCPipelinePlanner : public BT::SyncActionNode
 {
 public:
   CreateMTCPipelinePlanner(const std::string& name, const BT::NodeConfig& config);
-
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
 };
