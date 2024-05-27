@@ -32,14 +32,12 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
   double max_velocity_scaling_factor;
   double max_acceleration_scaling_factor;
 
-  if(!getInput(kPortPipelineID, pipeline_id))
+  if(!getInput(kPortPipelineID, pipeline_id) ||
+     !getInput(kPortPlannerID, planner_id) ||
+     !getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
+     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
     return NodeStatus::FAILURE;
-  if(!getInput(kPortPlannerID, planner_id))
-    return NodeStatus::FAILURE;
-  if(!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor))
-    return NodeStatus::FAILURE;
-  if(!getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
-    return NodeStatus::FAILURE;
+
   getInput(kPortGoalJointTolerance, goal_joint_tolerance);  //optional
 
   // Build solver
