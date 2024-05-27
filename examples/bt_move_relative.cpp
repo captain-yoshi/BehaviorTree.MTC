@@ -29,17 +29,40 @@ static const char* xml_text = R"(
                                  solver="{rrt_connect}" />
        <CreateMTCCurrentState    stage="{stage}" />
        <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
+
+       <!-- Translate Motion -> 200mm towards x axis wrt. panda_link8 -->
        <GeometryMsgsPoseStamped  frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
        <GeometryMsgsVector3Stamped frame_id="panda_link8" vector="0.2,0,0" vector3_stamped="{tcp_translate}"/>
-
-
        <CreateMTCMoveRelativeTranslate name="move relative -> tcp translation"
                                        group="panda_arm"
                                        solver="{rrt_connect}"
                                        ik_frame="{ik_frame}"
                                        direction="{tcp_translate}"
-                                       stage="{stage_move_relative}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_relative}" />
+                                       stage="{stage_move_rel_translate}" />
+       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_rel_translate}" />
+
+       <!-- Twist Motion -->
+       <GeometryMsgsPoseStamped  frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
+       <GeometryMsgsTwistStamped frame_id="panda_link8" linear_velocity="0,0,0" angular_velocity="0,0,1.57079632679" twist_stamped="{tcp_twist}"/>
+       <CreateMTCMoveRelativeTwist name="move relative -> twist motion"
+                                   group="panda_arm"
+                                   solver="{rrt_connect}"
+                                   ik_frame="{ik_frame}"
+                                   direction="{tcp_twist}"
+                                   stage="{stage_move_rel_twist}" />
+       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_rel_twist}" />
+
+       <!-- Joint Motion -> return end joint to default value -->
+       <GeometryMsgsPoseStamped  frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
+       <CreateMTCMoveRelativeJoint name="move relative -> joint motion"
+                                   group="panda_arm"
+                                   solver="{rrt_connect}"
+                                   ik_frame="{ik_frame}"
+                                   direction="panda_joint7:-1.57079632679"
+                                   stage="{stage_move_rel_joint}" />
+       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_rel_joint}" />
+
+
        <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
      </Sequence>
    </BehaviorTree>
