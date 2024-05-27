@@ -23,11 +23,11 @@ constexpr auto kPortNumPlanningAttempts = "num_planning_attempts";
 
 }  // namespace
 
-CreatePipelinePlanner::CreatePipelinePlanner(const std::string& name,
+CreateMTCPipelinePlanner::CreateMTCPipelinePlanner(const std::string& name,
                                              const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
-BT::NodeStatus CreatePipelinePlanner::tick()
+BT::NodeStatus CreateMTCPipelinePlanner::tick()
 {
   std::string pipeline_id;
   std::string planner_id;
@@ -73,7 +73,7 @@ BT::NodeStatus CreatePipelinePlanner::tick()
   return NodeStatus::SUCCESS;
 };
 
-BT::PortsList CreatePipelinePlanner::providedPorts()
+BT::PortsList CreateMTCPipelinePlanner::providedPorts()
 {
   return {
     //Output

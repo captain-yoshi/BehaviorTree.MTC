@@ -23,7 +23,7 @@ static const char* xml_text = R"(
             <InitializeMTCTask        task="{mtc_task}" container="{container}" />
             <CreateMTCCurrentState    stage="{stage}" />
             <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
-            <CreatePipelinePlanner    planner_id="request_adapters" pipeline_id="ompl" max_velocity_scaling_factor="0.5" max_acceleration_scaling_factor="0.5"/>
+            <CreateMTCPipelinePlanner    planner_id="request_adapters" pipeline_id="ompl" max_velocity_scaling_factor="0.5" max_acceleration_scaling_factor="0.5"/>
             <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
         </Sequence>
      </BehaviorTree>
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
-  factory.registerNodeType<CreatePipelinePlanner>("CreatePipelinePlanner");
+  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
 
   auto tree = factory.createTreeFromText(xml_text);
 

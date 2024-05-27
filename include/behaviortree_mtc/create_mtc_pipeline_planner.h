@@ -4,10 +4,10 @@
 
 namespace bt_mtc
 {
-class CreatePipelinePlanner : public BT::SyncActionNode
+class CreateMTCPipelinePlanner : public BT::SyncActionNode
 {
 public:
-  CreatePipelinePlanner(const std::string& name, const BT::NodeConfig& config);
+  CreateMTCPipelinePlanner(const std::string& name, const BT::NodeConfig& config);
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
 };
