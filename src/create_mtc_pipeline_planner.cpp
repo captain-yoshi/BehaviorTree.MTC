@@ -3,6 +3,8 @@
 
 #include <moveit/task_constructor/solvers/pipeline_planner.h>
 
+#include <rclcpp/node.hpp>
+
 using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
@@ -15,7 +17,6 @@ constexpr auto kPortPlannerID = "planner_id";
 constexpr auto kPortGoalJointTolerance = "goal_joint_tolerance";
 constexpr auto kPortMaxVelocityScalingFactor = "max_velocity_scaling_factor";
 constexpr auto kPortMaxAccelerationScalingFactor = "max_acceleration_scaling_factor";
-
 }  // namespace
 
 CreateMTCPipelinePlanner::CreateMTCPipelinePlanner(const std::string& name,
@@ -32,18 +33,21 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
   double max_velocity_scaling_factor;
   double max_acceleration_scaling_factor;
 
-  if(!getInput(kPortPipelineID, pipeline_id))
+  if (!getInput(kPortPipelineID, pipeline_id))
     return NodeStatus::FAILURE;
-  if(!getInput(kPortPlannerID, planner_id))
+  if (!getInput(kPortPlannerID, planner_id))
     return NodeStatus::FAILURE;
-  if(!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor))
+  if (!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor))
     return NodeStatus::FAILURE;
-  if(!getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
+  if (!getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
     return NodeStatus::FAILURE;
-  getInput(kPortGoalJointTolerance, goal_joint_tolerance);  //optional
+  getInput(kPortGoalJointTolerance, goal_joint_tolerance);  // optional
 
   // Build solver
-  auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(pipeline_id);
+  auto node = rclcpp::Node::make_shared("create_mtc_pipeline_planner");
+  auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(node, pipeline_id);
+
+  // Set up the solver with the retrieved inputs
   solver->setPlannerId(planner_id);
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
