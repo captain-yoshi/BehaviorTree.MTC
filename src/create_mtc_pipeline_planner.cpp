@@ -24,24 +24,21 @@ constexpr auto kPortNumPlanningAttempts = "num_planning_attempts";
 }  // namespace
 
 CreateMTCPipelinePlanner::CreateMTCPipelinePlanner(const std::string& name,
-                                                   const BT::NodeConfig& config)
+                                             const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
-
 BT::NodeStatus CreateMTCPipelinePlanner::tick()
 {
-  // Retrieve inputs
   std::string pipeline_id;
   std::string planner_id;
   double goal_joint_tolerance;
-  double max_velocity_scaling_factor;
-  double max_acceleration_scaling_factor;
   double goal_orientation_tolerance;
   double goal_position_tolerance;
+  double max_velocity_scaling_factor;
+  double max_acceleration_scaling_factor;
   bool display_motion_plans;
   bool publish_planning_requests;
   uint num_planning_attemps;
-
   //Mandatory inputs
   if(!getInput(kPortPipelineID, pipeline_id))  //ex : "ompl"
     return NodeStatus::FAILURE;
