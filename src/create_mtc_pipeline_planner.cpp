@@ -1,58 +1,68 @@
 #include <behaviortree_mtc/create_mtc_pipeline_planner.h>
-#include <moveit/task_constructor/task.h>
+#include <behaviortree_mtc/shared_to_unique.h>
+
 #include <moveit/task_constructor/solvers/pipeline_planner.h>
 
 using namespace BT;
-namespace MTC = moveit::task_constructor;
 using namespace bt_mtc;
+namespace MTC = moveit::task_constructor;
 
-// namespace
-// {
-// constexpr auto kPortPlanner = "sampling_planner";
+namespace
+{
+constexpr auto kPortSolver = "solver";
+constexpr auto kPortPipelineID = "pipeline_id";
+constexpr auto kPortPlannerID = "planner_id";
+constexpr auto kPortGoalJointTolerance = "goal_joint_tolerance";
+constexpr auto kPortMaxVelocityScalingFactor = "max_velocity_scaling_factor";
+constexpr auto kPortMaxAccelerationScalingFactor = "max_acceleration_scaling_factor";
 
-// }  // namespace
+}  // namespace
 
-CreatePipelinePlanner::CreatePipelinePlanner(const std::string& name,
-                                     const BT::NodeConfig& config)
+CreateMTCPipelinePlanner::CreateMTCPipelinePlanner(const std::string& name,
+                                                   const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
 
-BT::NodeStatus CreatePipelinePlanner::tick()
+BT::NodeStatus CreateMTCPipelinePlanner::tick()
 {
-  if(auto any_ptr = getLockedPortContent("pipeline_planner")) // changer sa pour la bonne chose
-  {
-    printf("initializing a pipeline planner");
-    auto sampling_planner = std::make_shared<MTC::solvers::PipelinePlanner>();
-    auto tolerence = getInput<float>("goal_joint_tolerence");
-    sampling_planner->setProperty("goal_joint_tolerance", tolerence); //remplacer la valeur par un input
-    any_ptr.assign(sampling_planner);
-    printf("pipeline planner initialized");
-    return NodeStatus::SUCCESS;
-  }
-  else
-  {
+  // Retrieve inputs
+  std::string pipeline_id;
+  std::string planner_id;
+  double goal_joint_tolerance;
+  double max_velocity_scaling_factor;
+  double max_acceleration_scaling_factor;
+
+  if(!getInput(kPortPipelineID, pipeline_id) ||
+     !getInput(kPortPlannerID, planner_id) ||
+     !getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
+     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
     return NodeStatus::FAILURE;
-  }
+
+  getInput(kPortGoalJointTolerance, goal_joint_tolerance);  //optional
+
+  // Build solver
+  auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(pipeline_id);
+  solver->setPlannerId(planner_id);
+  solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
+  solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
+  solver->setProperty(kPortGoalJointTolerance, goal_joint_tolerance);
+
+  // Upcast to base class
+  MTC::solvers::PlannerInterfacePtr base_solver = solver;
+
+  setOutput(kPortSolver, base_solver);
+
+  return NodeStatus::SUCCESS;
 }
 
-BT::PortsList CreatePipelinePlanner::providedPorts()
+BT::PortsList CreateMTCPipelinePlanner::providedPorts()
 {
-  const char* description_input = "goal joint tolerence";
-  const char* description_output = "MoveIt Task Constructor task.";
-  
   return {
-    BT::OutputPort<std::shared_ptr<MTC::solvers::PipelinePlanner>>("pipeline_planner", description_output),
-    BT::InputPort<float>("goal_joint_tolerance",1e-5, description_input), 
+    BT::InputPort<std::string>(kPortPipelineID),
+    BT::InputPort<std::string>(kPortPlannerID),
+    BT::InputPort<double>(kPortGoalJointTolerance, 1e-4, "tolerance for reaching joint goals"),
+    BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
+    BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "cale down max acceleration by this factor"),
+    BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver),
   };
 }
-//INPUTS : 
-//-Pipeline name (needed in the constructor)
-//-goal_joint_tolerance
-//-goal_position_tolerance
-//-orientation_tolerence
-//"planner" ->planner_id
-//"num_planning_attempts" 
-//"publish_planning_requests" bool
-//"display_motion_plans" bool
-//va falloir surment pointer au robot model pour la fonction init...model est jamais caller... 
-//modelvelocity appartienne au planning interface

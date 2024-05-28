@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(catkin REQUIRED COMPONENTS
     behaviortree_cpp
+    geometry_msgs
     moveit_task_constructor_core
 )
 
@@ -16,6 +17,7 @@ catkin_package(
     include
   CATKIN_DEPENDS
     behaviortree_cpp
+    geometry_msgs
     moveit_task_constructor_core
 )
 
@@ -25,10 +27,13 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
+  src/geometry_msgs.cpp
   src/initialize_mtc_task.cpp
   src/create_mtc_pipeline_planner.cpp
   src/plan_mtc_task.cpp
   src/create_mtc_current_state.cpp
+  src/create_mtc_move_relative.cpp
+  src/create_mtc_pipeline_planner.cpp
   src/move_mtc_stage_to_container.cpp
 )
 
@@ -42,3 +47,8 @@ add_executable(bt_demo examples/bt_demo.cpp)
 
 target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(bt_move_relative examples/bt_move_relative.cpp)
+
+target_include_directories(bt_move_relative PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_move_relative ${PROJECT_NAME} ${catkin_LIBRARIES})
