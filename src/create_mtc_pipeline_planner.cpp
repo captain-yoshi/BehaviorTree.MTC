@@ -2,6 +2,7 @@
 #include <behaviortree_mtc/shared_to_unique.h>
 
 #include <moveit/task_constructor/solvers/pipeline_planner.h>
+#include <moveit/planning_pipeline/planning_pipeline.h>
 
 using namespace BT;
 using namespace bt_mtc;
@@ -41,22 +42,18 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
   bool publish_planning_requests;
   uint num_planning_attemps;
 
-  //Mandatory inputs
-  if(!getInput(kPortPipelineID, pipeline_id))  //ex : "ompl"
+  //Inputs
+  if(!getInput(kPortPipelineID, pipeline_id) ||
+     !getInput(kPortPlannerID, planner_id) || 
+     !getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
+     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||  
+     !getInput(kPortGoalJointTolerance, goal_joint_tolerance) ||
+     !getInput(kPortGoalPositionTolerance, goal_position_tolerance) || 
+     !getInput(kPortGoalOrientationTolerance, goal_orientation_tolerance) || 
+     !getInput(kPortDisplayMotionPlans, display_motion_plans) || 
+     !getInput(kPortPublishPlanningRequests, publish_planning_requests) || 
+     !getInput(kPortNumPlanningAttempts, num_planning_attemps))
     return NodeStatus::FAILURE;
-  if(!getInput(kPortPlannerID, planner_id))  //ex : "request_adapters"
-    return NodeStatus::FAILURE;
-  if(!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor))
-    return NodeStatus::FAILURE;
-  if(!getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
-    return NodeStatus::FAILURE;
-  //Optionnal inputs
-  getInput(kPortGoalJointTolerance, goal_joint_tolerance);
-  getInput(kPortGoalPositionTolerance, goal_position_tolerance);
-  getInput(kPortGoalOrientationTolerance, goal_orientation_tolerance);
-  getInput(kPortDisplayMotionPlans, display_motion_plans);
-  getInput(kPortPublishPlanningRequests, publish_planning_requests);
-  getInput(kPortNumPlanningAttempts, num_planning_attemps);
   //build solver
   auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(pipeline_id);
   solver->setPlannerId(planner_id);
@@ -84,12 +81,12 @@ BT::PortsList CreateMTCPipelinePlanner::providedPorts()
     BT::InputPort<double>(kPortGoalJointTolerance, "1e-4", "tolerance for reaching joint goals"),
     BT::InputPort<double>(kPortGoalPositionTolerance, "1e-4", "tolerance for reaching position goals"),
     BT::InputPort<double>(kPortGoalOrientationTolerance, "1e-4", "tolerance for reaching orientation goals"),
-    BT::InputPort<bool>(kPortDisplayMotionPlans, false, "..."),
-    BT::InputPort<bool>(kPortPublishPlanningRequests, false, "..."),
-    BT::InputPort<std::string>(kPortPlannerID, "planner's id"),
-    BT::InputPort<std::string>(kPortPipelineID, "pipeline's id"),
+    BT::InputPort<bool>(kPortDisplayMotionPlans, false, "publish generated solutions on topic " + planning_pipeline::PlanningPipeline::DISPLAY_PATH_TOPIC),
+    BT::InputPort<bool>(kPortPublishPlanningRequests, false, "publish motion planning requests on topic " + planning_pipeline::PlanningPipeline::MOTION_PLAN_REQUEST_TOPIC),
+    BT::InputPort<std::string>(kPortPlannerID),
+    BT::InputPort<std::string>(kPortPipelineID),
     BT::InputPort<uint>(kPortNumPlanningAttempts, "1u", "number of planning attempts"),
-    BT::InputPort<double>(kPortMaxVelocityScalingFactor, "maximum velocity allowed"),
-    BT::InputPort<double>(kPortMaxAccelerationScalingFactor, "maximum velocity allowed"),
+    BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
+    BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "scale down max acceleration by this factor"),
   };
 }
