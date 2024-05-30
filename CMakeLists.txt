@@ -37,6 +37,7 @@ add_library(${PROJECT_NAME}
   src/create_mtc_pipeline_planner.cpp
   src/move_mtc_stage_to_container.cpp
   src/create_mtc_cartesian_path.cpp
+  src/create_mtc_joint_interpolation.cpp
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)
