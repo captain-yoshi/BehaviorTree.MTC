@@ -28,6 +28,7 @@ include_directories(
 
 add_library(${PROJECT_NAME}
   src/geometry_msgs.cpp
+  src/get_mtc_raw_stage.cpp
   src/initialize_mtc_task.cpp
   src/plan_mtc_task.cpp
   src/create_mtc_current_state.cpp
