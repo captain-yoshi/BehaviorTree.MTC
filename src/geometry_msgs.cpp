@@ -33,21 +33,21 @@ BT::NodeStatus GeometryMsgsPointStamped::tick()
 {
   // Retrieve inputs
   std::string frame_id;
-  Vector3D position;
+  Vector3D point;
 
   if(!getInput(kPortFrameID, frame_id) ||
-     !getInput(kPortPosition, position))
+     !getInput(kPortPoint, point))
     return NodeStatus::FAILURE;
 
   // Build pose
-  auto point = std::make_shared<geometry_msgs::PointStamped>();
+  auto point_stamped = std::make_shared<geometry_msgs::PointStamped>();
 
-  point->header.frame_id = frame_id;
-  point->point.x = position.x;
-  point->point.y = position.y;
-  point->point.z = position.z;
+  point_stamped->header.frame_id = frame_id;
+  point_stamped->point.x = point.x;
+  point_stamped->point.y = point.y;
+  point_stamped->point.z = point.z;
 
-  setOutput(kPortPointStamped, point);
+  setOutput(kPortPointStamped, point_stamped);
 
   return NodeStatus::SUCCESS;
 }
