@@ -4,7 +4,6 @@
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/task_constructor/solvers/cartesian_path.h>
 
-
 using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
@@ -15,12 +14,12 @@ constexpr auto kPortSolver = "solver";
 constexpr auto kPortMaxVelocityScalingFactor = "max_velocity_scaling_factor";
 constexpr auto kPortMaxAccelerationScalingFactor = "max_acceleration_scaling_factor";
 constexpr auto kPortStepSize = "step_size";
-constexpr auto kPortJumpTreshold="jump_threshold";
-constexpr auto kPortMinFraction="min_fraction";
+constexpr auto kPortJumpTreshold = "jump_threshold";
+constexpr auto kPortMinFraction = "min_fraction";
 }  // namespace
 
 CreateMTCCartesianPath::CreateMTCCartesianPath(const std::string& name,
-                                                   const BT::NodeConfig& config)
+                                               const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
 
@@ -29,13 +28,13 @@ BT::NodeStatus CreateMTCCartesianPath::tick()
   // Retrieve inputs
   double max_velocity_scaling_factor;
   double max_acceleration_scaling_factor;
-  double step_size; 
-  double jump_treshold; 
+  double step_size;
+  double jump_treshold;
   double min_fraction;
 
   //Inputs
   if(!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
-     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor)||
+     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||
      !getInput(kPortStepSize, step_size) ||
      !getInput(kPortMinFraction, min_fraction) ||
      !getInput(kPortJumpTreshold, jump_treshold))
