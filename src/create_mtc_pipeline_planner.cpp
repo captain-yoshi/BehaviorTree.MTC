@@ -44,14 +44,14 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
 
   //Inputs
   if(!getInput(kPortPipelineID, pipeline_id) ||
-     !getInput(kPortPlannerID, planner_id) || 
+     !getInput(kPortPlannerID, planner_id) ||
      !getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
-     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||  
+     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||
      !getInput(kPortGoalJointTolerance, goal_joint_tolerance) ||
-     !getInput(kPortGoalPositionTolerance, goal_position_tolerance) || 
-     !getInput(kPortGoalOrientationTolerance, goal_orientation_tolerance) || 
-     !getInput(kPortDisplayMotionPlans, display_motion_plans) || 
-     !getInput(kPortPublishPlanningRequests, publish_planning_requests) || 
+     !getInput(kPortGoalPositionTolerance, goal_position_tolerance) ||
+     !getInput(kPortGoalOrientationTolerance, goal_orientation_tolerance) ||
+     !getInput(kPortDisplayMotionPlans, display_motion_plans) ||
+     !getInput(kPortPublishPlanningRequests, publish_planning_requests) ||
      !getInput(kPortNumPlanningAttempts, num_planning_attemps))
     return NodeStatus::FAILURE;
   //build solver
