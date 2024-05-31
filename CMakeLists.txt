@@ -33,6 +33,7 @@ add_library(${PROJECT_NAME}
   src/plan_mtc_task.cpp
   src/create_mtc_current_state.cpp
   src/create_mtc_move_relative.cpp
+  src/create_mtc_move_to.cpp
   src/create_mtc_pipeline_planner.cpp
   src/move_mtc_stage_to_container.cpp
   src/create_mtc_cartesian_path.cpp
@@ -44,6 +45,11 @@ target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 add_executable(bt_move_relative examples/bt_move_relative.cpp)
+add_executable(bt_move_to examples/bt_move_to.cpp)
 
 target_include_directories(bt_move_relative PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_move_relative ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+target_include_directories(bt_move_to PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
+
