@@ -16,6 +16,7 @@ include_directories(include)
 # Create library
 add_library(bt_demo_lib
   src/create_mtc_current_state.cpp
+  src/create_mtc_move_relative.cpp
   src/create_mtc_pipeline_planner.cpp
   src/initialize_mtc_task.cpp
   src/move_mtc_stage_to_container.cpp
