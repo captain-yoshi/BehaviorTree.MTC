@@ -2,6 +2,8 @@
 
 #include <moveit/task_constructor/task.h>
 
+#include <rclcpp/node.hpp>
+
 using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
@@ -21,7 +23,9 @@ InitializeMTCTask::InitializeMTCTask(const std::string& name,
 BT::NodeStatus InitializeMTCTask::tick()
 {
   std::shared_ptr<MTC::Task> task = std::make_shared<MTC::Task>();
-  task->loadRobotModel();
+  
+  auto node = std::make_shared<rclcpp::Node>("initialize_mtc_task");
+  task->loadRobotModel(node);
 
   setOutput(kPortTask, task);
   setOutput(kPortContainer, task->stages());
