@@ -7,9 +7,9 @@ using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
 
-using DirectionVariant = std::variant<std::shared_ptr<geometry_msgs::Vector3Stamped>,
+using DirectionVariant = std::variant<std::shared_ptr<geometry_msgs::msg::Vector3Stamped>,
                                       std::shared_ptr<std::map<std::string, double>>,
-                                      std::shared_ptr<geometry_msgs::TwistStamped>>;
+                                      std::shared_ptr<geometry_msgs::msg::TwistStamped>>;
 
 namespace
 {
@@ -36,7 +36,7 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
   std::string name;
   std::string group;
   MTC::solvers::PlannerInterfacePtr solver;
-  std::shared_ptr<geometry_msgs::PoseStamped> ik_frame;
+  std::shared_ptr<geometry_msgs::msg::PoseStamped> ik_frame;
   double min_distance;
   double max_distance;
   double timeout;
@@ -73,7 +73,7 @@ BT::PortsList CreateMTCMoveRelativeBase::providedPorts()
     BT::InputPort<double>(kPortMinDistance, -1.0, "minimum distance to move"),
     BT::InputPort<double>(kPortMaxDistance, 0.0, "maximum distance to move"),
     BT::InputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortIKFrame, "frame to be moved in Cartesian direction"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>(kPortIKFrame, "frame to be moved in Cartesian direction"),
     BT::OutputPort<MTC::StagePtr>(kPortStage, "MoveRelative stage"),
   };
 }
@@ -92,7 +92,7 @@ BT::NodeStatus CreateMTCMoveRelativeTwist::tick()
     return node_status;
 
   // Set direction
-  std::shared_ptr<geometry_msgs::TwistStamped> twist{ nullptr };
+  std::shared_ptr<geometry_msgs::msg::TwistStamped> twist{ nullptr };
   if(!getInput(kPortDirection, twist))
     return NodeStatus::FAILURE;
 
@@ -109,7 +109,7 @@ BT::NodeStatus CreateMTCMoveRelativeTwist::tick()
 BT::PortsList CreateMTCMoveRelativeTwist::providedPorts()
 {
   auto port_lists = CreateMTCMoveRelativeBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::TwistStamped>>(kPortDirection, "perform twist motion on specified link"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::msg::TwistStamped>>(kPortDirection, "perform twist motion on specified link"));
 
   return port_lists;
 }
@@ -128,7 +128,7 @@ BT::NodeStatus CreateMTCMoveRelativeTranslate::tick()
     return node_status;
 
   // Set direction
-  std::shared_ptr<geometry_msgs::Vector3Stamped> vector3{ nullptr };
+  std::shared_ptr<geometry_msgs::msg::Vector3Stamped> vector3{ nullptr };
   if(!getInput(kPortDirection, vector3))
     return NodeStatus::FAILURE;
 
@@ -145,7 +145,7 @@ BT::NodeStatus CreateMTCMoveRelativeTranslate::tick()
 BT::PortsList CreateMTCMoveRelativeTranslate::providedPorts()
 {
   auto port_lists = CreateMTCMoveRelativeBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::Vector3Stamped>>(kPortDirection, "translate link along given direction"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::msg::Vector3Stamped>>(kPortDirection, "translate link along given direction"));
 
   return port_lists;
 }

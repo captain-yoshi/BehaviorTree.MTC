@@ -1,10 +1,10 @@
 #include <behaviortree_mtc/geometry_msgs.h>
 #include <behaviortree_mtc/custom_types.h>
 
-#include <geometry_msgs/PointStamped.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/TwistStamped.h>
-#include <geometry_msgs/Vector3Stamped.h>
+#include <geometry_msgs/msg/point_stamped.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
+#include <geometry_msgs/msg/vector3_stamped.hpp>
 
 using namespace BT;
 using namespace bt_mtc;
@@ -40,7 +40,7 @@ BT::NodeStatus GeometryMsgsPointStamped::tick()
     return NodeStatus::FAILURE;
 
   // Build pose
-  auto point_stamped = std::make_shared<geometry_msgs::PointStamped>();
+  auto point_stamped = std::make_shared<geometry_msgs::msg::PointStamped>();
 
   point_stamped->header.frame_id = frame_id;
   point_stamped->point.x = point.x;
@@ -57,7 +57,7 @@ BT::PortsList GeometryMsgsPointStamped::providedPorts()
   return {
     BT::InputPort<std::string>(kPortFrameID),
     BT::InputPort<Vector3D>(kPortPoint),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::PointStamped>>(kPortPointStamped),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::msg::PointStamped>>(kPortPointStamped),
   };
 }
 
@@ -79,7 +79,7 @@ BT::NodeStatus GeometryMsgsPoseStamped::tick()
     return NodeStatus::FAILURE;
 
   // Build pose
-  auto pose = std::make_shared<geometry_msgs::PoseStamped>();
+  auto pose = std::make_shared<geometry_msgs::msg::PoseStamped>();
 
   pose->header.frame_id = frame_id;
   pose->pose.position.x = position.x;
@@ -102,7 +102,7 @@ BT::PortsList GeometryMsgsPoseStamped::providedPorts()
     BT::InputPort<std::string>(kPortFrameID),
     BT::InputPort<Vector3D>(kPortPosition),
     BT::InputPort<Vector4D>(kPortQuaternion),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortPoseStamped),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>(kPortPoseStamped),
   };
 }
 
@@ -122,7 +122,7 @@ BT::NodeStatus GeometryMsgsVector3Stamped::tick()
     return NodeStatus::FAILURE;
 
   // Build pose
-  auto v3 = std::make_shared<geometry_msgs::Vector3Stamped>();
+  auto v3 = std::make_shared<geometry_msgs::msg::Vector3Stamped>();
 
   v3->header.frame_id = frame_id;
   v3->vector.x = vector.x;
@@ -139,7 +139,7 @@ BT::PortsList GeometryMsgsVector3Stamped::providedPorts()
   return {
     BT::InputPort<std::string>(kPortFrameID),
     BT::InputPort<Vector3D>(kPortVector),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::Vector3Stamped>>(kPortVector3Stamped),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::msg::Vector3Stamped>>(kPortVector3Stamped),
   };
 }
 
@@ -161,7 +161,7 @@ BT::NodeStatus GeometryMsgsTwistStamped::tick()
     return NodeStatus::FAILURE;
 
   // Build pose
-  auto twist = std::make_shared<geometry_msgs::TwistStamped>();
+  auto twist = std::make_shared<geometry_msgs::msg::TwistStamped>();
 
   twist->header.frame_id = frame_id;
   twist->twist.linear.x = linear.x;
@@ -183,6 +183,6 @@ BT::PortsList GeometryMsgsTwistStamped::providedPorts()
     BT::InputPort<std::string>(kPortFrameID),
     BT::InputPort<Vector3D>(kPortLinearVelocity),
     BT::InputPort<Vector3D>(kPortAngularVelocity),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::TwistStamped>>(kPortTwistStamped),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::msg::TwistStamped>>(kPortTwistStamped),
   };
 }

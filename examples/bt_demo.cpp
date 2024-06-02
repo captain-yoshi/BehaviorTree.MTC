@@ -44,19 +44,20 @@ int main(int argc, char** argv)
 
   auto tree = factory.createTreeFromText(xml_text);
 
-  // Connect the Groot2Publisher. This will allow Groot2 to 
+  // Connect the Groot2Publisher. This will allow Groot2 to
   // get the tree and poll status updates.
   const unsigned port = 1667;
   BT::Groot2Publisher publisher(tree, port);
 
-  // Add two more loggers to save the transitions into a file. 
+  // Add two more loggers, to save the transitions into a file.
   // Both formats are compatible with Groot2
 
   // Logging with lightweight serialization
   BT::FileLogger2 logger2(tree, "t12_logger2.btlog");
 
   // Gives the user time to connect to Groot2
-  std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+  int wait_time = 5000;
+  std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
 
   std::cout << "Starting Behavior Tree" << std::endl;
   std::cout << "======================" << std::endl;

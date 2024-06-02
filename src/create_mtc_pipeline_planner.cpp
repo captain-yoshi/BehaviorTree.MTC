@@ -44,21 +44,21 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
   bool publish_planning_requests;
   uint num_planning_attemps;
 
-  if (!getInput(kPortPipelineID, pipeline_id))
+  //Inputs
+  if(!getInput(kPortPipelineID, pipeline_id) ||
+     !getInput(kPortPlannerID, planner_id) ||
+     !getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
+     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||
+     !getInput(kPortGoalJointTolerance, goal_joint_tolerance) ||
+     !getInput(kPortGoalPositionTolerance, goal_position_tolerance) ||
+     !getInput(kPortGoalOrientationTolerance, goal_orientation_tolerance) ||
+     !getInput(kPortDisplayMotionPlans, display_motion_plans) ||
+     !getInput(kPortPublishPlanningRequests, publish_planning_requests) ||
+     !getInput(kPortNumPlanningAttempts, num_planning_attemps))
     return NodeStatus::FAILURE;
-  if (!getInput(kPortPlannerID, planner_id))
-    return NodeStatus::FAILURE;
-  if (!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor))
-    return NodeStatus::FAILURE;
-  if (!getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor))
-    return NodeStatus::FAILURE;
-  getInput(kPortGoalJointTolerance, goal_joint_tolerance);  // optional
-
-  // Build solver
+  //build solver
   auto node = rclcpp::Node::make_shared("create_mtc_pipeline_planner");
   auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(node, pipeline_id);
-
-  // Set up the solver with the retrieved inputs
   solver->setPlannerId(planner_id);
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
