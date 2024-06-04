@@ -23,8 +23,13 @@ BT::NodeStatus InitializeMTCTask::tick()
   std::shared_ptr<MTC::Task> task = std::make_shared<MTC::Task>();
   task->loadRobotModel();
 
+  //Convert raw pointer to share pointer
+  MTC::ContainerBase* raw_container = task->stages();
+  MTC::ContainerBasePtr container;
+  container = std::shared_ptr<MTC::ContainerBase>(raw_container);
+
   setOutput(kPortTask, task);
-  setOutput(kPortContainer, task->stages());
+  setOutput(kPortContainer, container);
 
   return NodeStatus::SUCCESS;
 }
@@ -34,7 +39,7 @@ BT::PortsList InitializeMTCTask::providedPorts()
   return {
     BT::OutputPort<MTC::TaskPtr>(kPortTask, "{mtc_task}",
                                  "MoveIt Task Constructor task."),
-    BT::OutputPort<MTC::ContainerBase*>(kPortContainer),
+    BT::OutputPort<MTC::ContainerBasePtr>(kPortContainer),
 
   };
 }
