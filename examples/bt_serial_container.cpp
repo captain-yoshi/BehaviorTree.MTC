@@ -43,13 +43,8 @@ static const char* xml_text = R"(
                                        stage="{stage_move_rel_translate}" />
        <MoveMTCStageToContainer  container="{container}" stage="{stage_move_rel_translate}" />
        <CreateMTCSerialContainer container_name="approach_object"
-                                 arm_group="panda_arm"
-                                 hand_group="hand"
-                                 eef_name="hand"
-                                 ik_frame="panda_link8"
-                                 serial_container="{serial_container}" />
+                                 serial_container="{serial_container}"/>
        <!-- Translate Motion-->
-       <GeometryMsgsPoseStamped  frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
        <GeometryMsgsVector3Stamped frame_id="panda_link8" vector="-0.2,0,0" vector3_stamped="{tcp_translate}"/>
        <CreateMTCMoveRelativeTranslate name="move relative -> tcp translation"
                                        group="panda_arm"

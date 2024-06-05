@@ -12,11 +12,6 @@ namespace
 {
 constexpr auto kPortSerialContainer = "serial_container";
 constexpr auto kPortContainerName = "container_name";
-constexpr auto kPortArmGroup = "arm_group";
-constexpr auto kPortHandGroup = "hand_group";
-constexpr auto kPortEefName = "eef_name";
-constexpr auto kPortIkFrame = "ik_frame";
-
 }  // namespace
 
 CreateMTCSerialContainer::CreateMTCSerialContainer(const std::string& name,
@@ -27,12 +22,8 @@ CreateMTCSerialContainer::CreateMTCSerialContainer(const std::string& name,
 BT::NodeStatus CreateMTCSerialContainer::tick()
 {
   // Inputs
-  std::string arm_group, container_name, hand_group, eef_name, ik_frame;
-  if(!getInput(kPortContainerName, container_name) ||
-     !getInput(kPortArmGroup, arm_group) ||
-     !getInput(kPortHandGroup, hand_group) ||
-     !getInput(kPortIkFrame, ik_frame) ||
-     !getInput(kPortEefName, eef_name))
+  std::string container_name;
+  if(!getInput(kPortContainerName, container_name))
     return NodeStatus::FAILURE;
   // Build
   std::shared_ptr<MTC::SerialContainer> serialContainer{
@@ -52,9 +43,5 @@ BT::PortsList CreateMTCSerialContainer::providedPorts()
   return {
     BT::OutputPort<MTC::ContainerBasePtr>(kPortSerialContainer, "MoveTo Serial Container"),
     BT::InputPort<std::string>(kPortContainerName, "serial container"),
-    BT::InputPort<std::string>(kPortArmGroup),
-    BT::InputPort<std::string>(kPortHandGroup),
-    BT::InputPort<std::string>(kPortEefName),
-    BT::InputPort<std::string>(kPortIkFrame),
   };
 }
