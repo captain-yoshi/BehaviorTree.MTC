@@ -27,20 +27,23 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
+  # utilities
   src/geometry_msgs.cpp
-  src/get_mtc_raw_stage.cpp
-  src/initialize_mtc_task.cpp
-  src/plan_mtc_task.cpp
+
+  # mtc
+  src/create_mtc_connect.cpp
   src/create_mtc_current_state.cpp
   src/create_mtc_move_relative.cpp
   src/create_mtc_move_to.cpp
   src/create_mtc_pipeline_planner.cpp
-  src/move_mtc_stage_to_container.cpp
   src/create_mtc_cartesian_path.cpp
   src/create_mtc_joint_interpolation.cpp
   src/create_mtc_serial_container.cpp
+  src/get_mtc_raw_stage.cpp
+  src/initialize_mtc_task.cpp
+  src/move_mtc_stage_to_container.cpp
   src/move_mtc_container_to_parent_container.cpp
-  src/create_mtc_connect.cpp
+  src/plan_mtc_task.cpp
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)
