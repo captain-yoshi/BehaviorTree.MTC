@@ -1,4 +1,4 @@
-#include <behaviortree_mtc/move_mtc_container_to_container.h>
+#include <behaviortree_mtc/move_mtc_container_to_parent_container.h>
 #include <behaviortree_mtc/shared_to_unique.h>
 
 #include <moveit/task_constructor/container.h>
@@ -14,12 +14,12 @@ constexpr auto kPortParentContainer = "parent_container";
 constexpr auto kPortChildContainer = "child_container";
 }  // namespace
 
-MoveMTCContainerToContainer::MoveMTCContainerToContainer(const std::string& name,
+MoveMTCContainerToParentContainer::MoveMTCContainerToParentContainer(const std::string& name,
                                                          const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
 
-BT::NodeStatus MoveMTCContainerToContainer::tick()
+BT::NodeStatus MoveMTCContainerToParentContainer::tick()
 {
   // Transform container from shared to unique
   MTC::ContainerBase::pointer unique_child_container{ nullptr };
@@ -49,7 +49,7 @@ BT::NodeStatus MoveMTCContainerToContainer::tick()
   return NodeStatus::SUCCESS;
 }
 
-BT::PortsList MoveMTCContainerToContainer::providedPorts()
+BT::PortsList MoveMTCContainerToParentContainer::providedPorts()
 {
   return {
     BT::InputPort<MTC::ContainerBasePtr>(kPortChildContainer),

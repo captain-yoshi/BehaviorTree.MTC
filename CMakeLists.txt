@@ -39,7 +39,7 @@ add_library(${PROJECT_NAME}
   src/create_mtc_cartesian_path.cpp
   src/create_mtc_joint_interpolation.cpp
   src/create_mtc_serial_container.cpp
-  src/move_mtc_container_to_container.cpp
+  src/move_mtc_container_to_parent_container.cpp
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)

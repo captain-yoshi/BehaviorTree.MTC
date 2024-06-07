@@ -4,10 +4,10 @@
 
 namespace bt_mtc
 {
-class MoveMTCContainerToContainer : public BT::SyncActionNode
+class MoveMTCContainerToParentContainer : public BT::SyncActionNode
 {
 public:
-  MoveMTCContainerToContainer(const std::string& name, const BT::NodeConfig& config);
+  MoveMTCContainerToParentContainer(const std::string& name, const BT::NodeConfig& config);
 
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();

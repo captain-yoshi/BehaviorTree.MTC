@@ -6,7 +6,7 @@
 #include <behaviortree_mtc/create_mtc_serial_container.h>
 #include <behaviortree_mtc/create_mtc_pipeline_planner.h>
 #include <behaviortree_mtc/move_mtc_stage_to_container.h>
-#include <behaviortree_mtc/move_mtc_container_to_container.h>
+#include <behaviortree_mtc/move_mtc_container_to_parent_container.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 
 #include <behaviortree_mtc/geometry_msgs.h>
@@ -53,7 +53,7 @@ static const char* xml_text = R"(
                                        direction="{tcp_translate}"
                                        stage="{stage_move_rel_translate2}" />
        <MoveMTCStageToContainer  container="{serial_container}" stage="{stage_move_rel_translate2}" />
-       <MoveMTCContainerToContainer  parent_container="{container}" child_container="{serial_container}" />
+       <MoveMTCContainerToParentContainer  parent_container="{container}" child_container="{serial_container}" />
        <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
      </Sequence>
    </BehaviorTree>
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCMoveRelativeTranslate>("CreateMTCMoveRelativeTranslate");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
-  factory.registerNodeType<MoveMTCContainerToContainer>("MoveMTCContainerToContainer");
+  factory.registerNodeType<MoveMTCContainerToParentContainer>("MoveMTCContainerToParentContainer");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
 
   factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");
