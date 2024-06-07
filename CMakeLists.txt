@@ -54,3 +54,7 @@ target_link_libraries(bt_move_relative ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_include_directories(bt_move_to PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
 
+add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
+
+target_include_directories(bt_joint_interpolation_solver PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} ${catkin_LIBRARIES})
