@@ -41,7 +41,7 @@ BT::NodeStatus CreateMTCSerialContainer::tick()
 BT::PortsList CreateMTCSerialContainer::providedPorts()
 {
   return {
-    BT::OutputPort<MTC::ContainerBasePtr>(kPortSerialContainer, "MoveTo Serial Container"),
+    BT::OutputPort<MTC::ContainerBasePtr>(kPortSerialContainer, "serial container"),
     BT::InputPort<std::string>(kPortContainerName, "serial container"),
   };
 }

@@ -22,31 +22,30 @@ MoveMTCContainerToContainer::MoveMTCContainerToContainer(const std::string& name
 BT::NodeStatus MoveMTCContainerToContainer::tick()
 {
   // Transform container from shared to unique
-  MTC::ContainerBase::pointer unique_container_child{ nullptr };
+  MTC::ContainerBase::pointer unique_child_container{ nullptr };
   if(auto any_container_ptr = getLockedPortContent(kPortChildContainer))
   {
     if(auto* container_ptr = any_container_ptr->castPtr<MTC::ContainerBasePtr>())
     {
-      auto& container = *container_ptr;
+      auto& child_container = *container_ptr;
 
-      unique_container_child = sharedToUnique(container);
+      unique_child_container = sharedToUnique(child_container);
       any_container_ptr.assign(nullptr);  // set blackboard value to nullptr
     }
   }
 
-  if(auto any_container_ptr = getLockedPortContent(kPortParentContainer); unique_container_child)
+  if(auto any_container_ptr = getLockedPortContent(kPortParentContainer); unique_child_container)
   {
     if(auto* container_ptr = any_container_ptr->castPtr<MTC::ContainerBasePtr>())
     {
-      auto& container = *container_ptr;
+      auto& parent_container = *container_ptr;
 
-      container->add(std::move(unique_container_child));
+      parent_container->add(std::move(unique_child_container));
 
       return NodeStatus::SUCCESS;
     }
   }
 
-  return NodeStatus::FAILURE;
   return NodeStatus::SUCCESS;
 }
 
