@@ -38,6 +38,8 @@ add_library(${PROJECT_NAME}
   src/move_mtc_stage_to_container.cpp
   src/create_mtc_cartesian_path.cpp
   src/create_mtc_joint_interpolation.cpp
+  src/create_mtc_serial_container.cpp
+  src/move_mtc_container_to_parent_container.cpp
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)
@@ -58,3 +60,9 @@ add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_sol
 
 target_include_directories(bt_joint_interpolation_solver PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} ${catkin_LIBRARIES})
+add_executable(bt_serial_container examples/bt_serial_container.cpp)
+
+target_include_directories(bt_serial_container PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_serial_container ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+
