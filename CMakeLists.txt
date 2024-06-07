@@ -47,24 +47,22 @@ add_library(${PROJECT_NAME}
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)
+add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
+add_executable(bt_move_relative examples/bt_move_relative.cpp)
+add_executable(bt_move_to examples/bt_move_to.cpp)
+add_executable(bt_serial_container examples/bt_serial_container.cpp)
 
 target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(bt_move_relative examples/bt_move_relative.cpp)
-add_executable(bt_move_to examples/bt_move_to.cpp)
+target_include_directories(bt_joint_interpolation_solver PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_move_relative PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_move_relative ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_move_to PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
-
-add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
-
-target_include_directories(bt_joint_interpolation_solver PRIVATE ${catkin_INCLUDE_DIRS} include)
-target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} ${catkin_LIBRARIES})
-add_executable(bt_serial_container examples/bt_serial_container.cpp)
 
 target_include_directories(bt_serial_container PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_serial_container ${PROJECT_NAME} ${catkin_LIBRARIES})
