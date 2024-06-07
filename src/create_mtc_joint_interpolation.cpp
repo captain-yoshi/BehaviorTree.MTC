@@ -32,11 +32,13 @@ BT::NodeStatus CreateMTCJointInterpolation::tick()
      !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||
      !getInput(kPortMaxStep, max_step))
     return NodeStatus::FAILURE;
+  
   //build solver
   auto solver = std::make_shared<MTC::solvers::JointInterpolationPlanner>();
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setProperty(kPortMaxStep, max_step);
+
   // Upcast to base class
   MTC::solvers::PlannerInterfacePtr base_solver = solver;
 
@@ -48,7 +50,7 @@ BT::PortsList CreateMTCJointInterpolation::providedPorts()
 {
   return {
     //Output
-    BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "Planner interface using joint interpolation solver"),
+    BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "plan using simple interpolation in joint-space"),
     //Inputs
     BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
     BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "scale down max acceleration by this factor"),
