@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-#include <behaviortree_mtc/mtc_properties.h>
+#include <behaviortree_mtc/set_mtc_properties.h>
 
 #include <moveit/task_constructor/stages/current_state.h>
 
