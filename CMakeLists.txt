@@ -67,6 +67,10 @@ target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_include_directories(bt_serial_container PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_serial_container ${PROJECT_NAME} ${catkin_LIBRARIES})
 
+
+add_subdirectory(tests)
+
+
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
