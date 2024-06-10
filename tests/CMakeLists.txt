@@ -2,7 +2,7 @@
 # TESTS
 
 set(BT_MTC_TESTS
-  # gtest_xxx.cpp
+  gtest_mtc_properties.cpp
 )
 
 set(TEST_DEPENDECIES
