@@ -37,6 +37,7 @@ add_library(${PROJECT_NAME}
   src/create_mtc_move_to.cpp
   src/create_mtc_pipeline_planner.cpp
   src/create_mtc_cartesian_path.cpp
+  src/create_mtc_generate_grasp_pose.cpp
   src/create_mtc_joint_interpolation.cpp
   src/create_mtc_serial_container.cpp
   src/get_mtc_raw_stage.cpp
@@ -47,6 +48,7 @@ add_library(${PROJECT_NAME}
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)
+add_executable(bt_generate_grasp_pose examples/bt_generate_grasp_pose.cpp)
 add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
 add_executable(bt_move_relative examples/bt_move_relative.cpp)
 add_executable(bt_move_to examples/bt_move_to.cpp)
@@ -54,6 +56,9 @@ add_executable(bt_serial_container examples/bt_serial_container.cpp)
 
 target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+target_include_directories(bt_generate_grasp_pose PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_generate_grasp_pose ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_joint_interpolation_solver PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} ${catkin_LIBRARIES})
