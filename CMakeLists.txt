@@ -33,6 +33,7 @@ add_library(${PROJECT_NAME}
   # mtc
   src/create_mtc_connect.cpp
   src/create_mtc_current_state.cpp
+  src/create_mtc_modify_planning_scene.cpp
   src/create_mtc_move_relative.cpp
   src/create_mtc_move_to.cpp
   src/create_mtc_pipeline_planner.cpp
