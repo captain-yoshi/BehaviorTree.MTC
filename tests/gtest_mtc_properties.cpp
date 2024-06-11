@@ -1,15 +1,17 @@
 #include <gtest/gtest.h>
 #include <behaviortree_cpp/bt_factory.h>
 
-#include <behaviortree_mtc/set_mtc_properties.h>
+#include <behaviortree_mtc/configure_init_from_mtc_properties.h>
 #include <behaviortree_mtc/expose_mtc_properties.h>
-
+#include <behaviortree_mtc/set_mtc_properties.h>
 #include <behaviortree_mtc/std_containers.h>  // convertFromString -> property_names
+#include <behaviortree_mtc/blackboard_helper.h>
 
 #include <moveit/task_constructor/stages/current_state.h>
 
 using BT::NodeStatus;
 
+using bt_mtc::ConfigureInitFromMTCProperties;
 using bt_mtc::ExposeMTCProperties;
 using bt_mtc::SetMTCProperties;
 
@@ -217,6 +219,75 @@ TEST(MTCProperties, ExposeMTCProperties)
 
   EXPECT_STREQ(stage1->properties().get<std::string>("group").c_str(), "panda_arm");
   EXPECT_STREQ(stage1->properties().get<std::string>("eef").c_str(), "hand");
+}
+
+TEST(MTCProperties, ConfigureInitFromMTCProperties)
+{
+  BT::BehaviorTreeFactory factory;
+
+  // clang-format off
+
+  const std::string xml_text = R"(
+    <root BTCPP_format="4" >
+       <BehaviorTree>
+          <AsyncSequence>
+             <ConfigureInitFromMTCStageProperties stage="{stage}" property_names="group,eef" source_flag="PARENT" />
+          </AsyncSequence>
+       </BehaviorTree>
+    </root>)";
+
+  // clang-format on
+
+  factory.registerNodeType<ConfigureInitFromMTCProperties<Stage>>("ConfigureInitFromMTCStageProperties");
+  factory.registerNodeType<ConfigureInitFromMTCProperties<ContainerBase>>("ConfigureInitFromMTCContainerProperties");
+  factory.registerNodeType<ConfigureInitFromMTCProperties<Task>>("ConfigureInitFromMTCTaskProperties");
+
+  factory.registerScriptingEnums<moveit::task_constructor::Stage::PropertyInitializerSource>();
+
+  // prepare mtc task
+  moveit::task_constructor::TaskPtr task = std::make_shared<Task>();
+  moveit::task_constructor::ContainerBasePtr container1 = std::make_shared<moveit::task_constructor::SerialContainer>();
+  moveit::task_constructor::ContainerBasePtr container2 = std::make_shared<moveit::task_constructor::Alternatives>();
+
+  std::shared_ptr<moveit::task_constructor::Stage> stage{
+    new moveit::task_constructor::stages::CurrentState("current state"),
+    bt_mtc::dirty::fake_deleter{}
+  };
+
+  moveit::task_constructor::StagePtr parent_stage = std::make_shared<moveit::task_constructor::stages::CurrentState>();
+
+  task->loadRobotModel();
+  task->properties().set("group", "panda_arm");
+  task->properties().set("eef", "hand");
+
+  parent_stage->properties().set("group", "panda_arm");
+  parent_stage->properties().set("eef", "hand");
+
+  // set blackboard values
+  auto bb = BT::Blackboard::create();
+  bb->set("task", task);
+  bb->set("container1", container1);
+  bb->set("container2", container2);
+  bb->set("stage", stage);
+  // bb->set("child_stage", child_stage);
+
+  auto tree = factory.createTreeFromText(xml_text, bb);
+
+  // first tick: child_stage configureInit {group, eef} from PARENT
+  EXPECT_EQ(tree.tickExactlyOnce(), NodeStatus::SUCCESS);
+
+  stage.reset();
+  auto unique_stage = bt_mtc::convertSharedToUniqueLocked<moveit::task_constructor::Stage>(*bb, "stage");
+  auto raw_stage = unique_stage.get();
+
+  task->add(std::move(unique_stage));
+
+  auto ec = task->plan();
+
+  EXPECT_TRUE(ec.val == ec.SUCCESS);
+
+  EXPECT_STREQ(raw_stage->properties().get<std::string>("group").c_str(), "panda_arm");
+  EXPECT_STREQ(raw_stage->properties().get<std::string>("eef").c_str(), "hand");
 }
 
 int main(int argc, char** argv)
