@@ -14,6 +14,28 @@ inline void ToJson(nlohmann::json& dest, const std::map<std::string, double>& ma
 namespace BT
 {
 template <>
+inline std::vector<std::string> convertFromString(StringView key)
+{
+  const auto parts = BT::splitString(key, ',');
+
+  std::vector<std::string> vector;
+  for(const auto& part : parts)
+  {
+    vector.emplace_back(convertFromString<std::string>(part));
+  }
+
+  return vector;
+}
+
+template <>
+inline std::shared_ptr<std::vector<std::string>> convertFromString(StringView key)
+{
+  auto vector = std::make_shared<std::vector<std::string>>(convertFromString<std::vector<std::string>>(key));
+
+  return vector;
+}
+
+template <>
 inline std::map<std::string, double> convertFromString(StringView key)
 {
   const auto parts = BT::splitString(key, ',');
