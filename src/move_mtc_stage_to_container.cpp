@@ -2,6 +2,7 @@
 #include <behaviortree_mtc/shared_to_unique.h>
 
 #include <moveit/task_constructor/container.h>
+#include <moveit/task_constructor/task.h>
 
 using namespace BT;
 using namespace bt_mtc;
@@ -36,7 +37,7 @@ BT::NodeStatus MoveMTCStageToContainer::tick()
 
   if(auto any_container_ptr = getLockedPortContent(kPortContainer); unique_stage)
   {
-    if(auto* container_ptr = any_container_ptr->castPtr<MTC::ContainerBase*>())
+    if(auto* container_ptr = any_container_ptr->castPtr<MTC::ContainerBasePtr>())
     {
       auto& container = *container_ptr;
 
@@ -53,6 +54,6 @@ BT::PortsList MoveMTCStageToContainer::providedPorts()
 {
   return {
     BT::InputPort<MTC::StagePtr>(kPortStage),
-    BT::BidirectionalPort<MTC::ContainerBase*>(kPortContainer),
+    BT::BidirectionalPort<MTC::ContainerBasePtr>(kPortContainer),
   };
 }
