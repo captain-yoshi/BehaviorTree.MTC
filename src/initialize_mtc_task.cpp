@@ -24,7 +24,7 @@ BT::NodeStatus InitializeMTCTask::tick()
   task->loadRobotModel();
 
   //Convert raw pointer to share pointer
-  auto container = std::make_shared<MTC::ContainerBase>(task->stages());
+  auto container = std::shared_ptr<MTC::ContainerBase>(task->stages());
 
   setOutput(kPortTask, task);
   setOutput(kPortContainer, container);
