@@ -14,6 +14,8 @@ TEST(MTCProperties, SetMTCProperties)
 {
   BT::BehaviorTreeFactory factory;
 
+  // clang-format off
+
   const std::string xml_text = R"(
     <root BTCPP_format="4" >
        <BehaviorTree>
@@ -37,6 +39,8 @@ TEST(MTCProperties, SetMTCProperties)
           </Sequence>
        </BehaviorTree>
     </root>)";
+
+  // clang-format on
 
   factory.registerNodeType<SetMTCProperties<bool>>("SetMTCPropertiesBool");
   factory.registerNodeType<SetMTCProperties<int>>("SetMTCPropertiesInt");
