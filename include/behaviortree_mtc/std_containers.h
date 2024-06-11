@@ -44,4 +44,30 @@ inline std::shared_ptr<std::map<std::string, double>> convertFromString(StringVi
   return map;
 }
 
+template <>
+inline std::set<std::string> convertFromString(StringView key)
+{
+  const auto parts = BT::splitString(key, ',');
+
+  std::set<std::string> set;
+  for(const auto& part : parts)
+  {
+    auto pair = set.emplace(convertFromString<std::string>(part));
+    if(!pair.second)
+    {
+      throw BT::RuntimeError("invalid input)");
+    }
+  }
+
+  return set;
+}
+
+template <>
+inline std::shared_ptr<std::set<std::string>> convertFromString(StringView key)
+{
+  auto set = std::make_shared<std::set<std::string>>(convertFromString<std::set<std::string>>(key));
+
+  return set;
+}
+
 }  // namespace BT
