@@ -44,6 +44,7 @@ add_library(${PROJECT_NAME}
   src/move_mtc_stage_to_container.cpp
   src/move_mtc_container_to_parent_container.cpp
   src/plan_mtc_task.cpp
+  src/mtc_attach_object.cpp
 )
 
 add_executable(bt_demo examples/bt_demo.cpp)
@@ -51,6 +52,7 @@ add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_sol
 add_executable(bt_move_relative examples/bt_move_relative.cpp)
 add_executable(bt_move_to examples/bt_move_to.cpp)
 add_executable(bt_serial_container examples/bt_serial_container.cpp)
+add_executable(bt_attach_object examples/bt_attach_object.cpp)
 
 target_include_directories(bt_demo PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_demo ${PROJECT_NAME} ${catkin_LIBRARIES})
@@ -67,6 +69,8 @@ target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_include_directories(bt_serial_container PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_serial_container ${PROJECT_NAME} ${catkin_LIBRARIES})
 
+target_include_directories(bt_attach_object PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_attach_object ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 add_subdirectory(tests)
 
