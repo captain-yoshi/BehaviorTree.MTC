@@ -13,6 +13,15 @@ public:
   static BT::PortsList providedPorts();
 };
 
+class GeometryMsgsPose : public BT::SyncActionNode
+{
+public:
+  GeometryMsgsPose(const std::string& name, const BT::NodeConfig& config);
+
+  BT::NodeStatus tick() override;
+  static BT::PortsList providedPorts();
+};
+
 class GeometryMsgsPoseStamped : public BT::SyncActionNode
 {
 public:

@@ -5,6 +5,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
+#include <geometry_msgs/Pose.h>
 
 using namespace BT;
 using namespace bt_mtc;
@@ -22,6 +23,7 @@ constexpr auto kPortVector3Stamped = "vector3_stamped";
 constexpr auto kPortTwistStamped = "twist_stamped";
 constexpr auto kPortLinearVelocity = "linear_velocity";
 constexpr auto kPortAngularVelocity = "angular_velocity";
+constexpr auto kPortPose = "pose";
 
 }  // namespace
 GeometryMsgsPointStamped::GeometryMsgsPointStamped(const std::string& name,
@@ -58,6 +60,46 @@ BT::PortsList GeometryMsgsPointStamped::providedPorts()
     BT::InputPort<std::string>(kPortFrameID),
     BT::InputPort<Vector3D>(kPortPoint),
     BT::OutputPort<std::shared_ptr<geometry_msgs::PointStamped>>(kPortPointStamped),
+  };
+}
+
+GeometryMsgsPose::GeometryMsgsPose(const std::string& name,
+                                                 const BT::NodeConfig& config)
+  : SyncActionNode(name, config)
+{}
+
+BT::NodeStatus GeometryMsgsPose::tick()
+{
+  // Retrieve inputs
+  Vector3D position;
+  Vector4D quaternion;
+  if(!getInput(kPortPosition, position) ||
+     !getInput(kPortQuaternion, quaternion))
+    return NodeStatus::FAILURE;
+
+  // Build pose
+  auto pose = std::make_shared<geometry_msgs::Pose>();
+
+  pose->position.x = position.x;
+  pose->position.y = position.y;
+  pose->position.z = position.z;
+
+  pose->orientation.w = quaternion.w;
+  pose->orientation.x = quaternion.x;
+  pose->orientation.y = quaternion.y;
+  pose->orientation.z = quaternion.z;
+
+  setOutput(kPortPose, pose);
+
+  return NodeStatus::SUCCESS;
+}
+
+BT::PortsList GeometryMsgsPose::providedPorts()
+{
+  return {
+    BT::InputPort<Vector3D>(kPortPosition),
+    BT::InputPort<Vector4D>(kPortQuaternion),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::Pose>>(kPortPose),
   };
 }
 
