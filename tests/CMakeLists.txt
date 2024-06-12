@@ -3,6 +3,7 @@
 
 set(BT_MTC_TESTS
   gtest_mtc_properties.cpp
+  gtest_mtc_modify_planning_scene.cpp
 )
 
 set(TEST_DEPENDECIES
