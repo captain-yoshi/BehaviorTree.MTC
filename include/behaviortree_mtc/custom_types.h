@@ -69,5 +69,4 @@ inline Vector4D convertFromString(StringView key)
   output.z = convertFromString<double>(parts[3]);
   return output;
 }
-
 }  // namespace BT
