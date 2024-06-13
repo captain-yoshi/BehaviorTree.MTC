@@ -5,6 +5,8 @@
 #include <moveit/task_constructor/task.h>
 #include <moveit/robot_model/robot_model.h>
 
+#include <behaviortree_mtc/std_containers.h>
+
 using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
