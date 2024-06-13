@@ -52,8 +52,6 @@ add_library(${PROJECT_NAME}
   src/moveit_msgs.cpp
   src/move_mtc_stage_to_container.cpp
   src/move_mtc_container_to_parent_container.cpp
-  src/mtc_allow_collisions.cpp
-  src/mtc_get_links_with_collision_geometry
   src/plan_mtc_task.cpp
 )
 
