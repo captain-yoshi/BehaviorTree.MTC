@@ -36,6 +36,7 @@ add_library(${PROJECT_NAME}
 
   # mtc
   src/add_object_to_planning_scene.cpp
+  src/create_mtc_compute_ik.cpp
   src/create_mtc_connect.cpp
   src/create_mtc_current_state.cpp
   src/create_mtc_modify_planning_scene.cpp
@@ -56,6 +57,7 @@ add_library(${PROJECT_NAME}
 )
 
 add_executable(bt_allow_collisions examples/bt_allow_collisions.cpp)
+add_executable(bt_compute_ik examples/bt_compute_ik.cpp)
 add_executable(bt_create_collision_object examples/bt_create_collision_object.cpp)
 add_executable(bt_demo examples/bt_demo.cpp)
 add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
@@ -65,6 +67,8 @@ add_executable(bt_serial_container examples/bt_serial_container.cpp)
 
 target_include_directories(bt_allow_collisions PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_allow_collisions ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_include_directories(bt_compute_ik PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_compute_ik ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_create_collision_object PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_create_collision_object ${PROJECT_NAME} ${catkin_LIBRARIES})
