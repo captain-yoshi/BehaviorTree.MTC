@@ -7,10 +7,6 @@ using namespace BT;
 using namespace bt_mtc;
 namespace MTC = moveit::task_constructor;
 
-using DirectionVariant = std::variant<std::shared_ptr<geometry_msgs::Vector3Stamped>,
-                                      std::shared_ptr<std::map<std::string, double>>,
-                                      std::shared_ptr<geometry_msgs::TwistStamped>>;
-
 namespace
 {
 constexpr auto kPortStage = "stage";
