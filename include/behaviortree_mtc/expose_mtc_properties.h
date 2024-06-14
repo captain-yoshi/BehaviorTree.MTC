@@ -9,6 +9,9 @@ namespace bt_mtc
 template <typename FROM, typename TO>
 class ExposeMTCProperties : public BT::SyncActionNode
 {
+  static_assert(std::is_base_of<moveit::task_constructor::Stage, FROM>::value, "FROM must inherit from moveit::task_constructor::Stage");
+  static_assert(std::is_base_of<moveit::task_constructor::Stage, TO>::value, "TO must inherit from moveit::task_constructor::Stage");
+
 public:
   ExposeMTCProperties(const std::string& name, const BT::NodeConfig& config)
     : SyncActionNode(name, config)
