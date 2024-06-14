@@ -63,14 +63,14 @@ TEST(MTCProperties, SetMTCProperties)
   moveit::task_constructor::StagePtr stage = std::make_shared<moveit::task_constructor::stages::CurrentState>();
   bb->set("mtc_stage", stage);
 
-  auto pose = std::make_shared<geometry_msgs::Pose>();
-  pose->position.x = 7;
-  pose->position.y = -2;
-  pose->position.z = 3;
-  pose->orientation.x = -0.3812674;
-  pose->orientation.y = -0.7607049;
-  pose->orientation.z = 0.4696361;
-  pose->orientation.w = -0.2353829;
+  auto pose = geometry_msgs::Pose();
+  pose.position.x = 7;
+  pose.position.y = -2;
+  pose.position.z = 3;
+  pose.orientation.x = -0.3812674;
+  pose.orientation.y = -0.7607049;
+  pose.orientation.z = 0.4696361;
+  pose.orientation.w = -0.2353829;
   bb->set("pose", pose);
 
   auto tree = factory.createTreeFromText(xml_text, bb);
@@ -97,13 +97,13 @@ TEST(MTCProperties, SetMTCProperties)
   ASSERT_STREQ(stage->properties().get<std::string>("string<BehaviorTree.CPP>").c_str(), "BehaviorTree.CPP");
 
   const auto& p = stage->properties().get<geometry_msgs::Pose>("geometry_msgs::Pose");
-  EXPECT_NEAR(p.position.x, pose->position.x, EPS_DOUBLE);
-  EXPECT_NEAR(p.position.y, pose->position.y, EPS_DOUBLE);
-  EXPECT_NEAR(p.position.z, pose->position.z, EPS_DOUBLE);
-  EXPECT_NEAR(p.orientation.x, pose->orientation.x, EPS_DOUBLE);
-  EXPECT_NEAR(p.orientation.y, pose->orientation.y, EPS_DOUBLE);
-  EXPECT_NEAR(p.orientation.z, pose->orientation.z, EPS_DOUBLE);
-  EXPECT_NEAR(p.orientation.w, pose->orientation.w, EPS_DOUBLE);
+  EXPECT_NEAR(p.position.x, pose.position.x, EPS_DOUBLE);
+  EXPECT_NEAR(p.position.y, pose.position.y, EPS_DOUBLE);
+  EXPECT_NEAR(p.position.z, pose.position.z, EPS_DOUBLE);
+  EXPECT_NEAR(p.orientation.x, pose.orientation.x, EPS_DOUBLE);
+  EXPECT_NEAR(p.orientation.y, pose.orientation.y, EPS_DOUBLE);
+  EXPECT_NEAR(p.orientation.z, pose.orientation.z, EPS_DOUBLE);
+  EXPECT_NEAR(p.orientation.w, pose.orientation.w, EPS_DOUBLE);
 }
 
 TEST(MTCProperties, ExposeMTCProperties)
