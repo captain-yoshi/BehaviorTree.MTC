@@ -6,10 +6,10 @@
 
 namespace bt_mtc
 {
-template <typename T>
+template <typename S>
 class ConfigureInitFromMTCProperties : public BT::SyncActionNode
 {
-  static_assert(std::is_base_of<moveit::task_constructor::Stage, T>::value, "T must inherit from moveit::task_constructor::Stage");
+  static_assert(std::is_base_of<moveit::task_constructor::Stage, S>::value, "S must inherit from moveit::task_constructor::Stage");
 
 public:
   ConfigureInitFromMTCProperties(const std::string& name, const BT::NodeConfig& config)
@@ -18,7 +18,7 @@ public:
 
   BT::NodeStatus tick() override
   {
-    std::shared_ptr<T> stage{ nullptr };
+    std::shared_ptr<S> stage{ nullptr };
     std::shared_ptr<std::set<std::string>> property_names{ nullptr };
     moveit::task_constructor::Stage::PropertyInitializerSource source_flag;
 
@@ -38,7 +38,7 @@ public:
       BT::InputPort<moveit::task_constructor::Stage::PropertyInitializerSource>("source_flag", "Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}"),
       BT::InputPort<std::shared_ptr<std::set<std::string>>>("property_names"),
 
-      BT::BidirectionalPort<std::shared_ptr<T>>("stage"),
+      BT::BidirectionalPort<std::shared_ptr<S>>("stage"),
     };
   }
 };
