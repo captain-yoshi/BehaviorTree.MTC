@@ -6,9 +6,11 @@
 
 namespace bt_mtc
 {
-template <typename T = BT::Any>
+template <typename S, typename T = BT::Any>
 class SetMTCProperties : public BT::SyncActionNode
 {
+  static_assert(std::is_base_of<moveit::task_constructor::Stage, S>::value, "S must inherit from moveit::task_constructor::Stage");
+
 public:
   SetMTCProperties(const std::string& name, const BT::NodeConfig& config)
     : SyncActionNode(name, config)
@@ -26,7 +28,7 @@ public:
     if(auto any_locked = getLockedPortContent("stage");
        !any_locked.get()->empty())
     {
-      if(auto stage = any_locked->template cast<moveit::task_constructor::StagePtr>())
+      if(auto stage = any_locked->template cast<std::shared_ptr<S>>())
       {
         stage->properties().set(property_name, property);
 
@@ -40,7 +42,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::BidirectionalPort<moveit::task_constructor::StagePtr>("stage"),
+      BT::BidirectionalPort<std::shared_ptr<S>>("stage"),
       BT::InputPort<std::string>("property_name"),
       BT::InputPort<T>("property"),
     };

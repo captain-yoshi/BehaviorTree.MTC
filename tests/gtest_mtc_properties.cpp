@@ -51,11 +51,11 @@ TEST(MTCProperties, SetMTCProperties)
 
   // clang-format on
 
-  factory.registerNodeType<SetMTCProperties<bool>>("SetMTCPropertiesBool");
-  factory.registerNodeType<SetMTCProperties<int>>("SetMTCPropertiesInt");
-  factory.registerNodeType<SetMTCProperties<double>>("SetMTCPropertiesDouble");
-  factory.registerNodeType<SetMTCProperties<std::string>>("SetMTCPropertiesString");
-  factory.registerNodeType<SetMTCProperties<geometry_msgs::Pose>>("SetMTCPropertiesPose");
+  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, bool>>("SetMTCPropertiesBool");
+  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, int>>("SetMTCPropertiesInt");
+  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, double>>("SetMTCPropertiesDouble");
+  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, std::string>>("SetMTCPropertiesString");
+  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, geometry_msgs::Pose>>("SetMTCPropertiesPose");
 
   auto bb = BT::Blackboard::create();
 
