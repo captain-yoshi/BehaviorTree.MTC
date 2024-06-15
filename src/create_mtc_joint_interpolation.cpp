@@ -6,13 +6,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortSolver = "solver";
-constexpr auto kPortMaxVelocityScalingFactor = "max_velocity_scaling_factor";
-constexpr auto kPortMaxAccelerationScalingFactor = "max_acceleration_scaling_factor";
-constexpr auto kPortMaxStep = "max_step";
-}  // namespace
-
 CreateMTCJointInterpolation::CreateMTCJointInterpolation(const std::string& name,
                                                          const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -26,33 +19,31 @@ BT::NodeStatus CreateMTCJointInterpolation::tick()
   double max_step;
 
   //Inputs
-  if(!getInput(kPortMaxVelocityScalingFactor, max_velocity_scaling_factor) ||
-     !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||
-     !getInput(kPortMaxStep, max_step))
+  if(!getInput("max_velocity_scaling_factor", max_velocity_scaling_factor) ||
+     !getInput("max_acceleration_scaling_factor", max_acceleration_scaling_factor) ||
+     !getInput("max_step", max_step))
     return NodeStatus::FAILURE;
 
   //build solver
   auto solver = std::make_shared<moveit::task_constructor::solvers::JointInterpolationPlanner>();
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
-  solver->setProperty(kPortMaxStep, max_step);
+  solver->setProperty("max_step", max_step);
 
   // Upcast to base class
   moveit::task_constructor::solvers::PlannerInterfacePtr base_solver = solver;
 
-  setOutput(kPortSolver, base_solver);
+  setOutput("solver", base_solver);
   return NodeStatus::SUCCESS;
 }
 
 BT::PortsList CreateMTCJointInterpolation::providedPorts()
 {
   return {
-    //Output
-    BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "plan using simple interpolation in joint-space"),
-    //Inputs
-    BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
-    BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "scale down max acceleration by this factor"),
-    BT::InputPort<double>(kPortMaxStep, 0.1, "max joint step"),
+    BT::InputPort<double>("max_velocity_scaling_factor", 0.1, "scale down max velocity by this factor"),
+    BT::InputPort<double>("max_acceleration_scaling_factor", 0.1, "scale down max acceleration by this factor"),
+    BT::InputPort<double>("max_step", 0.1, "max joint step"),
+    BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("solver", "{solver}", "plan using simple interpolation in joint-space"),
   };
 }
 

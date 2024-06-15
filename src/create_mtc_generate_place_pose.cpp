@@ -8,15 +8,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortStage = "stage";
-constexpr auto kPortStageName = "stage_name";
-constexpr auto kPortObject = "object";
-constexpr auto kPortPose = "pose";
-constexpr auto kPortMonitoredStage = "monitored_stage";
-constexpr auto kPortAllowZFlip = "allow_z_flip";
-}  // namespace
-
 CreateMTCGeneratePlacePose::CreateMTCGeneratePlacePose(const std::string& name,
                                                        const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -29,11 +20,11 @@ BT::NodeStatus CreateMTCGeneratePlacePose::tick()
   moveit::task_constructor::Stage* monitored_stage;
   bool allow_z_flip;
   std::shared_ptr<geometry_msgs::PoseStamped> pose{ nullptr };
-  if(!getInput(kPortStageName, name) ||
-     !getInput(kPortPose, pose) ||
-     !getInput(kPortObject, object) ||
-     !getInput(kPortAllowZFlip, allow_z_flip) ||
-     !getInput(kPortMonitoredStage, monitored_stage))
+  if(!getInput("stage_name", name) ||
+     !getInput("pose", pose) ||
+     !getInput("object", object) ||
+     !getInput("allow_z_flip", allow_z_flip) ||
+     !getInput("monitored_stage", monitored_stage))
     return NodeStatus::FAILURE;
 
   // Build stage
@@ -44,13 +35,13 @@ BT::NodeStatus CreateMTCGeneratePlacePose::tick()
   };
   stage->setObject(object);
   stage->setMonitoredStage(monitored_stage);
-  stage->setProperty(kPortAllowZFlip, allow_z_flip);
+  stage->setProperty("allow_z_flip", allow_z_flip);
   stage->setPose(*pose);
 
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -58,12 +49,12 @@ BT::NodeStatus CreateMTCGeneratePlacePose::tick()
 BT::PortsList CreateMTCGeneratePlacePose::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortObject, "object on which we generate the place poses"),
-    BT::InputPort<std::string>(kPortStageName),
-    BT::InputPort<moveit::task_constructor::Stage*>(kPortMonitoredStage),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortPose, "target pose to pass on in spawned states"),
-    BT::InputPort<bool>(kPortAllowZFlip, false, "allow placing objects upside down"),
-    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "{generate_grasp_pose}", "GenerateGraspPose Stage"),
+    BT::InputPort<std::string>("object", "object on which we generate the place poses"),
+    BT::InputPort<std::string>("stage_name"),
+    BT::InputPort<moveit::task_constructor::Stage*>("monitored_stage"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("pose", "target pose to pass on in spawned states"),
+    BT::InputPort<bool>("allow_z_flip", false, "allow placing objects upside down"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "{generate_grasp_pose}", "GenerateGraspPose Stage"),
   };
 }
 

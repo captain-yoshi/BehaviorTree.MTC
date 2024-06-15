@@ -6,11 +6,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortStage = "stage";
-
-}  // namespace
-
 CreateMTCCurrentState::CreateMTCCurrentState(const std::string& name,
                                              const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -26,7 +21,7 @@ BT::NodeStatus CreateMTCCurrentState::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -34,7 +29,7 @@ BT::NodeStatus CreateMTCCurrentState::tick()
 BT::PortsList CreateMTCCurrentState::providedPorts()
 {
   return {
-    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "{mtc_stage}",
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "{mtc_stage}",
                                                        "MoveIt Task Constructor stage."),
   };
 }

@@ -7,12 +7,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortPlanningSceneInterface = "planning_scene_interface";
-constexpr auto kPortCollisionObject = "collision_object";
-
-}  // namespace
-
 AddObjectToPlanningScene::AddObjectToPlanningScene(const std::string& name,
                                                    const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -24,8 +18,8 @@ BT::NodeStatus AddObjectToPlanningScene::tick()
   std::shared_ptr<moveit_msgs::CollisionObject> object;
 
   //INPUTS
-  if(!getInput(kPortPlanningSceneInterface, psi) ||
-     !getInput(kPortCollisionObject, object))
+  if(!getInput("planning_scene_interface", psi) ||
+     !getInput("collision_object", object))
     return NodeStatus::FAILURE;
   //APPLY OBJECT
   if(!psi->applyCollisionObject(*object))
@@ -36,8 +30,8 @@ BT::NodeStatus AddObjectToPlanningScene::tick()
 BT::PortsList AddObjectToPlanningScene::providedPorts()
 {
   return {
-    BT::InputPort<moveit::planning_interface::PlanningSceneInterfacePtr>(kPortPlanningSceneInterface),
-    BT::InputPort<std::shared_ptr<moveit_msgs::CollisionObject>>(kPortCollisionObject),
+    BT::InputPort<moveit::planning_interface::PlanningSceneInterfacePtr>("planning_scene_interface"),
+    BT::InputPort<std::shared_ptr<moveit_msgs::CollisionObject>>("collision_object"),
   };
 }
 

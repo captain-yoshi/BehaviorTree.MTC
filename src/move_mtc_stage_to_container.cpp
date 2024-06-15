@@ -7,12 +7,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortContainer = "container";
-constexpr auto kPortStage = "stage";
-
-}  // namespace
-
 MoveMTCStageToContainer::MoveMTCStageToContainer(const std::string& name,
                                                  const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -22,7 +16,7 @@ BT::NodeStatus MoveMTCStageToContainer::tick()
 {
   // Transform stage from shared to unique
   moveit::task_constructor::Stage::pointer unique_stage{ nullptr };
-  if(auto any_stage_ptr = getLockedPortContent(kPortStage))
+  if(auto any_stage_ptr = getLockedPortContent("stage"))
   {
     if(auto* stage_ptr = any_stage_ptr->castPtr<moveit::task_constructor::StagePtr>())
     {
@@ -33,7 +27,7 @@ BT::NodeStatus MoveMTCStageToContainer::tick()
     }
   }
 
-  if(auto any_container_ptr = getLockedPortContent(kPortContainer); unique_stage)
+  if(auto any_container_ptr = getLockedPortContent("container"); unique_stage)
   {
     if(auto* container_ptr = any_container_ptr->castPtr<moveit::task_constructor::ContainerBasePtr>())
     {
@@ -51,8 +45,8 @@ BT::NodeStatus MoveMTCStageToContainer::tick()
 BT::PortsList MoveMTCStageToContainer::providedPorts()
 {
   return {
-    BT::InputPort<moveit::task_constructor::StagePtr>(kPortStage),
-    BT::BidirectionalPort<moveit::task_constructor::ContainerBasePtr>(kPortContainer),
+    BT::InputPort<moveit::task_constructor::StagePtr>("stage"),
+    BT::BidirectionalPort<moveit::task_constructor::ContainerBasePtr>("container"),
   };
 }
 

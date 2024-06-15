@@ -5,20 +5,14 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortTask = "task";
-constexpr auto kPortMaxSolutions = "max_solutions";
-
-}  // namespace
-
 PlanMTCTask::PlanMTCTask(const std::string& name, const BT::NodeConfig& config)
   : ThreadedAction(name, config)
 {}
 
 BT::NodeStatus PlanMTCTask::tick()
 {
-  const size_t max_solutions = getInput<size_t>(kPortMaxSolutions).value();
-  if(auto any_ptr = getLockedPortContent(kPortTask))
+  const size_t max_solutions = getInput<size_t>("max_solutions").value();
+  if(auto any_ptr = getLockedPortContent("task"))
   {
     if(auto* task_ptr = any_ptr->castPtr<moveit::task_constructor::TaskPtr>())
     {
@@ -35,8 +29,8 @@ BT::NodeStatus PlanMTCTask::tick()
 BT::PortsList PlanMTCTask::providedPorts()
 {
   return {
-    BT::BidirectionalPort<moveit::task_constructor::TaskPtr>(kPortTask),
-    BT::InputPort<size_t>(kPortMaxSolutions),
+    BT::InputPort<size_t>("max_solutions"),
+    BT::BidirectionalPort<moveit::task_constructor::TaskPtr>("task"),
   };
 }
 

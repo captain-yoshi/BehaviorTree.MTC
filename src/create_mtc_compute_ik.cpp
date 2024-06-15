@@ -8,18 +8,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortStage = "stage";
-constexpr auto kPortStageName = "stage_name";
-constexpr auto kPortEef = "eef";
-constexpr auto kPortGroup = "group";
-constexpr auto kPortWrappedStage = "wrapped_stage";
-constexpr auto kPortMaxIkSolutions = "max_ik_solutions";
-constexpr auto kPortIgnoreCollisions = "ignore_collisions";
-constexpr auto kPortMinSolutionDistance = "min_solution_distance";
-constexpr auto kPortIkFrame = "ik_frame";
-}  // namespace
-
 CreateMTCComputeIK::CreateMTCComputeIK(const std::string& name,
                                        const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -37,17 +25,17 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   moveit::task_constructor::StagePtr wrapped_stage;
   std::shared_ptr<geometry_msgs::PoseStamped> ik_frame{ nullptr };
 
-  if(!getInput(kPortStageName, name) ||
-     !getInput(kPortEef, eef) ||
-     !getInput(kPortGroup, group) ||
-     !getInput(kPortIgnoreCollisions, ignore_collisions) ||
-     !getInput(kPortMinSolutionDistance, min_solution_distance) ||
-     !getInput(kPortMaxIkSolutions, max_ik_solutions) ||
-     !getInput(kPortIkFrame, ik_frame))
+  if(!getInput("stage_name", name) ||
+     !getInput("eef", eef) ||
+     !getInput("group", group) ||
+     !getInput("ignore_collisions", ignore_collisions) ||
+     !getInput("min_solution_distance", min_solution_distance) ||
+     !getInput("max_ik_solutions", max_ik_solutions) ||
+     !getInput("ik_frame", ik_frame))
     return NodeStatus::FAILURE;
 
   // Transform stage from shared to unique
-  auto unique_stage = convertSharedToUniqueLocked<moveit::task_constructor::Stage>(*this, kPortWrappedStage);
+  auto unique_stage = convertSharedToUniqueLocked<moveit::task_constructor::Stage>(*this, "wrapped_stage");
 
   // Build stage
   std::shared_ptr<moveit::task_constructor::stages::ComputeIK> wrapper{ nullptr };
@@ -65,7 +53,7 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = wrapper;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -73,16 +61,16 @@ BT::NodeStatus CreateMTCComputeIK::tick()
 BT::PortsList CreateMTCComputeIK::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortEef, "name of end-effector"),
-    BT::InputPort<std::string>(kPortStageName),
-    BT::InputPort<std::string>(kPortGroup, "name of active group (derived from eef if not provided)"),
-    BT::InputPort<bool>(kPortIgnoreCollisions, false, "ignore collisions, true or false"),
-    BT::InputPort<uint32_t>(kPortMaxIkSolutions, 1, "max ik solutions"),
-    BT::InputPort<double>(kPortMinSolutionDistance, 0.1, "minimum distance between seperate IK solutions for the same target"),
-    BT::InputPort<moveit::task_constructor::StagePtr>(kPortWrappedStage),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortIkFrame),
+    BT::InputPort<std::string>("stage_name"),
+    BT::InputPort<std::string>("eef", "name of end-effector"),
+    BT::InputPort<std::string>("group", "name of active group (derived from eef if not provided)"),
+    BT::InputPort<bool>("ignore_collisions", false, "ignore collisions, true or false"),
+    BT::InputPort<uint32_t>("max_ik_solutions", 1, "max ik solutions"),
+    BT::InputPort<double>("min_solution_distance", 0.1, "minimum distance between seperate IK solutions for the same target"),
+    BT::InputPort<moveit::task_constructor::StagePtr>("wrapped_stage"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("ik_frame"),
 
-    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage"),
   };
 }
 

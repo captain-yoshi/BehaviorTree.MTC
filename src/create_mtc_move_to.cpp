@@ -6,17 +6,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortStageName = "stage_name";
-constexpr auto kPortStage = "stage";
-constexpr auto kPortSolver = "solver";
-constexpr auto kPortGroup = "group";
-constexpr auto kPortTimeout = "timeout";
-constexpr auto kPortIKFrame = "ik_frame";
-constexpr auto kPortGoal = "goal";
-
-}  // namespace
-
 CreateMTCMoveToBase::CreateMTCMoveToBase(const std::string& name,
                                          const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -32,10 +21,10 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
   double max_distance;
   double timeout;
 
-  if(!getInput(kPortStageName, name) ||
-     !getInput(kPortGroup, group) ||
-     !getInput(kPortSolver, solver) ||
-     !getInput(kPortTimeout, timeout))
+  if(!getInput("stage_name", name) ||
+     !getInput("group", group) ||
+     !getInput("solver", solver) ||
+     !getInput("timeout", timeout))
     return NodeStatus::FAILURE;
 
   // Build stage
@@ -53,11 +42,11 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
 BT::PortsList CreateMTCMoveToBase::providedPorts()
 {
   return {
-    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "MoveTo stage"),
-    BT::InputPort<std::string>(kPortStageName, "move to", "stage name"),
-    BT::InputPort<std::string>(kPortGroup, "name of planning group"),
-    BT::InputPort<double>(kPortTimeout, 1.0, ""),
-    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
+    BT::InputPort<std::string>("stage_name", "move to", "stage name"),
+    BT::InputPort<std::string>("group", "name of planning group"),
+    BT::InputPort<double>("timeout", 1.0, ""),
+    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("solver", "planner interface"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "MoveTo stage"),
   };
 }
 
@@ -73,7 +62,7 @@ BT::NodeStatus CreateMTCMoveToBaseCartesian::tick(std::shared_ptr<moveit::task_c
     return node_status;
 
   std::shared_ptr<geometry_msgs::PoseStamped> ik_frame;
-  if(!getInput(kPortIKFrame, ik_frame))
+  if(!getInput("ik_frame", ik_frame))
     return NodeStatus::FAILURE;
   stage->setIKFrame(*ik_frame);
 
@@ -83,7 +72,7 @@ BT::NodeStatus CreateMTCMoveToBaseCartesian::tick(std::shared_ptr<moveit::task_c
 BT::PortsList CreateMTCMoveToBaseCartesian::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortIKFrame, "frame to be moved in Cartesian direction"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("ik_frame", "frame to be moved in Cartesian direction"));
   return port_lists;
 }
 
@@ -102,13 +91,13 @@ BT::NodeStatus CreateMTCMoveToNamedJointPose::tick()
 
   //Set goal
   std::string named_joint_pose;
-  if(!getInput(kPortGoal, named_joint_pose))
+  if(!getInput("goal", named_joint_pose))
     return NodeStatus::FAILURE;
   stage->setGoal(named_joint_pose);
 
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -116,7 +105,7 @@ BT::NodeStatus CreateMTCMoveToNamedJointPose::tick()
 BT::PortsList CreateMTCMoveToNamedJointPose::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::string>(kPortGoal, "move joint model group to given named pose"));
+  port_lists.emplace(BT::InputPort<std::string>("goal", "move joint model group to given named pose"));
 
   return port_lists;
 }
@@ -136,7 +125,7 @@ BT::NodeStatus CreateMTCMoveToJoint::tick()
 
   // Set goal
   std::shared_ptr<std::map<std::string, double>> joints{ nullptr };
-  if(!getInput(kPortGoal, joints))
+  if(!getInput("goal", joints))
     return NodeStatus::FAILURE;
 
   stage->setGoal(*joints);
@@ -144,7 +133,7 @@ BT::NodeStatus CreateMTCMoveToJoint::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -152,7 +141,7 @@ BT::NodeStatus CreateMTCMoveToJoint::tick()
 BT::PortsList CreateMTCMoveToJoint::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<std::map<std::string, double>>>(kPortGoal, "move joints by name to their mapped target value"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<std::map<std::string, double>>>("goal", "move joints by name to their mapped target value"));
 
   return port_lists;
 }
@@ -172,7 +161,7 @@ BT::NodeStatus CreateMTCMoveToPose::tick()
 
   // Set goal
   std::shared_ptr<geometry_msgs::PoseStamped> pose{ nullptr };
-  if(!getInput(kPortGoal, pose))
+  if(!getInput("goal", pose))
     return NodeStatus::FAILURE;
 
   stage->setGoal(*pose);
@@ -180,7 +169,7 @@ BT::NodeStatus CreateMTCMoveToPose::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -188,7 +177,7 @@ BT::NodeStatus CreateMTCMoveToPose::tick()
 BT::PortsList CreateMTCMoveToPose::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBaseCartesian::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortGoal, "move link to a given pose"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("goal", "move link to a given pose"));
 
   return port_lists;
 }
@@ -208,7 +197,7 @@ BT::NodeStatus CreateMTCMoveToPoint::tick()
 
   // Set goal
   std::shared_ptr<geometry_msgs::PointStamped> point{ nullptr };
-  if(!getInput(kPortGoal, point))
+  if(!getInput("goal", point))
     return NodeStatus::FAILURE;
 
   stage->setGoal(*point);
@@ -216,7 +205,7 @@ BT::NodeStatus CreateMTCMoveToPoint::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -224,7 +213,7 @@ BT::NodeStatus CreateMTCMoveToPoint::tick()
 BT::PortsList CreateMTCMoveToPoint::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBaseCartesian::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PointStamped>>(kPortGoal, "move link to given point, keeping current orientation"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PointStamped>>("goal", "move link to given point, keeping current orientation"));
 
   return port_lists;
 }

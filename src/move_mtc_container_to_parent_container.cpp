@@ -7,11 +7,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortParentContainer = "parent_container";
-constexpr auto kPortChildContainer = "child_container";
-}  // namespace
-
 MoveMTCContainerToParentContainer::MoveMTCContainerToParentContainer(const std::string& name,
                                                                      const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -21,7 +16,7 @@ BT::NodeStatus MoveMTCContainerToParentContainer::tick()
 {
   // Transform container from shared to unique
   moveit::task_constructor::ContainerBase::pointer unique_child_container{ nullptr };
-  if(auto any_container_ptr = getLockedPortContent(kPortChildContainer))
+  if(auto any_container_ptr = getLockedPortContent("child_container"))
   {
     if(auto* container_ptr = any_container_ptr->castPtr<moveit::task_constructor::ContainerBasePtr>())
     {
@@ -32,7 +27,7 @@ BT::NodeStatus MoveMTCContainerToParentContainer::tick()
     }
   }
 
-  if(auto any_container_ptr = getLockedPortContent(kPortParentContainer); unique_child_container)
+  if(auto any_container_ptr = getLockedPortContent("parent_container"); unique_child_container)
   {
     if(auto* container_ptr = any_container_ptr->castPtr<moveit::task_constructor::ContainerBasePtr>())
     {
@@ -50,8 +45,8 @@ BT::NodeStatus MoveMTCContainerToParentContainer::tick()
 BT::PortsList MoveMTCContainerToParentContainer::providedPorts()
 {
   return {
-    BT::InputPort<moveit::task_constructor::ContainerBasePtr>(kPortChildContainer),
-    BT::BidirectionalPort<moveit::task_constructor::ContainerBasePtr>(kPortParentContainer),
+    BT::InputPort<moveit::task_constructor::ContainerBasePtr>("child_container"),
+    BT::BidirectionalPort<moveit::task_constructor::ContainerBasePtr>("parent_container"),
   };
 }
 

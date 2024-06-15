@@ -7,17 +7,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortPose = "pose";
-constexpr auto kPortObjectName = "object_name";
-constexpr auto kPortObjectFrameID = "frame_id";
-constexpr auto kPortObjectHeight = "height";
-constexpr auto kPortObjectRadius = "radius";
-constexpr auto kPortObjectLength = "length";
-constexpr auto kPortObjectWidth = "width";
-constexpr auto kPortCollisionObject = "collision_object";
-}  // namespace
-
 MoveItMsgsCollisionObjectBase::MoveItMsgsCollisionObjectBase(const std::string& name,
                                                              const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -28,9 +17,9 @@ BT::NodeStatus MoveItMsgsCollisionObjectBase::tick(std::shared_ptr<moveit_msgs::
   // Retrieve inputs
   std::string object_name, object_frame_id;
   auto pose = std::make_shared<geometry_msgs::Pose>();
-  if(!getInput(kPortObjectName, object_name) ||
-     !getInput(kPortObjectFrameID, object_frame_id) ||
-     !getInput(kPortPose, pose))
+  if(!getInput("object_id", object_name) ||
+     !getInput("frame_id", object_frame_id) ||
+     !getInput("pose", pose))
     return NodeStatus::FAILURE;
 
   // Build object
@@ -44,9 +33,9 @@ BT::NodeStatus MoveItMsgsCollisionObjectBase::tick(std::shared_ptr<moveit_msgs::
 BT::PortsList MoveItMsgsCollisionObjectBase::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortObjectName),
-    BT::InputPort<std::string>(kPortObjectFrameID),
-    BT::InputPort<std::shared_ptr<geometry_msgs::Pose>>(kPortPose)
+    BT::InputPort<std::string>("object_id"),
+    BT::InputPort<std::string>("frame_id"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::Pose>>("pose")
   };
 }
 
@@ -65,15 +54,15 @@ BT::NodeStatus MoveItMsgsCollisionObjectCylinder::tick()
 
   // Retrieve inputs
   double radius, height;
-  if(!getInput(kPortObjectHeight, height) ||
-     !getInput(kPortObjectRadius, radius))
+  if(!getInput("height", height) ||
+     !getInput("radius", radius))
     return NodeStatus::FAILURE;
 
   // Set dimensions
   object->primitives.resize(1);
   object->primitives[0].type = shape_msgs::SolidPrimitive::CYLINDER;
   object->primitives[0].dimensions = { height, radius };
-  setOutput(kPortCollisionObject, object);
+  setOutput("collision_object", object);
 
   return NodeStatus::SUCCESS;
 }
@@ -81,9 +70,9 @@ BT::NodeStatus MoveItMsgsCollisionObjectCylinder::tick()
 BT::PortsList MoveItMsgsCollisionObjectCylinder::providedPorts()
 {
   auto port_lists = MoveItMsgsCollisionObjectBase::providedPorts();
-  port_lists.emplace(BT::InputPort<double>(kPortObjectHeight, "1.0", "cylinder height (m)"));
-  port_lists.emplace(BT::InputPort<double>(kPortObjectRadius, "1.0", "cylinder radius (m)"));
-  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>(kPortCollisionObject));
+  port_lists.emplace(BT::InputPort<double>("height", "1.0", "cylinder height (m)"));
+  port_lists.emplace(BT::InputPort<double>("radius", "1.0", "cylinder radius (m)"));
+  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>("collision_object"));
   return port_lists;
 }
 
@@ -102,16 +91,16 @@ BT::NodeStatus MoveItMsgsCollisionObjectBox::tick()
 
   // Retrieve inputs
   double length, height, width;
-  if(!getInput(kPortObjectHeight, height) ||
-     !getInput(kPortObjectLength, length) ||
-     !getInput(kPortObjectLength, width))
+  if(!getInput("height", height) ||
+     !getInput("length", length) ||
+     !getInput("length", width))
     return NodeStatus::FAILURE;
 
   // Set dimensions
   object->primitives.resize(1);
   object->primitives[0].type = shape_msgs::SolidPrimitive::BOX;
   object->primitives[0].dimensions = { length, width, height };
-  setOutput(kPortCollisionObject, object);
+  setOutput("collision_object", object);
 
   return NodeStatus::SUCCESS;
 }
@@ -119,10 +108,10 @@ BT::NodeStatus MoveItMsgsCollisionObjectBox::tick()
 BT::PortsList MoveItMsgsCollisionObjectBox::providedPorts()
 {
   auto port_lists = MoveItMsgsCollisionObjectBase::providedPorts();
-  port_lists.emplace(BT::InputPort<double>(kPortObjectLength, "1.0", "Box's size along X axis (m)"));
-  port_lists.emplace(BT::InputPort<double>(kPortObjectWidth, "1.0", "Box's size along Y axis (m)"));
-  port_lists.emplace(BT::InputPort<double>(kPortObjectHeight, "1.0", "Box's size along Z axis (m)"));
-  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>(kPortCollisionObject));
+  port_lists.emplace(BT::InputPort<double>("length", "1.0", "Box's size along X axis (m)"));
+  port_lists.emplace(BT::InputPort<double>("width", "1.0", "Box's size along Y axis (m)"));
+  port_lists.emplace(BT::InputPort<double>("height", "1.0", "Box's size along Z axis (m)"));
+  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>("collision_object"));
   return port_lists;
 }
 

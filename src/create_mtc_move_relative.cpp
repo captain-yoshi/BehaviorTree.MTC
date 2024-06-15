@@ -6,19 +6,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortStage = "stage";
-constexpr auto kPortStageName = "stage_name";
-constexpr auto kPortGroup = "group";
-constexpr auto kPortSolver = "solver";
-constexpr auto kPortIKFrame = "ik_frame";
-constexpr auto kPortDirection = "direction";
-constexpr auto kPortMinDistance = "min_distance";
-constexpr auto kPortMaxDistance = "max_distance";
-constexpr auto kPortTimeout = "timeout";
-
-}  // namespace
-
 CreateMTCMoveRelativeBase::CreateMTCMoveRelativeBase(const std::string& name,
                                                      const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -35,13 +22,13 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
   double max_distance;
   double timeout;
 
-  if(!getInput(kPortStageName, name) ||
-     !getInput(kPortGroup, group) ||
-     !getInput(kPortSolver, solver) ||
-     !getInput(kPortIKFrame, ik_frame) ||
-     !getInput(kPortMinDistance, min_distance) ||
-     !getInput(kPortMaxDistance, max_distance) ||
-     !getInput(kPortTimeout, timeout))
+  if(!getInput("stage_name", name) ||
+     !getInput("group", group) ||
+     !getInput("solver", solver) ||
+     !getInput("ik_frame", ik_frame) ||
+     !getInput("min_distance", min_distance) ||
+     !getInput("max_distance", max_distance) ||
+     !getInput("timeout", timeout))
     return NodeStatus::FAILURE;
 
   // Build stage
@@ -61,14 +48,14 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
 BT::PortsList CreateMTCMoveRelativeBase::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortStageName, "move relative", "stage name"),
-    BT::InputPort<std::string>(kPortGroup, "name of planning group"),
-    BT::InputPort<double>(kPortTimeout, 1.0, ""),
-    BT::InputPort<double>(kPortMinDistance, -1.0, "minimum distance to move"),
-    BT::InputPort<double>(kPortMaxDistance, 0.0, "maximum distance to move"),
-    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortIKFrame, "frame to be moved in Cartesian direction"),
-    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "MoveRelative stage"),
+    BT::InputPort<std::string>("stage_name", "move relative", "stage name"),
+    BT::InputPort<std::string>("group", "name of planning group"),
+    BT::InputPort<double>("timeout", 1.0, ""),
+    BT::InputPort<double>("min_distance", -1.0, "minimum distance to move"),
+    BT::InputPort<double>("max_distance", 0.0, "maximum distance to move"),
+    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("solver", "planner interface"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("ik_frame", "frame to be moved in Cartesian direction"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "MoveRelative stage"),
   };
 }
 
@@ -87,7 +74,7 @@ BT::NodeStatus CreateMTCMoveRelativeTwist::tick()
 
   // Set direction
   std::shared_ptr<geometry_msgs::TwistStamped> twist{ nullptr };
-  if(!getInput(kPortDirection, twist))
+  if(!getInput("direction", twist))
     return NodeStatus::FAILURE;
 
   stage->setDirection(*twist);
@@ -95,7 +82,7 @@ BT::NodeStatus CreateMTCMoveRelativeTwist::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -103,7 +90,7 @@ BT::NodeStatus CreateMTCMoveRelativeTwist::tick()
 BT::PortsList CreateMTCMoveRelativeTwist::providedPorts()
 {
   auto port_lists = CreateMTCMoveRelativeBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::TwistStamped>>(kPortDirection, "perform twist motion on specified link"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::TwistStamped>>("direction", "perform twist motion on specified link"));
 
   return port_lists;
 }
@@ -123,7 +110,7 @@ BT::NodeStatus CreateMTCMoveRelativeTranslate::tick()
 
   // Set direction
   std::shared_ptr<geometry_msgs::Vector3Stamped> vector3{ nullptr };
-  if(!getInput(kPortDirection, vector3))
+  if(!getInput("direction", vector3))
     return NodeStatus::FAILURE;
 
   stage->setDirection(*vector3);
@@ -131,7 +118,7 @@ BT::NodeStatus CreateMTCMoveRelativeTranslate::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -139,7 +126,7 @@ BT::NodeStatus CreateMTCMoveRelativeTranslate::tick()
 BT::PortsList CreateMTCMoveRelativeTranslate::providedPorts()
 {
   auto port_lists = CreateMTCMoveRelativeBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::Vector3Stamped>>(kPortDirection, "translate link along given direction"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::Vector3Stamped>>("direction", "translate link along given direction"));
 
   return port_lists;
 }
@@ -159,7 +146,7 @@ BT::NodeStatus CreateMTCMoveRelativeJoint::tick()
 
   // Set direction
   std::shared_ptr<std::map<std::string, double>> joint_deltas{ nullptr };
-  if(!getInput(kPortDirection, joint_deltas))
+  if(!getInput("direction", joint_deltas))
     return NodeStatus::FAILURE;
 
   stage->setDirection(*joint_deltas);
@@ -167,7 +154,7 @@ BT::NodeStatus CreateMTCMoveRelativeJoint::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -175,7 +162,7 @@ BT::NodeStatus CreateMTCMoveRelativeJoint::tick()
 BT::PortsList CreateMTCMoveRelativeJoint::providedPorts()
 {
   auto port_lists = CreateMTCMoveRelativeBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<std::map<std::string, double>>>(kPortDirection, "move specified joint variables by given amount"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<std::map<std::string, double>>>("direction", "move specified joint variables by given amount"));
 
   return port_lists;
 }

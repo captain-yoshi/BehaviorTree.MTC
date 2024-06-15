@@ -10,21 +10,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortFrameID = "frame_id";
-constexpr auto kPortPosition = "position";
-constexpr auto kPortVector = "vector";
-constexpr auto kPortQuaternion = "quaternion";
-constexpr auto kPortPoint = "point";
-constexpr auto kPortPointStamped = "point_stamped";
-constexpr auto kPortPoseStamped = "pose_stamped";
-constexpr auto kPortVector3Stamped = "vector3_stamped";
-constexpr auto kPortTwistStamped = "twist_stamped";
-constexpr auto kPortLinearVelocity = "linear_velocity";
-constexpr auto kPortAngularVelocity = "angular_velocity";
-constexpr auto kPortPose = "pose";
-
-}  // namespace
 GeometryMsgsPointStamped::GeometryMsgsPointStamped(const std::string& name,
                                                    const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -36,8 +21,8 @@ BT::NodeStatus GeometryMsgsPointStamped::tick()
   std::string frame_id;
   Vector3D point;
 
-  if(!getInput(kPortFrameID, frame_id) ||
-     !getInput(kPortPoint, point))
+  if(!getInput("frame_id", frame_id) ||
+     !getInput("point", point))
     return NodeStatus::FAILURE;
 
   // Build pose
@@ -48,7 +33,7 @@ BT::NodeStatus GeometryMsgsPointStamped::tick()
   point_stamped->point.y = point.y;
   point_stamped->point.z = point.z;
 
-  setOutput(kPortPointStamped, point_stamped);
+  setOutput("point_stamped", point_stamped);
 
   return NodeStatus::SUCCESS;
 }
@@ -56,9 +41,9 @@ BT::NodeStatus GeometryMsgsPointStamped::tick()
 BT::PortsList GeometryMsgsPointStamped::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortFrameID),
-    BT::InputPort<Vector3D>(kPortPoint),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::PointStamped>>(kPortPointStamped),
+    BT::InputPort<std::string>("frame_id"),
+    BT::InputPort<Vector3D>("point"),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::PointStamped>>("point_stamped"),
   };
 }
 
@@ -72,8 +57,8 @@ BT::NodeStatus GeometryMsgsPose::tick()
   // Retrieve inputs
   Vector3D position;
   Vector4D quaternion;
-  if(!getInput(kPortPosition, position) ||
-     !getInput(kPortQuaternion, quaternion))
+  if(!getInput("position", position) ||
+     !getInput("quaternion", quaternion))
     return NodeStatus::FAILURE;
 
   // Build pose
@@ -88,7 +73,7 @@ BT::NodeStatus GeometryMsgsPose::tick()
   pose->orientation.y = quaternion.y;
   pose->orientation.z = quaternion.z;
 
-  setOutput(kPortPose, pose);
+  setOutput("pose", pose);
 
   return NodeStatus::SUCCESS;
 }
@@ -96,9 +81,9 @@ BT::NodeStatus GeometryMsgsPose::tick()
 BT::PortsList GeometryMsgsPose::providedPorts()
 {
   return {
-    BT::InputPort<Vector3D>(kPortPosition),
-    BT::InputPort<Vector4D>(kPortQuaternion),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::Pose>>(kPortPose),
+    BT::InputPort<Vector3D>("position"),
+    BT::InputPort<Vector4D>("quaternion"),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::Pose>>("pose"),
   };
 }
 
@@ -114,9 +99,9 @@ BT::NodeStatus GeometryMsgsPoseStamped::tick()
   Vector3D position;
   Vector4D quaternion;
 
-  if(!getInput(kPortFrameID, frame_id) ||
-     !getInput(kPortPosition, position) ||
-     !getInput(kPortQuaternion, quaternion))
+  if(!getInput("frame_id", frame_id) ||
+     !getInput("position", position) ||
+     !getInput("quaternion", quaternion))
     return NodeStatus::FAILURE;
 
   // Build pose
@@ -132,7 +117,7 @@ BT::NodeStatus GeometryMsgsPoseStamped::tick()
   pose->pose.orientation.y = quaternion.y;
   pose->pose.orientation.z = quaternion.z;
 
-  setOutput(kPortPoseStamped, pose);
+  setOutput("pose_stamped", pose);
 
   return NodeStatus::SUCCESS;
 }
@@ -140,10 +125,10 @@ BT::NodeStatus GeometryMsgsPoseStamped::tick()
 BT::PortsList GeometryMsgsPoseStamped::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortFrameID),
-    BT::InputPort<Vector3D>(kPortPosition),
-    BT::InputPort<Vector4D>(kPortQuaternion),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortPoseStamped),
+    BT::InputPort<std::string>("frame_id"),
+    BT::InputPort<Vector3D>("position"),
+    BT::InputPort<Vector4D>("quaternion"),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("pose_stamped"),
   };
 }
 
@@ -158,8 +143,8 @@ BT::NodeStatus GeometryMsgsVector3Stamped::tick()
   std::string frame_id;
   Vector3D vector;
 
-  if(!getInput(kPortFrameID, frame_id) ||
-     !getInput(kPortVector, vector))
+  if(!getInput("frame_id", frame_id) ||
+     !getInput("vector", vector))
     return NodeStatus::FAILURE;
 
   // Build pose
@@ -170,7 +155,7 @@ BT::NodeStatus GeometryMsgsVector3Stamped::tick()
   v3->vector.y = vector.y;
   v3->vector.z = vector.z;
 
-  setOutput(kPortVector3Stamped, v3);
+  setOutput("vector3_stamped", v3);
 
   return NodeStatus::SUCCESS;
 }
@@ -178,9 +163,9 @@ BT::NodeStatus GeometryMsgsVector3Stamped::tick()
 BT::PortsList GeometryMsgsVector3Stamped::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortFrameID),
-    BT::InputPort<Vector3D>(kPortVector),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::Vector3Stamped>>(kPortVector3Stamped),
+    BT::InputPort<std::string>("frame_id"),
+    BT::InputPort<Vector3D>("vector"),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::Vector3Stamped>>("vector3_stamped"),
   };
 }
 
@@ -196,9 +181,9 @@ BT::NodeStatus GeometryMsgsTwistStamped::tick()
   Vector3D linear;
   Vector3D angular;
 
-  if(!getInput(kPortFrameID, frame_id) ||
-     !getInput(kPortLinearVelocity, linear) ||
-     !getInput(kPortAngularVelocity, angular))
+  if(!getInput("frame_id", frame_id) ||
+     !getInput("linear_velocity", linear) ||
+     !getInput("angular_velocity", angular))
     return NodeStatus::FAILURE;
 
   // Build pose
@@ -213,7 +198,7 @@ BT::NodeStatus GeometryMsgsTwistStamped::tick()
   twist->twist.angular.y = angular.y;
   twist->twist.angular.z = angular.z;
 
-  setOutput(kPortTwistStamped, twist);
+  setOutput("twist_stamped", twist);
 
   return NodeStatus::SUCCESS;
 }
@@ -221,10 +206,10 @@ BT::NodeStatus GeometryMsgsTwistStamped::tick()
 BT::PortsList GeometryMsgsTwistStamped::providedPorts()
 {
   return {
-    BT::InputPort<std::string>(kPortFrameID),
-    BT::InputPort<Vector3D>(kPortLinearVelocity),
-    BT::InputPort<Vector3D>(kPortAngularVelocity),
-    BT::OutputPort<std::shared_ptr<geometry_msgs::TwistStamped>>(kPortTwistStamped),
+    BT::InputPort<std::string>("frame_id"),
+    BT::InputPort<Vector3D>("linear_velocity"),
+    BT::InputPort<Vector3D>("angular_velocity"),
+    BT::OutputPort<std::shared_ptr<geometry_msgs::TwistStamped>>("twist_stamped"),
   };
 }
 

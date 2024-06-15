@@ -6,16 +6,6 @@
 namespace BT {
 namespace MTC {
 
-namespace {
-constexpr auto kPortStageName = "stage_name";
-constexpr auto kPortTimeout = "timeout";
-constexpr auto kPortMergeMode = "merge_mode";
-constexpr auto kPortMaxDistance = "max_distance";
-constexpr auto kPortGroup = "group";
-constexpr auto kPortPlanner = "planner";
-constexpr auto kPortStage = "stage";
-}  // namespace
-
 CreateMTCConnect::CreateMTCConnect(const std::string& name,
                                    const BT::NodeConfig& config)
   : SyncActionNode(name, config)
@@ -30,12 +20,12 @@ BT::NodeStatus CreateMTCConnect::tick()
   std::string name, group;
   moveit::task_constructor::solvers::PlannerInterfacePtr planner;
 
-  if(!getInput(kPortTimeout, timeout) ||
-     !getInput(kPortMergeMode, merge_mode) ||
-     !getInput(kPortMaxDistance, max_distance) ||
-     !getInput(kPortStageName, name) ||
-     !getInput(kPortPlanner, planner) ||
-     !getInput(kPortGroup, group))
+  if(!getInput("timeout", timeout) ||
+     !getInput("merge_mode", merge_mode) ||
+     !getInput("max_distance", max_distance) ||
+     !getInput("stage_name", name) ||
+     !getInput("planner", planner) ||
+     !getInput("group", group))
     return NodeStatus::FAILURE;
 
   // Build stage
@@ -51,7 +41,7 @@ BT::NodeStatus CreateMTCConnect::tick()
   // Upcast to base class
   moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -60,15 +50,15 @@ BT::PortsList CreateMTCConnect::providedPorts()
 {
   return {
     //Output
-    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "{connect_stage}", "Connect stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "{connect_stage}", "Connect stage"),
     //Inputs
-    BT::InputPort<double>(kPortTimeout, 1.0, "timeout"),
-    BT::InputPort<double>(kPortMaxDistance, 1e-4,
+    BT::InputPort<double>("timeout", 1.0, "timeout"),
+    BT::InputPort<double>("max_distance", 1e-4,
                           "maximally accepted joint configuration distance between trajectory endpoint and goal state"),
-    BT::InputPort<std::string>(kPortStageName, "connect"),
-    BT::InputPort<uint8_t>(kPortMergeMode, 1, "0 = SEQUENTIAL, 1 = WAYPOINTS"),
-    BT::InputPort<std::string>(kPortGroup),
-    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortPlanner),
+    BT::InputPort<std::string>("stage_name", "connect"),
+    BT::InputPort<uint8_t>("merge_mode", 1, "0 = SEQUENTIAL, 1 = WAYPOINTS"),
+    BT::InputPort<std::string>("group"),
+    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("planner"),
   };
 }
 
