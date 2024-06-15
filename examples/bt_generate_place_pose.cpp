@@ -51,7 +51,7 @@ static const char* xml_text = R"(
                                position="0.5,-0.25,-0.05"
                                quaternion="1,0,0,0"
                                pose="{box_pose}" />
-            <MoveItMsgsCollisionObjectBox object_name="{table_name}" 
+            <MoveItMsgsCollisionObjectBox object_id="{table_name}"
                                           length="0.4"
                                           width="0.5"
                                           height="0.1"
@@ -64,7 +64,7 @@ static const char* xml_text = R"(
                                position="0.5,-0.25,0.125"
                                quaternion="1,0,0,0"
                                pose="{cylinder_pose}" />
-            <MoveItMsgsCollisionObjectCylinder  object_name="{object_name}" 
+            <MoveItMsgsCollisionObjectCylinder  object_id="{object_name}"
                                                 radius="0.02"
                                                 height="0.25"
                                                 pose="{cylinder_pose}"
@@ -97,7 +97,7 @@ static const char* xml_text = R"(
                                stage="{connect}" />
             <MoveMTCStageToContainer  container="{task_container}" stage="{connect}" />  
             <CreateMTCSerialContainer  container_name="pick object"
-                                       serial_container="{pick_object}" />
+                                       container="{pick_object}" />
             <GeometryMsgsVector3Stamped  frame_id="{hand_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
             <CreateMTCMoveRelativeTranslate  stage_name="approach object"
                                              stage="{approach_object}"
@@ -174,7 +174,7 @@ static const char* xml_text = R"(
                                 stage="{connectPlace}" />
              <MoveMTCStageToContainer  container="{task_container}" stage="{connectPlace}" />
              <CreateMTCSerialContainer  container_name="place object"
-                                        serial_container="{place_object}" />
+                                        container="{place_object}" />
              <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate2}"/>
              <CreateMTCMoveRelativeTranslate  stage_name="lower object"
                                               stage="{lower_object}"

@@ -16,7 +16,7 @@ BT::NodeStatus CreateMTCSerialContainer::tick()
 {
   // Inputs
   std::string name;
-  if(!getInput("name", name))
+  if(!getInput("container_name", name))
     return NodeStatus::FAILURE;
   // Build
   std::shared_ptr<moveit::task_constructor::SerialContainer> serial_container{
@@ -34,7 +34,7 @@ BT::NodeStatus CreateMTCSerialContainer::tick()
 BT::PortsList CreateMTCSerialContainer::providedPorts()
 {
   return {
-    BT::InputPort<std::string>("name", "serial container name"),
+    BT::InputPort<std::string>("container_name", "serial container name"),
     BT::OutputPort<moveit::task_constructor::ContainerBasePtr>("container", "serial container"),
   };
 }
