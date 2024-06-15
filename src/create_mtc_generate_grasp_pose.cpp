@@ -4,12 +4,10 @@
 
 #include <moveit/task_constructor/stages/generate_grasp_pose.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStage = "stage";
 constexpr auto kPortStageName = "stage_name";
 constexpr auto kPortEef = "eef";
@@ -32,7 +30,7 @@ BT::NodeStatus CreateMTCGenerateGraspPose::tick()
   double angle_delta;
   Vector3D rotation_axis_input;
   Eigen::Vector3d rotation_axis;
-  MTC::Stage* monitored_stage;
+  moveit::task_constructor::Stage* monitored_stage;
   if(!getInput(kPortStageName, name) ||
      !getInput(kPortEef, eef) ||
      !getInput(kPortAngleDelta, angle_delta) ||
@@ -41,11 +39,11 @@ BT::NodeStatus CreateMTCGenerateGraspPose::tick()
      !getInput(kPortMonitoredStage, monitored_stage) ||
      !getInput(kPortRotationAxis, rotation_axis_input))
     return NodeStatus::FAILURE;
-    
+
   // Build stage
-  std::shared_ptr<MTC::stages::GenerateGraspPose> stage{ nullptr };
+  std::shared_ptr<moveit::task_constructor::stages::GenerateGraspPose> stage{ nullptr };
   stage = {
-    new MTC::stages::GenerateGraspPose(name),
+    new moveit::task_constructor::stages::GenerateGraspPose(name),
     dirty::fake_deleter{}
   };
   rotation_axis[0] = rotation_axis_input.x;
@@ -59,7 +57,7 @@ BT::NodeStatus CreateMTCGenerateGraspPose::tick()
   stage->setMonitoredStage(monitored_stage);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -75,7 +73,10 @@ BT::PortsList CreateMTCGenerateGraspPose::providedPorts()
     BT::InputPort<Vector3D>(kPortRotationAxis, "0,0,1", "rotate object pose about given axis"),
     BT::InputPort<std::string>(kPortPreGraspPose, "pregrasp posture"),
     BT::InputPort<std::string>(kPortStageName),
-    BT::InputPort<MTC::Stage*>(kPortMonitoredStage),
-    BT::OutputPort<MTC::StagePtr>(kPortStage, "{generate_grasp_pose}", "GenerateGraspPose Stage"),
+    BT::InputPort<moveit::task_constructor::Stage*>(kPortMonitoredStage),
+    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "{generate_grasp_pose}", "GenerateGraspPose Stage"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

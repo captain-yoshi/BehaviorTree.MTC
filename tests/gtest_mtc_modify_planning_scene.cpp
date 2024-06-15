@@ -9,8 +9,8 @@
 
 using BT::NodeStatus;
 
-using bt_mtc::CreateMTCModifyPlanningSceneAttachObjects;
-using bt_mtc::CreateMTCModifyPlanningSceneDetachObjects;
+using BT::MTC::CreateMTCModifyPlanningSceneAttachObjects;
+using BT::MTC::CreateMTCModifyPlanningSceneDetachObjects;
 
 using moveit::task_constructor::stages::ModifyPlanningScene;
 

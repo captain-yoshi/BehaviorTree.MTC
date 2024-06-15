@@ -3,12 +3,10 @@
 
 #include <behaviortree_mtc/std_containers.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStage = "stage";
 constexpr auto kPortStageName = "stage_name";
 constexpr auto kPortGroup = "group";
@@ -31,7 +29,7 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
   // Retrieve inputs
   std::string name;
   std::string group;
-  MTC::solvers::PlannerInterfacePtr solver;
+  moveit::task_constructor::solvers::PlannerInterfacePtr solver;
   std::shared_ptr<geometry_msgs::PoseStamped> ik_frame;
   double min_distance;
   double max_distance;
@@ -48,7 +46,7 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
 
   // Build stage
   stage = {
-    new MTC::stages::MoveRelative(name, solver),
+    new moveit::task_constructor::stages::MoveRelative(name, solver),
     dirty::fake_deleter{}
   };
 
@@ -68,9 +66,9 @@ BT::PortsList CreateMTCMoveRelativeBase::providedPorts()
     BT::InputPort<double>(kPortTimeout, 1.0, ""),
     BT::InputPort<double>(kPortMinDistance, -1.0, "minimum distance to move"),
     BT::InputPort<double>(kPortMaxDistance, 0.0, "maximum distance to move"),
-    BT::InputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
+    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
     BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortIKFrame, "frame to be moved in Cartesian direction"),
-    BT::OutputPort<MTC::StagePtr>(kPortStage, "MoveRelative stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "MoveRelative stage"),
   };
 }
 
@@ -95,7 +93,7 @@ BT::NodeStatus CreateMTCMoveRelativeTwist::tick()
   stage->setDirection(*twist);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -131,7 +129,7 @@ BT::NodeStatus CreateMTCMoveRelativeTranslate::tick()
   stage->setDirection(*vector3);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -167,7 +165,7 @@ BT::NodeStatus CreateMTCMoveRelativeJoint::tick()
   stage->setDirection(*joint_deltas);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -181,3 +179,6 @@ BT::PortsList CreateMTCMoveRelativeJoint::providedPorts()
 
   return port_lists;
 }
+
+}  // namespace MTC
+}  // namespace BT

@@ -35,8 +35,8 @@ inline void ToJson(nlohmann::json& dest, const Vector4D& pose)
   dest["z"] = pose.z;
 }
 
-namespace BT
-{
+namespace BT {
+
 template <>
 inline Vector3D convertFromString(StringView key)
 {

@@ -3,12 +3,10 @@
 
 #include <moveit/task_constructor/solvers/joint_interpolation.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortSolver = "solver";
 constexpr auto kPortMaxVelocityScalingFactor = "max_velocity_scaling_factor";
 constexpr auto kPortMaxAccelerationScalingFactor = "max_acceleration_scaling_factor";
@@ -32,15 +30,15 @@ BT::NodeStatus CreateMTCJointInterpolation::tick()
      !getInput(kPortMaxAccelerationScalingFactor, max_acceleration_scaling_factor) ||
      !getInput(kPortMaxStep, max_step))
     return NodeStatus::FAILURE;
-  
+
   //build solver
-  auto solver = std::make_shared<MTC::solvers::JointInterpolationPlanner>();
+  auto solver = std::make_shared<moveit::task_constructor::solvers::JointInterpolationPlanner>();
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setProperty(kPortMaxStep, max_step);
 
   // Upcast to base class
-  MTC::solvers::PlannerInterfacePtr base_solver = solver;
+  moveit::task_constructor::solvers::PlannerInterfacePtr base_solver = solver;
 
   setOutput(kPortSolver, base_solver);
   return NodeStatus::SUCCESS;
@@ -50,10 +48,13 @@ BT::PortsList CreateMTCJointInterpolation::providedPorts()
 {
   return {
     //Output
-    BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "plan using simple interpolation in joint-space"),
+    BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "plan using simple interpolation in joint-space"),
     //Inputs
     BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
     BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "scale down max acceleration by this factor"),
     BT::InputPort<double>(kPortMaxStep, 0.1, "max joint step"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

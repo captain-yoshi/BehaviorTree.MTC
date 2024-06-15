@@ -7,11 +7,10 @@
 #include <geometry_msgs/Vector3Stamped.h>
 #include <geometry_msgs/Pose.h>
 
-using namespace BT;
-using namespace bt_mtc;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortFrameID = "frame_id";
 constexpr auto kPortPosition = "position";
 constexpr auto kPortVector = "vector";
@@ -64,7 +63,7 @@ BT::PortsList GeometryMsgsPointStamped::providedPorts()
 }
 
 GeometryMsgsPose::GeometryMsgsPose(const std::string& name,
-                                                 const BT::NodeConfig& config)
+                                   const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
 
@@ -228,3 +227,6 @@ BT::PortsList GeometryMsgsTwistStamped::providedPorts()
     BT::OutputPort<std::shared_ptr<geometry_msgs::TwistStamped>>(kPortTwistStamped),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

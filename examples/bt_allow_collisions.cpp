@@ -17,7 +17,7 @@
 #include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 using namespace BT;
-using namespace bt_mtc;
+using namespace BT::MTC;
 
 // clang-format off
 

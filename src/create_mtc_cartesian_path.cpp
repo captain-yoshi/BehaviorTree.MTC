@@ -4,12 +4,10 @@
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/task_constructor/solvers/cartesian_path.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortSolver = "solver";
 constexpr auto kPortMaxVelocityScalingFactor = "max_velocity_scaling_factor";
 constexpr auto kPortMaxAccelerationScalingFactor = "max_acceleration_scaling_factor";
@@ -40,14 +38,14 @@ BT::NodeStatus CreateMTCCartesianPath::tick()
      !getInput(kPortJumpTreshold, jump_treshold))
     return NodeStatus::FAILURE;
   //build solver
-  auto solver = std::make_shared<MTC::solvers::CartesianPath>();
+  auto solver = std::make_shared<moveit::task_constructor::solvers::CartesianPath>();
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setStepSize(step_size);
   solver->setJumpThreshold(jump_treshold);
   solver->setMinFraction(min_fraction);
   // Upcast to base class
-  MTC::solvers::PlannerInterfacePtr base_solver = solver;
+  moveit::task_constructor::solvers::PlannerInterfacePtr base_solver = solver;
 
   setOutput(kPortSolver, base_solver);
   return NodeStatus::SUCCESS;
@@ -57,7 +55,7 @@ BT::PortsList CreateMTCCartesianPath::providedPorts()
 {
   return {
     //Output
-    BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "Planner interface using pipeline motion solver"),
+    BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "Planner interface using pipeline motion solver"),
     //Inputs
     BT::InputPort<double>(kPortMaxVelocityScalingFactor, 0.1, "scale down max velocity by this factor"),
     BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "scale down max acceleration by this factor"),
@@ -66,3 +64,6 @@ BT::PortsList CreateMTCCartesianPath::providedPorts()
     BT::InputPort<double>(kPortMinFraction, 1.0, "fraction of motion required for success"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

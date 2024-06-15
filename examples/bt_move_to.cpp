@@ -14,7 +14,7 @@
 #include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 using namespace BT;
-using namespace bt_mtc;
+using namespace BT::MTC;
 
 // clang-format off
 static const char* xml_text = R"(
@@ -100,7 +100,6 @@ int main(int argc, char** argv)
 
   factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");
   factory.registerNodeType<GeometryMsgsPointStamped>("GeometryMsgsPointStamped");
- 
 
   auto tree = factory.createTreeFromText(xml_text);
 

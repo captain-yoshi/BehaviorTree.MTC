@@ -10,8 +10,8 @@
 
 using BT::NodeStatus;
 
-using bt_mtc::ExposeMTCProperties;
-using bt_mtc::SetMTCProperties;
+using BT::MTC::ExposeMTCProperties;
+using BT::MTC::SetMTCProperties;
 
 using moveit::task_constructor::ContainerBase;
 using moveit::task_constructor::Stage;

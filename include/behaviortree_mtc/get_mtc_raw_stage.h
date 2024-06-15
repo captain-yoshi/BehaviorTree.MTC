@@ -2,8 +2,9 @@
 
 #include <behaviortree_cpp/bt_factory.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 class GetMTCRawStage : public BT::SyncActionNode
 {
 public:
@@ -12,4 +13,6 @@ public:
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
 };
-}  // namespace bt_mtc
+
+}  // namespace MTC
+}  // namespace BT

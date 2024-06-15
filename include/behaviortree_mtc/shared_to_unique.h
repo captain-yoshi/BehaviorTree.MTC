@@ -3,10 +3,10 @@
 #include <memory>
 #include <stdexcept>
 
-namespace bt_mtc
-{
-namespace dirty
-{
+namespace BT {
+namespace MTC {
+
+namespace dirty {
 // if disabled, does not actually delete pointer
 // enabled by default (same as std::default_delete)
 // https://qr.ae/psaWhg
@@ -50,4 +50,6 @@ std::unique_ptr<T> sharedToUnique(std::shared_ptr<T>& shp)
 
   return std::move(up);
 }
-}  // namespace bt_mtc
+
+}  // namespace MTC
+}  // namespace BT

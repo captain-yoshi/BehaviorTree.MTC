@@ -7,9 +7,8 @@
 
 #include <behaviortree_mtc/std_containers.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
 AttachDetachObjects::AttachDetachObjects(const std::string& name, const BT::NodeConfig& config, bool attach)
   : SyncActionNode(name, config), _attach(attach)
@@ -27,16 +26,16 @@ BT::NodeStatus AttachDetachObjects::tick()
     return NodeStatus::FAILURE;
 
   // build stage
-  std::shared_ptr<MTC::stages::ModifyPlanningScene> stage{ nullptr };
+  std::shared_ptr<moveit::task_constructor::stages::ModifyPlanningScene> stage{ nullptr };
   stage = {
-    new MTC::stages::ModifyPlanningScene(stage_name),
+    new moveit::task_constructor::stages::ModifyPlanningScene(stage_name),
     dirty::fake_deleter{}
   };
 
   stage->attachObjects(object_names, link_name, _attach);
 
   // upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput("stage", base_stage);
 
@@ -49,7 +48,7 @@ BT::PortsList AttachDetachObjects::providedPorts()
     BT::InputPort<std::string>("stage_name"),
     BT::InputPort<std::vector<std::string>>("object_names", "list of object names/id's."),
     BT::InputPort<std::vector<std::string>>("link_name", "attach or detach a list of objects to the given link"),
-    BT::OutputPort<MTC::StagePtr>("stage", "ModifyPlanningScene stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "ModifyPlanningScene stage"),
   };
 }
 
@@ -65,16 +64,16 @@ BT::NodeStatus AllowForbidCollisions::tick(const std::vector<std::string>& first
     return NodeStatus::FAILURE;
 
   // build stage
-  std::shared_ptr<MTC::stages::ModifyPlanningScene> stage{ nullptr };
+  std::shared_ptr<moveit::task_constructor::stages::ModifyPlanningScene> stage{ nullptr };
   stage = {
-    new MTC::stages::ModifyPlanningScene(stage_name),
+    new moveit::task_constructor::stages::ModifyPlanningScene(stage_name),
     dirty::fake_deleter{}
   };
 
   stage->allowCollisions(first, second, _allow);
 
   // upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput("stage", base_stage);
 
@@ -85,7 +84,7 @@ BT::PortsList AllowForbidCollisions::providedPorts()
 {
   return {
     BT::InputPort<std::string>("stage_name"),
-    BT::OutputPort<MTC::StagePtr>("stage", "ModifyPlanningScene stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "ModifyPlanningScene stage"),
   };
 }
 
@@ -169,3 +168,6 @@ BT::PortsList AllowForbidCollisionsJointModelGroup::providedPorts()
 
   return port_lists;
 }
+
+}  // namespace MTC
+}  // namespace BT

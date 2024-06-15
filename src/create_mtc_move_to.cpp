@@ -3,12 +3,10 @@
 
 #include <behaviortree_mtc/std_containers.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStageName = "stage_name";
 constexpr auto kPortStage = "stage";
 constexpr auto kPortSolver = "solver";
@@ -29,7 +27,7 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
   // Retrieve inputs
   std::string name;
   std::string group;
-  MTC::solvers::PlannerInterfacePtr solver;
+  moveit::task_constructor::solvers::PlannerInterfacePtr solver;
   double min_distance;
   double max_distance;
   double timeout;
@@ -42,7 +40,7 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
 
   // Build stage
   stage = {
-    new MTC::stages::MoveTo(name, solver),
+    new moveit::task_constructor::stages::MoveTo(name, solver),
     dirty::fake_deleter{}
   };
 
@@ -55,11 +53,11 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
 BT::PortsList CreateMTCMoveToBase::providedPorts()
 {
   return {
-    BT::OutputPort<MTC::StagePtr>(kPortStage, "MoveTo stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "MoveTo stage"),
     BT::InputPort<std::string>(kPortStageName, "move to", "stage name"),
     BT::InputPort<std::string>(kPortGroup, "name of planning group"),
     BT::InputPort<double>(kPortTimeout, 1.0, ""),
-    BT::InputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
+    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "planner interface"),
   };
 }
 
@@ -101,7 +99,7 @@ BT::NodeStatus CreateMTCMoveToNamedJointPose::tick()
   auto node_status = CreateMTCMoveToBase::tick(stage);
   if(node_status != BT::NodeStatus::SUCCESS)
     return node_status;
-  
+
   //Set goal
   std::string named_joint_pose;
   if(!getInput(kPortGoal, named_joint_pose))
@@ -109,7 +107,7 @@ BT::NodeStatus CreateMTCMoveToNamedJointPose::tick()
   stage->setGoal(named_joint_pose);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
   setOutput(kPortStage, base_stage);
 
   return NodeStatus::SUCCESS;
@@ -144,7 +142,7 @@ BT::NodeStatus CreateMTCMoveToJoint::tick()
   stage->setGoal(*joints);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -180,7 +178,7 @@ BT::NodeStatus CreateMTCMoveToPose::tick()
   stage->setGoal(*pose);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -216,7 +214,7 @@ BT::NodeStatus CreateMTCMoveToPoint::tick()
   stage->setGoal(*point);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -230,3 +228,6 @@ BT::PortsList CreateMTCMoveToPoint::providedPorts()
 
   return port_lists;
 }
+
+}  // namespace MTC
+}  // namespace BT

@@ -4,8 +4,9 @@
 
 #include <moveit/task_constructor/task.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 template <typename S>
 class ConfigureInitFromMTCProperties : public BT::SyncActionNode
 {
@@ -43,4 +44,5 @@ public:
   }
 };
 
-}  // namespace bt_mtc
+}  // namespace MTC
+}  // namespace BT

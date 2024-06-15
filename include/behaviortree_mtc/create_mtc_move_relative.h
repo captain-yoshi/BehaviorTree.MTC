@@ -4,8 +4,9 @@
 
 #include <moveit/task_constructor/stages/move_relative.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 class CreateMTCMoveRelativeBase : public BT::SyncActionNode
 {
 public:
@@ -42,4 +43,5 @@ public:
   static BT::PortsList providedPorts();
 };
 
-}  // namespace bt_mtc
+}  // namespace MTC
+}  // namespace BT

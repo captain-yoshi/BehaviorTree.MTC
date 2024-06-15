@@ -6,8 +6,9 @@
 
 #include <behaviortree_mtc/shared_to_unique.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 /** Converts a shared pointer to a unique pointer from the blackboard (threadsafe)
  * The blackboard content is assigned to nullptr.
  * Throws if the shared pointer count is greater the one.
@@ -89,4 +90,5 @@ std::unique_ptr<T> convertSharedToUniqueLocked(BT::Blackboard& blackboard, const
                            "of the port was a static string");
 }
 
-}  // namespace bt_mtc
+}  // namespace MTC
+}  // namespace BT

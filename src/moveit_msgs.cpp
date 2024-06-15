@@ -4,11 +4,10 @@
 #include <moveit_msgs/CollisionObject.h>
 #include <geometry_msgs/Pose.h>
 
-using namespace BT;
-using namespace bt_mtc;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortPose = "pose";
 constexpr auto kPortObjectName = "object_name";
 constexpr auto kPortObjectFrameID = "frame_id";
@@ -126,3 +125,6 @@ BT::PortsList MoveItMsgsCollisionObjectBox::providedPorts()
   port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>(kPortCollisionObject));
   return port_lists;
 }
+
+}  // namespace MTC
+}  // namespace BT

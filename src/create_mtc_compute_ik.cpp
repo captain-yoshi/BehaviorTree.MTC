@@ -5,12 +5,10 @@
 
 #include <moveit/task_constructor/stages/compute_ik.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStage = "stage";
 constexpr auto kPortStageName = "stage_name";
 constexpr auto kPortEef = "eef";
@@ -36,7 +34,7 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   double min_solution_distance;
   Vector3D translation_transform;
   Vector3D rotation_transform;
-  MTC::StagePtr wrapped_stage;
+  moveit::task_constructor::StagePtr wrapped_stage;
   std::shared_ptr<geometry_msgs::PoseStamped> ik_frame{ nullptr };
 
   if(!getInput(kPortStageName, name) ||
@@ -49,12 +47,12 @@ BT::NodeStatus CreateMTCComputeIK::tick()
     return NodeStatus::FAILURE;
 
   // Transform stage from shared to unique
-  auto unique_stage = convertSharedToUniqueLocked<MTC::Stage>(*this, kPortWrappedStage);
+  auto unique_stage = convertSharedToUniqueLocked<moveit::task_constructor::Stage>(*this, kPortWrappedStage);
 
   // Build stage
-  std::shared_ptr<MTC::stages::ComputeIK> wrapper{ nullptr };
+  std::shared_ptr<moveit::task_constructor::stages::ComputeIK> wrapper{ nullptr };
   wrapper = {
-    new MTC::stages::ComputeIK(name, std::move(unique_stage)),
+    new moveit::task_constructor::stages::ComputeIK(name, std::move(unique_stage)),
     dirty::fake_deleter{}
   };
   wrapper->setEndEffector(eef);
@@ -65,7 +63,7 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   wrapper->setIKFrame(*ik_frame);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = wrapper;
+  moveit::task_constructor::StagePtr base_stage = wrapper;
 
   setOutput(kPortStage, base_stage);
 
@@ -81,9 +79,12 @@ BT::PortsList CreateMTCComputeIK::providedPorts()
     BT::InputPort<bool>(kPortIgnoreCollisions, false, "ignore collisions, true or false"),
     BT::InputPort<uint32_t>(kPortMaxIkSolutions, 1, "max ik solutions"),
     BT::InputPort<double>(kPortMinSolutionDistance, 0.1, "minimum distance between seperate IK solutions for the same target"),
-    BT::InputPort<MTC::StagePtr>(kPortWrappedStage),
+    BT::InputPort<moveit::task_constructor::StagePtr>(kPortWrappedStage),
     BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortIkFrame),
 
-    BT::OutputPort<MTC::StagePtr>(kPortStage),
+    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

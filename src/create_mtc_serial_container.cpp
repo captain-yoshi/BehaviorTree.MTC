@@ -4,12 +4,10 @@
 #include <moveit/task_constructor/task.h>
 #include <moveit/task_constructor/container.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortSerialContainer = "serial_container";
 constexpr auto kPortContainerName = "container_name";
 }  // namespace
@@ -26,13 +24,13 @@ BT::NodeStatus CreateMTCSerialContainer::tick()
   if(!getInput(kPortContainerName, container_name))
     return NodeStatus::FAILURE;
   // Build
-  std::shared_ptr<MTC::SerialContainer> serialContainer{
-    new MTC::SerialContainer(container_name),
+  std::shared_ptr<moveit::task_constructor::SerialContainer> serialContainer{
+    new moveit::task_constructor::SerialContainer(container_name),
     dirty::fake_deleter{}
   };
 
   // Upcast to base class
-  MTC::ContainerBasePtr serialContainerBase = serialContainer;
+  moveit::task_constructor::ContainerBasePtr serialContainerBase = serialContainer;
   setOutput(kPortSerialContainer, serialContainerBase);
 
   return NodeStatus::SUCCESS;
@@ -41,7 +39,10 @@ BT::NodeStatus CreateMTCSerialContainer::tick()
 BT::PortsList CreateMTCSerialContainer::providedPorts()
 {
   return {
-    BT::OutputPort<MTC::ContainerBasePtr>(kPortSerialContainer, "serial container"),
+    BT::OutputPort<moveit::task_constructor::ContainerBasePtr>(kPortSerialContainer, "serial container"),
     BT::InputPort<std::string>(kPortContainerName, "serial container"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

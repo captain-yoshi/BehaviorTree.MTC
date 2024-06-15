@@ -4,8 +4,9 @@
 
 #include <moveit/task_constructor/stage.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 template <typename S, typename T = BT::Any>
 class SetMTCProperties : public BT::SyncActionNode
 {
@@ -49,4 +50,5 @@ public:
   }
 };
 
-}  // namespace bt_mtc
+}  // namespace MTC
+}  // namespace BT

@@ -2,12 +2,10 @@
 
 #include <moveit/task_constructor/task.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortTask = "task";
 constexpr auto kPortMaxSolutions = "max_solutions";
 
@@ -22,7 +20,7 @@ BT::NodeStatus PlanMTCTask::tick()
   const size_t max_solutions = getInput<size_t>(kPortMaxSolutions).value();
   if(auto any_ptr = getLockedPortContent(kPortTask))
   {
-    if(auto* task_ptr = any_ptr->castPtr<MTC::TaskPtr>())
+    if(auto* task_ptr = any_ptr->castPtr<moveit::task_constructor::TaskPtr>())
     {
       auto& task = *task_ptr;
       if(task->plan(max_solutions))
@@ -37,7 +35,10 @@ BT::NodeStatus PlanMTCTask::tick()
 BT::PortsList PlanMTCTask::providedPorts()
 {
   return {
-    BT::BidirectionalPort<MTC::TaskPtr>(kPortTask),
+    BT::BidirectionalPort<moveit::task_constructor::TaskPtr>(kPortTask),
     BT::InputPort<size_t>(kPortMaxSolutions),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

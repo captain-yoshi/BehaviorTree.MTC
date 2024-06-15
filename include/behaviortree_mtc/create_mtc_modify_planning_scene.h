@@ -2,8 +2,9 @@
 
 #include <behaviortree_cpp/bt_factory.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 /// Base class
 class AttachDetachObjects : public BT::SyncActionNode
 {
@@ -121,4 +122,5 @@ public:
   {}
 };
 
-}  // namespace bt_mtc
+}  // namespace MTC
+}  // namespace BT

@@ -29,8 +29,7 @@
 #include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+using namespace BT::MTC;
 
 // clang-format off
 static const char* xml_text = R"(
@@ -241,7 +240,7 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCSerialContainer>("CreateMTCSerialContainer");
   factory.registerNodeType<CreateMTCMoveRelativeTranslate>("CreateMTCMoveRelativeTranslate");
   factory.registerNodeType<CreateMTCComputeIK>("CreateMTCComputeIK");
-  factory.registerNodeType<ConfigureInitFromMTCProperties<MTC::Stage>>("ConfigureInitFromMTCProperties");
+  factory.registerNodeType<ConfigureInitFromMTCProperties<moveit::task_constructor::Stage>>("ConfigureInitFromMTCProperties");
   factory.registerScriptingEnums<moveit::task_constructor::Stage::PropertyInitializerSource>();
   factory.registerNodeType<CreateMTCCartesianPath>("CreateMTCCartesianPath");
   factory.registerNodeType<CreateMTCModifyPlanningSceneAttachObjects>("CreateMTCModifyPlanningSceneAttachObjects");

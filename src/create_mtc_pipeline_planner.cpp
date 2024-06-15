@@ -4,12 +4,10 @@
 #include <moveit/task_constructor/solvers/pipeline_planner.h>
 #include <moveit/planning_pipeline/planning_pipeline.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortSolver = "solver";
 constexpr auto kPortPipelineID = "pipeline_id";
 constexpr auto kPortPlannerID = "planner_id";
@@ -55,7 +53,7 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
      !getInput(kPortNumPlanningAttempts, num_planning_attemps))
     return NodeStatus::FAILURE;
   //build solver
-  auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(pipeline_id);
+  auto solver = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(pipeline_id);
   solver->setPlannerId(planner_id);
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
@@ -66,7 +64,7 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
   solver->setProperty(kPortPublishPlanningRequests, publish_planning_requests);
   solver->setProperty(kPortNumPlanningAttempts, num_planning_attemps);
   // Upcast to base class
-  MTC::solvers::PlannerInterfacePtr base_solver = solver;
+  moveit::task_constructor::solvers::PlannerInterfacePtr base_solver = solver;
 
   setOutput(kPortSolver, base_solver);
   return NodeStatus::SUCCESS;
@@ -76,7 +74,7 @@ BT::PortsList CreateMTCPipelinePlanner::providedPorts()
 {
   return {
     //Output
-    BT::OutputPort<MTC::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "Planner interface using pipeline motion solver"),
+    BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortSolver, "{solver}", "Planner interface using pipeline motion solver"),
     //Inputs
     BT::InputPort<double>(kPortGoalJointTolerance, "1e-4", "tolerance for reaching joint goals"),
     BT::InputPort<double>(kPortGoalPositionTolerance, "1e-4", "tolerance for reaching position goals"),
@@ -90,3 +88,6 @@ BT::PortsList CreateMTCPipelinePlanner::providedPorts()
     BT::InputPort<double>(kPortMaxAccelerationScalingFactor, 0.1, "scale down max acceleration by this factor"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

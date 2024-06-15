@@ -2,11 +2,10 @@
 
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
-using namespace BT;
-using namespace bt_mtc;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortPlanningSceneInterface = "planning_scene_interface";
 
 }  // namespace
@@ -31,3 +30,6 @@ BT::PortsList CreatePlanningSceneInterface::providedPorts()
     BT::OutputPort<moveit::planning_interface::PlanningSceneInterfacePtr>(kPortPlanningSceneInterface, "{planning_scene_interface}"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

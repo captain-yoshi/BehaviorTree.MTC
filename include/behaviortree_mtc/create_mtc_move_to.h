@@ -4,8 +4,9 @@
 
 #include <moveit/task_constructor/stages/move_to.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 class CreateMTCMoveToBase : public BT::SyncActionNode
 {
 public:
@@ -58,4 +59,6 @@ public:
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
 };
-}  // namespace bt_mtc
+
+}  // namespace MTC
+}  // namespace BT

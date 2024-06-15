@@ -3,12 +3,10 @@
 
 #include <moveit/task_constructor/stages/connect.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStageName = "stage_name";
 constexpr auto kPortTimeout = "timeout";
 constexpr auto kPortMergeMode = "merge_mode";
@@ -30,7 +28,7 @@ BT::NodeStatus CreateMTCConnect::tick()
   double max_distance;
   uint8_t merge_mode;
   std::string name, group;
-  MTC::solvers::PlannerInterfacePtr planner;
+  moveit::task_constructor::solvers::PlannerInterfacePtr planner;
 
   if(!getInput(kPortTimeout, timeout) ||
      !getInput(kPortMergeMode, merge_mode) ||
@@ -41,17 +39,17 @@ BT::NodeStatus CreateMTCConnect::tick()
     return NodeStatus::FAILURE;
 
   // Build stage
-  std::shared_ptr<MTC::stages::Connect> stage{ nullptr };
+  std::shared_ptr<moveit::task_constructor::stages::Connect> stage{ nullptr };
   stage = {
-    new MTC::stages::Connect(name, MTC::stages::Connect::GroupPlannerVector{ { group, planner } }),
+    new moveit::task_constructor::stages::Connect(name, moveit::task_constructor::stages::Connect::GroupPlannerVector{ { group, planner } }),
     dirty::fake_deleter{}
   };
   stage->setTimeout(timeout);
-  stage->setProperty("merge_mode", static_cast<MTC::stages::Connect::MergeMode>(merge_mode));
+  stage->setProperty("merge_mode", static_cast<moveit::task_constructor::stages::Connect::MergeMode>(merge_mode));
   stage->setProperty("max_distance", max_distance);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -62,7 +60,7 @@ BT::PortsList CreateMTCConnect::providedPorts()
 {
   return {
     //Output
-    BT::OutputPort<MTC::StagePtr>(kPortStage, "{connect_stage}", "Connect stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "{connect_stage}", "Connect stage"),
     //Inputs
     BT::InputPort<double>(kPortTimeout, 1.0, "timeout"),
     BT::InputPort<double>(kPortMaxDistance, 1e-4,
@@ -70,6 +68,9 @@ BT::PortsList CreateMTCConnect::providedPorts()
     BT::InputPort<std::string>(kPortStageName, "connect"),
     BT::InputPort<uint8_t>(kPortMergeMode, 1, "0 = SEQUENTIAL, 1 = WAYPOINTS"),
     BT::InputPort<std::string>(kPortGroup),
-    BT::InputPort<MTC::solvers::PlannerInterfacePtr>(kPortPlanner),
+    BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>(kPortPlanner),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

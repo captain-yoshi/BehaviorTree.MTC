@@ -5,12 +5,10 @@
 
 #include <moveit/task_constructor/stages/generate_place_pose.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStage = "stage";
 constexpr auto kPortStageName = "stage_name";
 constexpr auto kPortObject = "object";
@@ -28,7 +26,7 @@ BT::NodeStatus CreateMTCGeneratePlacePose::tick()
 {
   // Retrieve inputs
   std::string name, object;
-  MTC::Stage* monitored_stage;
+  moveit::task_constructor::Stage* monitored_stage;
   bool allow_z_flip;
   std::shared_ptr<geometry_msgs::PoseStamped> pose{ nullptr };
   if(!getInput(kPortStageName, name) ||
@@ -39,18 +37,18 @@ BT::NodeStatus CreateMTCGeneratePlacePose::tick()
     return NodeStatus::FAILURE;
 
   // Build stage
-  std::shared_ptr<MTC::stages::GeneratePlacePose> stage{ nullptr };
+  std::shared_ptr<moveit::task_constructor::stages::GeneratePlacePose> stage{ nullptr };
   stage = {
-    new MTC::stages::GeneratePlacePose(name),
+    new moveit::task_constructor::stages::GeneratePlacePose(name),
     dirty::fake_deleter{}
   };
   stage->setObject(object);
   stage->setMonitoredStage(monitored_stage);
-  stage->setProperty(kPortAllowZFlip,allow_z_flip);
+  stage->setProperty(kPortAllowZFlip, allow_z_flip);
   stage->setPose(*pose);
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
   setOutput(kPortStage, base_stage);
 
@@ -62,9 +60,12 @@ BT::PortsList CreateMTCGeneratePlacePose::providedPorts()
   return {
     BT::InputPort<std::string>(kPortObject, "object on which we generate the place poses"),
     BT::InputPort<std::string>(kPortStageName),
-    BT::InputPort<MTC::Stage*>(kPortMonitoredStage),
+    BT::InputPort<moveit::task_constructor::Stage*>(kPortMonitoredStage),
     BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>(kPortPose, "target pose to pass on in spawned states"),
     BT::InputPort<bool>(kPortAllowZFlip, false, "allow placing objects upside down"),
-    BT::OutputPort<MTC::StagePtr>(kPortStage, "{generate_grasp_pose}", "GenerateGraspPose Stage"),
+    BT::OutputPort<moveit::task_constructor::StagePtr>(kPortStage, "{generate_grasp_pose}", "GenerateGraspPose Stage"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

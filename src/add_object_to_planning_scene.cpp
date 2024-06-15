@@ -4,18 +4,17 @@
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit_msgs/CollisionObject.h>
 
-using namespace BT;
-using namespace bt_mtc;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortPlanningSceneInterface = "planning_scene_interface";
 constexpr auto kPortCollisionObject = "collision_object";
 
 }  // namespace
 
 AddObjectToPlanningScene::AddObjectToPlanningScene(const std::string& name,
-                       const BT::NodeConfig& config)
+                                                   const BT::NodeConfig& config)
   : SyncActionNode(name, config)
 {}
 
@@ -41,3 +40,6 @@ BT::PortsList AddObjectToPlanningScene::providedPorts()
     BT::InputPort<std::shared_ptr<moveit_msgs::CollisionObject>>(kPortCollisionObject),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

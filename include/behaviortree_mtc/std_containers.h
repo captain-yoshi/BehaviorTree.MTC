@@ -11,8 +11,8 @@ inline void ToJson(nlohmann::json& dest, const std::map<std::string, double>& ma
     dest[key] = val;
 }
 
-namespace BT
-{
+namespace BT {
+
 template <>
 inline std::vector<std::string> convertFromString(StringView key)
 {
