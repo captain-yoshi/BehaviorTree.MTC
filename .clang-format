@@ -57,7 +57,7 @@ BraceWrapping: {
     AfterControlStatement: 'true',
     AfterEnum : 'true',
     AfterFunction : 'true',
-    AfterNamespace : 'true',
+    AfterNamespace : 'false',
     AfterStruct : 'true',
     AfterUnion : 'true',
     BeforeCatch : 'true',
