@@ -4,6 +4,7 @@
 set(BT_MTC_TESTS
   gtest_mtc_properties.cpp
   gtest_mtc_modify_planning_scene.cpp
+  gtest_plan_mtc_task.cpp
 )
 
 set(TEST_DEPENDECIES
