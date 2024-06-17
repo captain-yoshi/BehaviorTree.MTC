@@ -65,12 +65,11 @@ add_executable(bt_generate_place_pose examples/bt_generate_place_pose.cpp)
 add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
 add_executable(bt_move_relative examples/bt_move_relative.cpp)
 add_executable(bt_move_to examples/bt_move_to.cpp)
+add_executable(bt_pick_place examples/bt_pick_place.cpp)
 add_executable(bt_serial_container examples/bt_serial_container.cpp)
 
 target_include_directories(bt_allow_collisions PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_allow_collisions ${PROJECT_NAME} ${catkin_LIBRARIES})
-target_include_directories(bt_compute_ik PRIVATE ${catkin_INCLUDE_DIRS} include)
-target_link_libraries(bt_compute_ik ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_compute_ik PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_compute_ik ${PROJECT_NAME} ${catkin_LIBRARIES})
@@ -89,6 +88,9 @@ target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} ${catkin_LIB
 
 target_include_directories(bt_move_relative PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_move_relative ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+target_include_directories(bt_pick_place PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(bt_pick_place ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_move_to PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
