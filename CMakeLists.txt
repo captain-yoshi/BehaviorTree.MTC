@@ -69,8 +69,6 @@ add_executable(bt_serial_container examples/bt_serial_container.cpp)
 
 target_include_directories(bt_allow_collisions PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_allow_collisions ${PROJECT_NAME} ${catkin_LIBRARIES})
-target_include_directories(bt_compute_ik PRIVATE ${catkin_INCLUDE_DIRS} include)
-target_link_libraries(bt_compute_ik ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_compute_ik PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_compute_ik ${PROJECT_NAME} ${catkin_LIBRARIES})
