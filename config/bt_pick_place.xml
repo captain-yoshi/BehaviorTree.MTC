@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="MainTree">
+  <BehaviorTree ID="Connect">
+    <Sequence>
+      <CreateMTCConnect merge_mode="1"
+                        group="{arm_group_name}"
+                        stage_name="{stage_name}"
+                        planner="{rrt_connect}"
+                        max_distance="0.000100"
+                        timeout="5.0"
+                        stage="{connect_stage}"/>
+      <StageConfigureInitFromMTCProperties stage="{connect_stage}"
+                                           property_names=""
+                                           source_flag="PARENT"/>
+      <MoveMTCStageToContainer container="{task_container}"
+                               stage="{connect_stage}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="CreatePlanningScene">
+    <Sequence>
+      <CreatePlanningSceneInterface planning_scene_interface="{psi}"/>
+      <GeometryMsgsPose name="box&apos;s pose"
+                        pose="{box_pose}"
+                        quaternion="1,0,0,0"
+                        position="0.5,-0.25,-0.05"/>
+      <MoveItMsgsCollisionObjectBox height="0.1"
+                                    length="0.4"
+                                    object_id="{table_name}"
+                                    frame_id="{reference_frame}"
+                                    collision_object="{box}"
+                                    width="0.5"
+                                    pose="{box_pose}"/>
+      <AddObjectToPlanningScene collision_object="{box}"
+                                planning_scene_interface="{psi}"/>
+      <GeometryMsgsPose name="cylinder&apos;s pose"
+                        pose="{cylinder_pose}"
+                        quaternion="1,0,0,0"
+                        position="0.5,-0.25,0.125"/>
+      <MoveItMsgsCollisionObjectCylinder height="0.25"
+                                         object_id="{object_name}"
+                                         frame_id="{reference_frame}"
+                                         collision_object="{cylinder}"
+                                         radius="0.02"
+                                         pose="{cylinder_pose}"/>
+      <AddObjectToPlanningScene collision_object="{cylinder}"
+                                planning_scene_interface="{psi}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="InitializeTask">
+    <Sequence>
+      <InitializeMTCTask container="{task_container}"
+                         task="{mtc_task}"/>
+      <SetMTCTaskPropertyString property="{eef}"
+                                property_name="eef"
+                                stage="{mtc_task}"/>
+      <SetMTCTaskPropertyString property="{arm_group_name}"
+                                property_name="group"
+                                stage="{mtc_task}"/>
+      <SetMTCTaskPropertyString property="{hand_group_name}"
+                                property_name="hand"
+                                stage="{mtc_task}"/>
+      <SetMTCTaskPropertyString property="{hand_frame}"
+                                property_name="hand_grasping_frame"
+                                stage="{mtc_task}"/>
+      <SetMTCTaskPropertyString property="{hand_frame}"
+                                property_name="ik_frame"
+                                stage="{mtc_task}"/>
+      <CreateMTCPipelinePlanner max_acceleration_scaling_factor="0.100000"
+                                num_planning_attempts="1u"
+                                pipeline_id="ompl"
+                                max_velocity_scaling_factor="0.100000"
+                                planner_id="RRTConnect"
+                                display_motion_plans="false"
+                                goal_orientation_tolerance="1e-4"
+                                goal_position_tolerance="1e-4"
+                                goal_joint_tolerance="1e-5"
+                                publish_planning_requests="false"
+                                solver="{rrt_connect}"/>
+      <CreateMTCCartesianPath solver="{cartesian}"
+                              jump_threshold="1.500000"
+                              min_fraction="1.000000"
+                              step_size="0.010000"
+                              max_acceleration_scaling_factor="1.0"
+                              max_velocity_scaling_factor="1.0"/>
+      <CreateMTCCurrentState stage="{current_state}"/>
+      <MoveMTCStageToContainer container="{task_container}"
+                               stage="{current_state}"/>
+      <GeometryMsgsPoseStamped quaternion="1,0,0,0"
+                               position="0,0,0"
+                               pose_stamped="{ik_frame}"
+                               frame_id="{hand_frame}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="InitializeVariableNames">
+    <Sequence>
+      <Script code="object_name:=&apos;object&apos;;&#10;table_name:=&apos;table&apos;;&#10;reference_frame:=&apos;world&apos;;&#10;eef:=&apos;hand&apos;;&#10;arm_group_name:=&apos;panda_arm&apos;;&#10;hand_group_name:=&apos;hand&apos;;&#10;hand_frame:=&apos;panda_link8&apos;"/>
+      <Script code="connect_pick_stage_name:=&apos;Move To Pick&apos;;&#10;connect_place_stage_name:=&apos;Move To Place&apos;;&#10;angle:=3.141592653589793/12"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MainTree">
+    <SubTree ID="PickandPlace"
+             _autoremap="true"/>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MoveToHome">
+    <Sequence>
+      <CreateMTCMoveToNamedJointPose name="move home"
+                                     goal="ready"
+                                     stage_name="move to"
+                                     group=""
+                                     timeout="1.000000"
+                                     solver="{rrt_connect}"
+                                     stage="{stage_move_to_home}"/>
+      <StageConfigureInitFromMTCProperties stage="{stage_move_to_home}"
+                                           property_names="group"
+                                           source_flag="PARENT"/>
+      <MoveMTCStageToContainer container="{task_container}"
+                               stage="{stage_move_to_home}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="OpenHand">
+    <Sequence>
+      <CreateMTCMoveToNamedJointPose name="move to -&gt; open_hand motion"
+                                     goal="open"
+                                     stage_name="move to"
+                                     group="{hand_group_name}"
+                                     timeout="1.000000"
+                                     solver="{rrt_connect}"
+                                     stage="{stage_move_to_open_hand}"/>
+      <GetMTCRawStage raw_stage="{raw_stage}"
+                      stage="{stage_move_to_open_hand}"/>
+      <MoveMTCStageToContainer container="{task_container}"
+                               stage="{stage_move_to_open_hand}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="PickObject">
+    <Sequence>
+      <CreateMTCSerialContainer container="{pick_object}"
+                                container_name="pick object"/>
+      <ExposeMTCTaskPropertiesToContainer to="{pick_object}"
+                                          from="{mtc_task}"
+                                          property_names="group,eef,hand,ik_frame"/>
+      <ContainerConfigureInitFromMTCProperties stage="{pick_object}"
+                                               property_names="group,eef,hand,ik_frame"
+                                               source_flag="PARENT"/>
+      <GeometryMsgsVector3Stamped vector3_stamped="{tcp_translate}"
+                                  vector="0,0,1"
+                                  frame_id="{hand_frame}"/>
+      <CreateMTCMoveRelativeTranslate stage="{approach_object}"
+                                      solver="{rrt_connect}"
+                                      direction="{tcp_translate}"
+                                      max_distance="0.15"
+                                      ik_frame="{ik_frame}"
+                                      min_distance="0.1"
+                                      timeout="1.000000"
+                                      group=""
+                                      stage_name="approach object"/>
+      <StageConfigureInitFromMTCProperties stage="{approach_object}"
+                                           property_names="group"
+                                           source_flag="PARENT"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{approach_object}"/>
+      <CreateMTCGenerateGraspPose stage="{generate_pose}"
+                                  monitored_stage="{raw_stage}"
+                                  stage_name="generate_grasp_pose"
+                                  pregrasp_pose="open"
+                                  object="{object_name}"
+                                  angle_delta="{angle}"
+                                  rotation_axis="0,0,1"
+                                  eef=""/>
+      <StageConfigureInitFromMTCProperties stage="{generate_pose}"
+                                           property_names=""
+                                           source_flag="PARENT"/>
+      <GeometryMsgsPoseStamped quaternion="0.270595,0.653228,-0.270861,0.653228"
+                               position="0,0,0.1"
+                               pose_stamped="{ik_frame2}"
+                               frame_id="{hand_frame}"/>
+      <CreateMTCComputeIK ik_frame="{ik_frame2}"
+                          min_solution_distance="1.0"
+                          stage="{grasp_pose_IK}"
+                          wrapped_stage="{generate_pose}"
+                          max_ik_solutions="8"
+                          ignore_collisions="false"
+                          group=""
+                          eef=""
+                          stage_name="grasp pose IK"/>
+      <StageConfigureInitFromMTCProperties stage="{grasp_pose_IK}"
+                                           property_names="eef,group"
+                                           source_flag="PARENT"/>
+      <StageConfigureInitFromMTCProperties stage="{grasp_pose_IK}"
+                                           property_names="target_pose"
+                                           source_flag="INTERFACE"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{grasp_pose_IK}"/>
+      <AllowCollisionsJointModelGroup jmg_name="{hand_group_name}"
+                                      objects="{object_name}"
+                                      stage_name="allow collisions -&gt; hand,object"
+                                      task="{mtc_task}"
+                                      stage="{allow_collisions_object_robot}"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{allow_collisions_object_robot}"/>
+      <CreateMTCMoveToNamedJointPose name="close hand"
+                                     goal="close"
+                                     stage_name="move to"
+                                     group="{hand_group_name}"
+                                     timeout="1.000000"
+                                     solver="{rrt_connect}"
+                                     stage="{stage_move_to_close_hand}"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{stage_move_to_close_hand}"/>
+      <CreateMTCModifyPlanningSceneAttachObjects stage="{attach_object}"
+                                                 object_names="{object_name}"
+                                                 link_name="{hand_frame}"
+                                                 stage_name="attach object"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{attach_object}"/>
+      <AllowCollisionPairs second="table"
+                           first="{object_name}"
+                           stage_name="allow collisions -&gt; object,support"
+                           stage="{allow_collisions_table}"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{allow_collisions_table}"/>
+      <GeometryMsgsVector3Stamped vector3_stamped="{tcp_translate}"
+                                  vector="0,0,1"
+                                  frame_id="{reference_frame}"/>
+      <CreateMTCMoveRelativeTranslate stage="{lift_object}"
+                                      solver="{cartesian}"
+                                      direction="{tcp_translate}"
+                                      max_distance="0.1"
+                                      ik_frame="{ik_frame}"
+                                      min_distance="0.01"
+                                      timeout="1.000000"
+                                      group=""
+                                      stage_name="lift object"/>
+      <StageConfigureInitFromMTCProperties stage="{lift_object}"
+                                           property_names="group"
+                                           source_flag="PARENT"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{lift_object}"/>
+      <ForbidCollisionPairs second="table"
+                            first="{object_name}"
+                            stage_name="forbid collisions -&gt; object,support"
+                            stage="{forbid_collisions_table}"/>
+      <GetMTCRawStage raw_stage="{raw_forbid_collisions_table}"
+                      stage="{forbid_collisions_table}"/>
+      <MoveMTCStageToContainer container="{pick_object}"
+                               stage="{forbid_collisions_table}"/>
+      <MoveMTCContainerToParentContainer parent_container="{task_container}"
+                                         child_container="{pick_object}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="PickandPlace">
+    <Sequence>
+      <SubTree ID="InitializeVariableNames"
+               _autoremap="true"/>
+      <SubTree ID="CreatePlanningScene"
+               _autoremap="true"/>
+      <SubTree ID="InitializeTask"
+               _autoremap="true"/>
+      <SubTree ID="OpenHand"
+               _autoremap="true"/>
+      <SubTree ID="Connect"
+               stage_name="{connect_pick_stage_name}"
+               _autoremap="true"/>
+      <SubTree ID="PickObject"
+               _autoremap="true"/>
+      <SubTree ID="Connect"
+               stage_name="{connect_place_stage_name}"
+               _autoremap="true"/>
+      <SubTree ID="PlaceObject"
+               _autoremap="true"/>
+      <SubTree ID="MoveToHome"
+               _autoremap="true"/>
+      <PlanMTCTask task="{mtc_task}"
+                   max_solutions="5"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="PlaceObject">
+    <Sequence>
+      <CreateMTCSerialContainer container="{place_object}"
+                                container_name="place object"/>
+      <ExposeMTCTaskPropertiesToContainer to="{place_object}"
+                                          from="{mtc_task}"
+                                          property_names="group,eef,hand"/>
+      <ContainerConfigureInitFromMTCProperties stage="{place_object}"
+                                               property_names="group,eef,hand"
+                                               source_flag="PARENT"/>
+      <GeometryMsgsVector3Stamped vector3_stamped="{tcp_translate2}"
+                                  vector="0,0,-1"
+                                  frame_id="{reference_frame}"/>
+      <CreateMTCMoveRelativeTranslate stage="{lower_object}"
+                                      solver="{cartesian}"
+                                      direction="{tcp_translate2}"
+                                      max_distance="0.13"
+                                      ik_frame="{ik_frame}"
+                                      min_distance="0.03"
+                                      timeout="1.000000"
+                                      group=""
+                                      stage_name="lower object"/>
+      <StageConfigureInitFromMTCProperties stage="{lower_object}"
+                                           property_names="group"
+                                           source_flag="PARENT"/>
+      <MoveMTCStageToContainer container="{place_object}"
+                               stage="{lower_object}"/>
+      <GeometryMsgsPoseStamped quaternion="1,0,0,0"
+                               position="0.6,-0.15,0.1251"
+                               pose_stamped="{place_pose}"
+                               frame_id="world"/>
+      <CreateMTCGeneratePlacePose stage="{generate_place_pose}"
+                                  pose="{place_pose}"
+                                  allow_z_flip="false"
+                                  monitored_stage="{raw_forbid_collisions_table}"
+                                  stage_name="generate place pose"
+                                  object="{object_name}"/>
+      <CreateMTCComputeIK ik_frame="{ik_frame2}"
+                          min_solution_distance="0.100000"
+                          stage="{place_pose_IK}"
+                          wrapped_stage="{generate_place_pose}"
+                          max_ik_solutions="2"
+                          ignore_collisions="false"
+                          group=""
+                          eef=""
+                          stage_name="place pose IK"/>
+      <StageConfigureInitFromMTCProperties stage="{place_pose_IK}"
+                                           property_names="eef,group"
+                                           source_flag="PARENT"/>
+      <StageConfigureInitFromMTCProperties stage="{place_pose_IK}"
+                                           property_names="target_pose"
+                                           source_flag="INTERFACE"/>
+      <MoveMTCStageToContainer container="{place_object}"
+                               stage="{place_pose_IK}"/>
+      <CreateMTCMoveToNamedJointPose name="move to -&gt; open_hand motion"
+                                     goal="open"
+                                     stage_name="move to"
+                                     group="{hand_group_name}"
+                                     timeout="1.000000"
+                                     solver="{rrt_connect}"
+                                     stage="{stage_move_to_open_hand2}"/>
+      <MoveMTCStageToContainer container="{place_object}"
+                               stage="{stage_move_to_open_hand2}"/>
+      <ForbidCollisionsJointModelGroup jmg_name="{hand_group_name}"
+                                       objects="{object_name}"
+                                       stage_name="forbid collisions -&gt; hand,object"
+                                       task="{mtc_task}"
+                                       stage="{forbid_collisions_object_robot}"/>
+      <MoveMTCStageToContainer container="{place_object}"
+                               stage="{forbid_collisions_object_robot}"/>
+      <CreateMTCModifyPlanningSceneDetachObjects stage="{detach_object}"
+                                                 object_names="{object_name}"
+                                                 link_name="{hand_frame}"
+                                                 stage_name="detach object"/>
+      <MoveMTCStageToContainer container="{place_object}"
+                               stage="{detach_object}"/>
+      <GeometryMsgsVector3Stamped vector3_stamped="{tcp_translate3}"
+                                  vector="0,0,-1"
+                                  frame_id="{hand_frame}"/>
+      <CreateMTCMoveRelativeTranslate stage="{retreat_after_place}"
+                                      solver="{cartesian}"
+                                      direction="{tcp_translate3}"
+                                      max_distance="0.25"
+                                      ik_frame="{ik_frame}"
+                                      min_distance="0.12"
+                                      timeout="1.000000"
+                                      group=""
+                                      stage_name="retreat after place"/>
+      <StageConfigureInitFromMTCProperties stage="{retreat_after_place}"
+                                           property_names="group"
+                                           source_flag="PARENT"/>
+      <MoveMTCStageToContainer container="{place_object}"
+                               stage="{retreat_after_place}"/>
+      <MoveMTCContainerToParentContainer parent_container="{task_container}"
+                                         child_container="{place_object}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="AddObjectToPlanningScene">
+      <input_port name="collision_object"
+                  type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="planning_scene_interface"
+                  type="std::shared_ptr&lt;moveit::planning_interface::PlanningSceneInterface&gt;"/>
+    </Action>
+    <Action ID="AllowCollisionPairs">
+      <input_port name="second"
+                  type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">second object of collision pair</input_port>
+      <input_port name="first"
+                  type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">first object of collision pair</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+    </Action>
+    <Action ID="AllowCollisionsJointModelGroup">
+      <input_port name="jmg_name"
+                  type="std::string">joint model group name</input_port>
+      <input_port name="objects"
+                  type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid collisions with joint model group links</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+      <input_port name="task"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MTC task</input_port>
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+    </Action>
+    <Action ID="ContainerConfigureInitFromMTCProperties">
+      <inout_port name="stage"
+                  type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+      <input_port name="property_names"
+                  type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+      <input_port name="source_flag"
+                  type="moveit::task_constructor::Stage::PropertyInitializerSource">Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}</input_port>
+    </Action>
+    <Action ID="CreateMTCCartesianPath">
+      <output_port name="solver"
+                   default="{solver}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">Planner interface using pipeline motion solver</output_port>
+      <input_port name="jump_threshold"
+                  default="1.500000"
+                  type="double">acceptable fraction of mean joint motion per step</input_port>
+      <input_port name="min_fraction"
+                  default="1.000000"
+                  type="double">fraction of motion required for success</input_port>
+      <input_port name="step_size"
+                  default="0.010000"
+                  type="double">step size between consecutive waypoints</input_port>
+      <input_port name="max_acceleration_scaling_factor"
+                  default="0.100000"
+                  type="double">scale down max acceleration by this factor</input_port>
+      <input_port name="max_velocity_scaling_factor"
+                  default="0.100000"
+                  type="double">scale down max velocity by this factor</input_port>
+    </Action>
+    <Action ID="CreateMTCComputeIK">
+      <input_port name="ik_frame"
+                  type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="min_solution_distance"
+                  default="0.100000"
+                  type="double">minimum distance between seperate IK solutions for the same target</input_port>
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+      <input_port name="wrapped_stage"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+      <input_port name="max_ik_solutions"
+                  default="1"
+                  type="unsigned int">max ik solutions</input_port>
+      <input_port name="ignore_collisions"
+                  default="false"
+                  type="bool">ignore collisions, true or false</input_port>
+      <input_port name="group"
+                  type="std::string">name of active group (derived from eef if not provided)</input_port>
+      <input_port name="eef"
+                  type="std::string">name of end-effector</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+    </Action>
+    <Action ID="CreateMTCConnect">
+      <input_port name="merge_mode"
+                  default="1"
+                  type="unsigned char">0 = SEQUENTIAL, 1 = WAYPOINTS</input_port>
+      <input_port name="group"
+                  type="std::string"/>
+      <input_port name="stage_name"
+                  type="std::string">connect</input_port>
+      <input_port name="planner"
+                  type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+      <input_port name="max_distance"
+                  default="0.000100"
+                  type="double">maximally accepted joint configuration distance between trajectory endpoint and goal state</input_port>
+      <input_port name="timeout"
+                  default="1.000000"
+                  type="double">timeout</input_port>
+      <output_port name="stage"
+                   default="{connect_stage}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">Connect stage</output_port>
+    </Action>
+    <Action ID="CreateMTCCurrentState">
+      <output_port name="stage"
+                   default="{mtc_stage}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveIt Task Constructor stage.</output_port>
+    </Action>
+    <Action ID="CreateMTCGenerateGraspPose">
+      <output_port name="stage"
+                   default="{generate_grasp_pose}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">GenerateGraspPose Stage</output_port>
+      <input_port name="monitored_stage"
+                  type="moveit::task_constructor::Stage*"/>
+      <input_port name="stage_name"
+                  type="std::string"/>
+      <input_port name="pregrasp_pose"
+                  type="std::string">pregrasp posture</input_port>
+      <input_port name="object"
+                  type="std::string">object on which we generate the grasp poses</input_port>
+      <input_port name="angle_delta"
+                  default="0.100000"
+                  type="double">angular steps (rad)</input_port>
+      <input_port name="rotation_axis"
+                  default="0,0,1"
+                  type="Vector3D">rotate object pose about given axis</input_port>
+      <input_port name="eef"
+                  type="std::string">name of end-effector</input_port>
+    </Action>
+    <Action ID="CreateMTCGeneratePlacePose">
+      <output_port name="stage"
+                   default="{generate_grasp_pose}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">GenerateGraspPose Stage</output_port>
+      <input_port name="pose"
+                  type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">target pose to pass on in spawned states</input_port>
+      <input_port name="allow_z_flip"
+                  default="false"
+                  type="bool">allow placing objects upside down</input_port>
+      <input_port name="monitored_stage"
+                  type="moveit::task_constructor::Stage*"/>
+      <input_port name="stage_name"
+                  type="std::string"/>
+      <input_port name="object"
+                  type="std::string">object on which we generate the place poses</input_port>
+    </Action>
+    <Action ID="CreateMTCModifyPlanningSceneAttachObjects">
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+      <input_port name="object_names"
+                  type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">list of object names/id's.</input_port>
+      <input_port name="link_name"
+                  type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">attach or detach a list of objects to the given link</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+    </Action>
+    <Action ID="CreateMTCModifyPlanningSceneDetachObjects">
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+      <input_port name="object_names"
+                  type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">list of object names/id's.</input_port>
+      <input_port name="link_name"
+                  type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">attach or detach a list of objects to the given link</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+    </Action>
+    <Action ID="CreateMTCMoveRelativeTranslate">
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveRelative stage</output_port>
+      <input_port name="solver"
+                  type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
+      <input_port name="direction"
+                  type="std::shared_ptr&lt;geometry_msgs::Vector3Stamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">translate link along given direction</input_port>
+      <input_port name="max_distance"
+                  default="0.000000"
+                  type="double">maximum distance to move</input_port>
+      <input_port name="ik_frame"
+                  type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">frame to be moved in Cartesian direction</input_port>
+      <input_port name="min_distance"
+                  default="-1.000000"
+                  type="double">minimum distance to move</input_port>
+      <input_port name="timeout"
+                  default="1.000000"
+                  type="double"/>
+      <input_port name="group"
+                  type="std::string">name of planning group</input_port>
+      <input_port name="stage_name"
+                  default="move relative"
+                  type="std::string">stage name</input_port>
+    </Action>
+    <Action ID="CreateMTCMoveToNamedJointPose">
+      <input_port name="goal"
+                  type="std::string">move joint model group to given named pose</input_port>
+      <input_port name="stage_name"
+                  default="move to"
+                  type="std::string">stage name</input_port>
+      <input_port name="group"
+                  type="std::string">name of planning group</input_port>
+      <input_port name="timeout"
+                  default="1.000000"
+                  type="double"/>
+      <input_port name="solver"
+                  type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveTo stage</output_port>
+    </Action>
+    <Action ID="CreateMTCPipelinePlanner">
+      <input_port name="max_acceleration_scaling_factor"
+                  default="0.100000"
+                  type="double">scale down max acceleration by this factor</input_port>
+      <input_port name="num_planning_attempts"
+                  default="1u"
+                  type="unsigned int">number of planning attempts</input_port>
+      <input_port name="pipeline_id"
+                  type="std::string"/>
+      <input_port name="max_velocity_scaling_factor"
+                  default="0.100000"
+                  type="double">scale down max velocity by this factor</input_port>
+      <input_port name="planner_id"
+                  type="std::string"/>
+      <input_port name="display_motion_plans"
+                  default="false"
+                  type="bool">publish generated solutions on topic display_planned_path</input_port>
+      <input_port name="goal_orientation_tolerance"
+                  default="1e-4"
+                  type="double">tolerance for reaching orientation goals</input_port>
+      <input_port name="goal_position_tolerance"
+                  default="1e-4"
+                  type="double">tolerance for reaching position goals</input_port>
+      <input_port name="goal_joint_tolerance"
+                  default="1e-4"
+                  type="double">tolerance for reaching joint goals</input_port>
+      <input_port name="publish_planning_requests"
+                  default="false"
+                  type="bool">publish motion planning requests on topic motion_plan_request</input_port>
+      <output_port name="solver"
+                   default="{solver}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">Planner interface using pipeline motion solver</output_port>
+    </Action>
+    <Action ID="CreateMTCSerialContainer">
+      <output_port name="container"
+                   type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;">serial container</output_port>
+      <input_port name="container_name"
+                  type="std::string">serial container name</input_port>
+    </Action>
+    <Action ID="CreatePlanningSceneInterface">
+      <output_port name="planning_scene_interface"
+                   type="std::shared_ptr&lt;moveit::planning_interface::PlanningSceneInterface&gt;">{planning_scene_interface}</output_port>
+    </Action>
+    <Action ID="ExposeMTCTaskPropertiesToContainer">
+      <inout_port name="to"
+                  type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+      <inout_port name="from"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+      <input_port name="property_names"
+                  type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+    </Action>
+    <Action ID="ForbidCollisionPairs">
+      <input_port name="second"
+                  type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">second object of collision pair</input_port>
+      <input_port name="first"
+                  type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">first object of collision pair</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+    </Action>
+    <Action ID="ForbidCollisionsJointModelGroup">
+      <input_port name="jmg_name"
+                  type="std::string">joint model group name</input_port>
+      <input_port name="objects"
+                  type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid collisions with joint model group links</input_port>
+      <input_port name="stage_name"
+                  type="std::string"/>
+      <input_port name="task"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MTC task</input_port>
+      <output_port name="stage"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+    </Action>
+    <Action ID="GeometryMsgsPose">
+      <output_port name="pose"
+                   type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="quaternion"
+                  type="Vector4D"/>
+      <input_port name="position"
+                  type="Vector3D"/>
+    </Action>
+    <Action ID="GeometryMsgsPoseStamped">
+      <input_port name="quaternion"
+                  type="Vector4D"/>
+      <input_port name="position"
+                  type="Vector3D"/>
+      <output_port name="pose_stamped"
+                   type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="frame_id"
+                  type="std::string"/>
+    </Action>
+    <Action ID="GeometryMsgsVector3Stamped">
+      <output_port name="vector3_stamped"
+                   type="std::shared_ptr&lt;geometry_msgs::Vector3Stamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="vector"
+                  type="Vector3D"/>
+      <input_port name="frame_id"
+                  type="std::string"/>
+    </Action>
+    <Action ID="GetMTCRawStage">
+      <output_port name="raw_stage"
+                   type="moveit::task_constructor::Stage*">MTC stage raw pointer</output_port>
+      <input_port name="stage"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MTC stage</input_port>
+    </Action>
+    <Action ID="InitializeMTCTask">
+      <output_port name="container"
+                   type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+      <output_port name="task"
+                   default="{mtc_task}"
+                   type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MoveIt Task Constructor task.</output_port>
+    </Action>
+    <Action ID="MoveItMsgsCollisionObjectBox">
+      <input_port name="height"
+                  default="1.0"
+                  type="double">Box's size along Z axis (m)</input_port>
+      <input_port name="length"
+                  default="1.0"
+                  type="double">Box's size along X axis (m)</input_port>
+      <input_port name="object_id"
+                  type="std::string"/>
+      <input_port name="frame_id"
+                  type="std::string"/>
+      <output_port name="collision_object"
+                   type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="width"
+                  default="1.0"
+                  type="double">Box's size along Y axis (m)</input_port>
+      <input_port name="pose"
+                  type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+    </Action>
+    <Action ID="MoveItMsgsCollisionObjectCylinder">
+      <input_port name="height"
+                  default="1.0"
+                  type="double">cylinder height (m)</input_port>
+      <input_port name="object_id"
+                  type="std::string"/>
+      <input_port name="frame_id"
+                  type="std::string"/>
+      <output_port name="collision_object"
+                   type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+      <input_port name="radius"
+                  default="1.0"
+                  type="double">cylinder radius (m)</input_port>
+      <input_port name="pose"
+                  type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+    </Action>
+    <Action ID="MoveMTCContainerToParentContainer">
+      <inout_port name="parent_container"
+                  type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+      <input_port name="child_container"
+                  type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+    </Action>
+    <Action ID="MoveMTCStageToContainer">
+      <inout_port name="container"
+                  type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+      <input_port name="stage"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+    </Action>
+    <Action ID="PlanMTCTask">
+      <inout_port name="task"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+      <input_port name="max_solutions"
+                  type="unsigned long"/>
+    </Action>
+    <Action ID="SetMTCTaskPropertyString">
+      <input_port name="property"
+                  type="std::string"/>
+      <input_port name="property_name"
+                  type="std::string"/>
+      <inout_port name="stage"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+    </Action>
+    <Action ID="StageConfigureInitFromMTCProperties">
+      <inout_port name="stage"
+                  type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+      <input_port name="property_names"
+                  type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+      <input_port name="source_flag"
+                  type="moveit::task_constructor::Stage::PropertyInitializerSource">Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}</input_port>
+    </Action>
+  </TreeNodesModel>
+
+</root>

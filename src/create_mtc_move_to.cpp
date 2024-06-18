@@ -22,7 +22,6 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
   double timeout;
 
   if(!getInput("stage_name", name) ||
-     !getInput("group", group) ||
      !getInput("solver", solver) ||
      !getInput("timeout", timeout))
     return NodeStatus::FAILURE;
@@ -32,8 +31,10 @@ BT::NodeStatus CreateMTCMoveToBase::tick(std::shared_ptr<moveit::task_constructo
     new moveit::task_constructor::stages::MoveTo(name, solver),
     dirty::fake_deleter{}
   };
+  // Optionnal
+  if(getInput("group", group) && !group.empty())
+    stage->setGroup(group);
 
-  stage->setGroup(group);
   stage->setTimeout(timeout);
 
   return NodeStatus::SUCCESS;

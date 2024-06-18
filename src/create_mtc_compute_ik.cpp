@@ -26,8 +26,6 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   std::shared_ptr<geometry_msgs::PoseStamped> ik_frame{ nullptr };
 
   if(!getInput("stage_name", name) ||
-     !getInput("eef", eef) ||
-     !getInput("group", group) ||
      !getInput("ignore_collisions", ignore_collisions) ||
      !getInput("min_solution_distance", min_solution_distance) ||
      !getInput("max_ik_solutions", max_ik_solutions) ||
@@ -43,8 +41,14 @@ BT::NodeStatus CreateMTCComputeIK::tick()
     new moveit::task_constructor::stages::ComputeIK(name, std::move(unique_stage)),
     dirty::fake_deleter{}
   };
-  wrapper->setEndEffector(eef);
-  wrapper->setGroup(group);
+
+  // Optionnal
+  if(getInput("group", group) && !group.empty())
+    wrapper->setGroup(group);
+
+  if(getInput("eef", eef) && !eef.empty())
+    wrapper->setEndEffector(eef);
+
   wrapper->setMaxIKSolutions(max_ik_solutions);
   wrapper->setIgnoreCollisions(ignore_collisions);
   wrapper->setMinSolutionDistance(min_solution_distance);
