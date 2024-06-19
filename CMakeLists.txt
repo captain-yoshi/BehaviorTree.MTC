@@ -64,6 +64,7 @@ add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_sol
 add_executable(bt_move_relative examples/bt_move_relative.cpp)
 add_executable(bt_move_to examples/bt_move_to.cpp)
 add_executable(bt_serial_container examples/bt_serial_container.cpp)
+add_executable(generate_xml_model src/generate_xml_model.cpp)
 
 target_include_directories(bt_allow_collisions PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_allow_collisions ${PROJECT_NAME} ${catkin_LIBRARIES})
@@ -91,6 +92,9 @@ target_link_libraries(bt_move_to ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 target_include_directories(bt_serial_container PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_serial_container ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+target_include_directories(generate_xml_model PRIVATE ${catkin_INCLUDE_DIRS} include)
+target_link_libraries(generate_xml_model ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
 add_subdirectory(tests)
