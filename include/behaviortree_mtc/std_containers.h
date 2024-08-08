@@ -11,8 +11,30 @@ inline void ToJson(nlohmann::json& dest, const std::map<std::string, double>& ma
     dest[key] = val;
 }
 
-namespace BT
+namespace BT {
+
+template <>
+inline std::vector<std::string> convertFromString(StringView key)
 {
+  const auto parts = BT::splitString(key, ',');
+
+  std::vector<std::string> vector;
+  for(const auto& part : parts)
+  {
+    vector.emplace_back(convertFromString<std::string>(part));
+  }
+
+  return vector;
+}
+
+template <>
+inline std::shared_ptr<std::vector<std::string>> convertFromString(StringView key)
+{
+  auto vector = std::make_shared<std::vector<std::string>>(convertFromString<std::vector<std::string>>(key));
+
+  return vector;
+}
+
 template <>
 inline std::map<std::string, double> convertFromString(StringView key)
 {
@@ -42,6 +64,32 @@ inline std::shared_ptr<std::map<std::string, double>> convertFromString(StringVi
   auto map = std::make_shared<std::map<std::string, double>>(convertFromString<std::map<std::string, double>>(key));
 
   return map;
+}
+
+template <>
+inline std::set<std::string> convertFromString(StringView key)
+{
+  const auto parts = BT::splitString(key, ',');
+
+  std::set<std::string> set;
+  for(const auto& part : parts)
+  {
+    auto pair = set.emplace(convertFromString<std::string>(part));
+    if(!pair.second)
+    {
+      throw BT::RuntimeError("invalid input)");
+    }
+  }
+
+  return set;
+}
+
+template <>
+inline std::shared_ptr<std::set<std::string>> convertFromString(StringView key)
+{
+  auto set = std::make_shared<std::set<std::string>>(convertFromString<std::set<std::string>>(key));
+
+  return set;
 }
 
 }  // namespace BT

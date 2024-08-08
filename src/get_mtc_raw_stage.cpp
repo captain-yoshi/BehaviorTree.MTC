@@ -2,12 +2,10 @@
 
 #include <moveit/task_constructor/stage.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
+namespace BT {
+namespace MTC {
 
-namespace
-{
+namespace {
 constexpr auto kPortStage = "stage";
 constexpr auto kPortRawStage = "raw_stage";
 
@@ -21,13 +19,13 @@ GetMTCRawStage::GetMTCRawStage(const std::string& name,
 BT::NodeStatus GetMTCRawStage::tick()
 {
   // Convert stage shared pointer to raw pointer
-  if(auto any_stage_ptr = getLockedPortContent(kPortStage))
+  if(auto any_stage_ptr = getLockedPortContent("stage"))
   {
-    if(auto* stage_ptr = any_stage_ptr->castPtr<MTC::StagePtr>())
+    if(auto* stage_ptr = any_stage_ptr->castPtr<moveit::task_constructor::StagePtr>())
     {
       auto& stage = *stage_ptr;
 
-      setOutput(kPortRawStage, stage.get());
+      setOutput("raw_stage", stage.get());
       return NodeStatus::SUCCESS;
     }
   }
@@ -38,7 +36,10 @@ BT::NodeStatus GetMTCRawStage::tick()
 BT::PortsList GetMTCRawStage::providedPorts()
 {
   return {
-    BT::InputPort<MTC::StagePtr>(kPortStage, "MTC stage"),
-    BT::OutputPort<MTC::Stage*>(kPortRawStage, "MTC stage raw pointer"),
+    BT::InputPort<moveit::task_constructor::StagePtr>("stage", "MTC stage"),
+    BT::OutputPort<moveit::task_constructor::Stage*>("raw_stage", "MTC stage raw pointer"),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

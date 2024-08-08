@@ -2,12 +2,22 @@
 
 #include <behaviortree_cpp/bt_factory.h>
 
-namespace bt_mtc
-{
+namespace BT {
+namespace MTC {
+
 class GeometryMsgsPointStamped : public BT::SyncActionNode
 {
 public:
   GeometryMsgsPointStamped(const std::string& name, const BT::NodeConfig& config);
+
+  BT::NodeStatus tick() override;
+  static BT::PortsList providedPorts();
+};
+
+class GeometryMsgsPose : public BT::SyncActionNode
+{
+public:
+  GeometryMsgsPose(const std::string& name, const BT::NodeConfig& config);
 
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
@@ -39,4 +49,6 @@ public:
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();
 };
-}  // namespace bt_mtc
+
+}  // namespace MTC
+}  // namespace BT
