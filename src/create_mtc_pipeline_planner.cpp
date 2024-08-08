@@ -42,7 +42,7 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
     return NodeStatus::FAILURE;
   //build solver
   auto node = rclcpp::Node::make_shared("create_mtc_pipeline_planner");
-  auto solver = std::make_shared<MTC::solvers::PipelinePlanner>(node, pipeline_id);
+  auto solver = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(node, pipeline_id);
   solver->setPlannerId(planner_id);
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);

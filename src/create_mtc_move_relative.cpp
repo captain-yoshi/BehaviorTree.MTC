@@ -54,7 +54,7 @@ BT::PortsList CreateMTCMoveRelativeBase::providedPorts()
     BT::InputPort<double>("min_distance", -1.0, "minimum distance to move"),
     BT::InputPort<double>("max_distance", 0.0, "maximum distance to move"),
     BT::InputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("solver", "planner interface"),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("ik_frame", "frame to be moved in Cartesian direction"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>("ik_frame", "frame to be moved in Cartesian direction"),
     BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "MoveRelative stage"),
   };
 }
