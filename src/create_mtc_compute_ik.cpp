@@ -23,7 +23,7 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   Vector3D translation_transform;
   Vector3D rotation_transform;
   moveit::task_constructor::StagePtr wrapped_stage;
-  std::shared_ptr<geometry_msgs::PoseStamped> ik_frame{ nullptr };
+  std::shared_ptr<geometry_msgs::msg::PoseStamped> ik_frame{ nullptr };
 
   if(!getInput("stage_name", name) ||
      !getInput("eef", eef) ||
@@ -68,7 +68,7 @@ BT::PortsList CreateMTCComputeIK::providedPorts()
     BT::InputPort<uint32_t>("max_ik_solutions", 1, "max ik solutions"),
     BT::InputPort<double>("min_solution_distance", 0.1, "minimum distance between seperate IK solutions for the same target"),
     BT::InputPort<moveit::task_constructor::StagePtr>("wrapped_stage"),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("ik_frame"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>("ik_frame"),
 
     BT::OutputPort<moveit::task_constructor::StagePtr>("stage"),
   };

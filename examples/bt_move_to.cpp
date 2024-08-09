@@ -1,4 +1,4 @@
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <behaviortree_mtc/initialize_mtc_task.h>
 #include <behaviortree_mtc/create_mtc_current_state.h>
@@ -82,9 +82,8 @@ static const char* xml_text = R"(
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "test_behavior_tree");
-  ros::AsyncSpinner spinner(1);
-  spinner.start();
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::Node::make_shared("test_behavior_tree");
 
   BehaviorTreeFactory factory;
 
@@ -125,17 +124,24 @@ int main(int argc, char** argv)
   std::cout << "======================" << std::endl;
 
   NodeStatus status = NodeStatus::IDLE;
-  while(ros::ok() && (status == NodeStatus::IDLE || status == NodeStatus::RUNNING))
-  {
-    status = tree.tickExactlyOnce();
-    std::cout << "Status = " << status << std::endl;
 
-    ros::Duration sleep_time(0.01);
-    sleep_time.sleep();
-  }
+  // Lambda function for the timer callback to tick the behavior tree
+  auto tick_tree = [&tree, &status]() {
+    if (status == NodeStatus::IDLE || status == NodeStatus::RUNNING)
+    {
+      status = tree.tickExactlyOnce();
+      std::cout << "Status = " << status << std::endl;
+    }
+  };
 
-  std::cout << "\n\nWaiting for shutdown, press CTRL-C to quit" << std::endl;
-  ros::waitForShutdown();
+  // Timer to tick the behavior tree
+  auto timer = node->create_wall_timer(std::chrono::milliseconds(10), tick_tree);
+
+  // Spin the node (this will process callbacks including the timer)
+  rclcpp::spin(node);
+
+  // Shutdown when user press CTRL-C
+  rclcpp::shutdown();
 
   return 0;
 }

@@ -6,16 +6,18 @@ set(BT_MTC_TESTS
   gtest_mtc_modify_planning_scene.cpp
 )
 
-set(TEST_DEPENDECIES
+set(TEST_DEPENDENCIES
     ${PROJECT_NAME}
 )
 
-if(CATKIN_ENABLE_TESTING)
-    find_package(rostest REQUIRED)
+# Enable testing and find necessary packages
+if(BUILD_TESTING)
+    find_package(ament_cmake_gtest REQUIRED)
 
-    catkin_add_gtest(${PROJECT_NAME}_test ${BT_MTC_TESTS})
-    target_link_libraries(${PROJECT_NAME}_test
-        ${TEST_DEPENDECIES}
-        ${catkin_LIBRARIES})
-
+    ament_add_gtest(${PROJECT_NAME}_test ${BT_MTC_TESTS})
+    if(TARGET ${PROJECT_NAME}_test)
+        target_link_libraries(${PROJECT_NAME}_test
+            ${TEST_DEPENDENCIES}
+        )
+    endif()
 endif()

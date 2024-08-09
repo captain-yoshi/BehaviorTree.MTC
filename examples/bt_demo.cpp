@@ -57,10 +57,10 @@ int main(int argc, char** argv)
 
   // Gives the user time to connect to Groot2
   int wait_time = 5000;
-  std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
-
-  std::cout << "Starting Behavior Tree" << std::endl;
+  std::cout << "Waiting " << wait_time << " msec for connection with Groot2...\n\n"
+            << std::endl;
   std::cout << "======================" << std::endl;
+  std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
 
   NodeStatus status = NodeStatus::IDLE;
 

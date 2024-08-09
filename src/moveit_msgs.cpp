@@ -1,8 +1,8 @@
 #include <behaviortree_mtc/moveit_msgs.h>
 #include <behaviortree_mtc/custom_types.h>
 
-#include <moveit_msgs/CollisionObject.h>
-#include <geometry_msgs/Pose.h>
+#include <moveit_msgs/msg/collision_object.hpp>
+#include <geometry_msgs/msg/pose.hpp>
 
 namespace BT {
 namespace MTC {
@@ -12,11 +12,11 @@ MoveItMsgsCollisionObjectBase::MoveItMsgsCollisionObjectBase(const std::string& 
   : SyncActionNode(name, config)
 {}
 
-BT::NodeStatus MoveItMsgsCollisionObjectBase::tick(std::shared_ptr<moveit_msgs::CollisionObject> object)
+BT::NodeStatus MoveItMsgsCollisionObjectBase::tick(std::shared_ptr<moveit_msgs::msg::CollisionObject> object)
 {
   // Retrieve inputs
   std::string object_name, object_frame_id;
-  auto pose = std::make_shared<geometry_msgs::Pose>();
+  auto pose = std::make_shared<geometry_msgs::msg::Pose>();
   if(!getInput("object_id", object_name) ||
      !getInput("frame_id", object_frame_id) ||
      !getInput("pose", pose))
@@ -35,7 +35,7 @@ BT::PortsList MoveItMsgsCollisionObjectBase::providedPorts()
   return {
     BT::InputPort<std::string>("object_id"),
     BT::InputPort<std::string>("frame_id"),
-    BT::InputPort<std::shared_ptr<geometry_msgs::Pose>>("pose")
+    BT::InputPort<std::shared_ptr<geometry_msgs::msg::Pose>>("pose")
   };
 }
 
@@ -47,7 +47,7 @@ MoveItMsgsCollisionObjectCylinder::MoveItMsgsCollisionObjectCylinder(const std::
 BT::NodeStatus MoveItMsgsCollisionObjectCylinder::tick()
 {
   // Build object
-  auto object = std::make_shared<moveit_msgs::CollisionObject>();
+  auto object = std::make_shared<moveit_msgs::msg::CollisionObject>();
   auto node_status = MoveItMsgsCollisionObjectBase::tick(object);
   if(node_status != BT::NodeStatus::SUCCESS)
     return node_status;
@@ -60,7 +60,7 @@ BT::NodeStatus MoveItMsgsCollisionObjectCylinder::tick()
 
   // Set dimensions
   object->primitives.resize(1);
-  object->primitives[0].type = shape_msgs::SolidPrimitive::CYLINDER;
+  object->primitives[0].type = shape_msgs::msg::SolidPrimitive::CYLINDER;
   object->primitives[0].dimensions = { height, radius };
   setOutput("collision_object", object);
 
@@ -72,7 +72,7 @@ BT::PortsList MoveItMsgsCollisionObjectCylinder::providedPorts()
   auto port_lists = MoveItMsgsCollisionObjectBase::providedPorts();
   port_lists.emplace(BT::InputPort<double>("height", "1.0", "cylinder height (m)"));
   port_lists.emplace(BT::InputPort<double>("radius", "1.0", "cylinder radius (m)"));
-  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>("collision_object"));
+  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::msg::CollisionObject>>("collision_object"));
   return port_lists;
 }
 
@@ -84,7 +84,7 @@ MoveItMsgsCollisionObjectBox::MoveItMsgsCollisionObjectBox(const std::string& na
 BT::NodeStatus MoveItMsgsCollisionObjectBox::tick()
 {
   // Build object
-  auto object = std::make_shared<moveit_msgs::CollisionObject>();
+  auto object = std::make_shared<moveit_msgs::msg::CollisionObject>();
   auto node_status = MoveItMsgsCollisionObjectBase::tick(object);
   if(node_status != BT::NodeStatus::SUCCESS)
     return node_status;
@@ -98,7 +98,7 @@ BT::NodeStatus MoveItMsgsCollisionObjectBox::tick()
 
   // Set dimensions
   object->primitives.resize(1);
-  object->primitives[0].type = shape_msgs::SolidPrimitive::BOX;
+  object->primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
   object->primitives[0].dimensions = { length, width, height };
   setOutput("collision_object", object);
 
@@ -111,7 +111,7 @@ BT::PortsList MoveItMsgsCollisionObjectBox::providedPorts()
   port_lists.emplace(BT::InputPort<double>("length", "1.0", "Box's size along X axis (m)"));
   port_lists.emplace(BT::InputPort<double>("width", "1.0", "Box's size along Y axis (m)"));
   port_lists.emplace(BT::InputPort<double>("height", "1.0", "Box's size along Z axis (m)"));
-  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::CollisionObject>>("collision_object"));
+  port_lists.emplace(BT::OutputPort<std::shared_ptr<moveit_msgs::msg::CollisionObject>>("collision_object"));
   return port_lists;
 }
 

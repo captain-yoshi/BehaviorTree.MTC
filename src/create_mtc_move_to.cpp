@@ -61,7 +61,7 @@ BT::NodeStatus CreateMTCMoveToBaseCartesian::tick(std::shared_ptr<moveit::task_c
   if(node_status != BT::NodeStatus::SUCCESS)
     return node_status;
 
-  std::shared_ptr<geometry_msgs::PoseStamped> ik_frame;
+  std::shared_ptr<geometry_msgs::msg::PoseStamped> ik_frame;
   if(!getInput("ik_frame", ik_frame))
     return NodeStatus::FAILURE;
   stage->setIKFrame(*ik_frame);
@@ -72,7 +72,7 @@ BT::NodeStatus CreateMTCMoveToBaseCartesian::tick(std::shared_ptr<moveit::task_c
 BT::PortsList CreateMTCMoveToBaseCartesian::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBase::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("ik_frame", "frame to be moved in Cartesian direction"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>("ik_frame", "frame to be moved in Cartesian direction"));
   return port_lists;
 }
 
@@ -160,7 +160,7 @@ BT::NodeStatus CreateMTCMoveToPose::tick()
     return node_status;
 
   // Set goal
-  std::shared_ptr<geometry_msgs::PoseStamped> pose{ nullptr };
+  std::shared_ptr<geometry_msgs::msg::PoseStamped> pose{ nullptr };
   if(!getInput("goal", pose))
     return NodeStatus::FAILURE;
 
@@ -177,7 +177,7 @@ BT::NodeStatus CreateMTCMoveToPose::tick()
 BT::PortsList CreateMTCMoveToPose::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBaseCartesian::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("goal", "move link to a given pose"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>("goal", "move link to a given pose"));
 
   return port_lists;
 }
@@ -196,7 +196,7 @@ BT::NodeStatus CreateMTCMoveToPoint::tick()
     return node_status;
 
   // Set goal
-  std::shared_ptr<geometry_msgs::PointStamped> point{ nullptr };
+  std::shared_ptr<geometry_msgs::msg::PointStamped> point{ nullptr };
   if(!getInput("goal", point))
     return NodeStatus::FAILURE;
 
@@ -213,7 +213,7 @@ BT::NodeStatus CreateMTCMoveToPoint::tick()
 BT::PortsList CreateMTCMoveToPoint::providedPorts()
 {
   auto port_lists = CreateMTCMoveToBaseCartesian::providedPorts();
-  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::PointStamped>>("goal", "move link to given point, keeping current orientation"));
+  port_lists.emplace(BT::InputPort<std::shared_ptr<geometry_msgs::msg::PointStamped>>("goal", "move link to given point, keeping current orientation"));
 
   return port_lists;
 }

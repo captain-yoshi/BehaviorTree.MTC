@@ -1,4 +1,3 @@
-#include <ros/ros.h>
 #include <behaviortree_mtc/create_mtc_generate_place_pose.h>
 #include <behaviortree_mtc/custom_types.h>
 #include <behaviortree_mtc/shared_to_unique.h>
@@ -19,7 +18,7 @@ BT::NodeStatus CreateMTCGeneratePlacePose::tick()
   std::string name, object;
   moveit::task_constructor::Stage* monitored_stage;
   bool allow_z_flip;
-  std::shared_ptr<geometry_msgs::PoseStamped> pose{ nullptr };
+  std::shared_ptr<geometry_msgs::msg::PoseStamped> pose{ nullptr };
   if(!getInput("stage_name", name) ||
      !getInput("pose", pose) ||
      !getInput("object", object) ||
@@ -52,7 +51,7 @@ BT::PortsList CreateMTCGeneratePlacePose::providedPorts()
     BT::InputPort<std::string>("object", "object on which we generate the place poses"),
     BT::InputPort<std::string>("stage_name"),
     BT::InputPort<moveit::task_constructor::Stage*>("monitored_stage"),
-    BT::InputPort<std::shared_ptr<geometry_msgs::PoseStamped>>("pose", "target pose to pass on in spawned states"),
+    BT::InputPort<std::shared_ptr<geometry_msgs::msg::PoseStamped>>("pose", "target pose to pass on in spawned states"),
     BT::InputPort<bool>("allow_z_flip", false, "allow placing objects upside down"),
     BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "{generate_grasp_pose}", "GenerateGraspPose Stage"),
   };

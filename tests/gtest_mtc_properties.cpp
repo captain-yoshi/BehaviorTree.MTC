@@ -44,7 +44,7 @@ TEST(MTCProperties, SetMTCProperties)
              <SetMTCPropertiesString stage="{mtc_stage}" property_name="string<>" property="" />
              <SetMTCPropertiesString stage="{mtc_stage}" property_name="string<BehaviorTree.CPP>" property="BehaviorTree.CPP" />
 
-             <SetMTCPropertiesPose stage="{mtc_stage}" property_name="geometry_msgs::Pose" property="{pose}" />
+             <SetMTCPropertiesPose stage="{mtc_stage}" property_name="geometry_msgs::msg::Pose" property="{pose}" />
           </Sequence>
        </BehaviorTree>
     </root>)";
@@ -55,7 +55,7 @@ TEST(MTCProperties, SetMTCProperties)
   factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, int>>("SetMTCPropertiesInt");
   factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, double>>("SetMTCPropertiesDouble");
   factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, std::string>>("SetMTCPropertiesString");
-  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, geometry_msgs::Pose>>("SetMTCPropertiesPose");
+  factory.registerNodeType<SetMTCProperties<moveit::task_constructor::Stage, geometry_msgs::msg::Pose>>("SetMTCPropertiesPose");
 
   auto bb = BT::Blackboard::create();
 
@@ -63,7 +63,7 @@ TEST(MTCProperties, SetMTCProperties)
   moveit::task_constructor::StagePtr stage = std::make_shared<moveit::task_constructor::stages::CurrentState>();
   bb->set("mtc_stage", stage);
 
-  auto pose = geometry_msgs::Pose();
+  auto pose = geometry_msgs::msg::Pose();
   pose.position.x = 7;
   pose.position.y = -2;
   pose.position.z = 3;
@@ -96,7 +96,7 @@ TEST(MTCProperties, SetMTCProperties)
   ASSERT_STREQ(stage->properties().get<std::string>("string<>").c_str(), "");
   ASSERT_STREQ(stage->properties().get<std::string>("string<BehaviorTree.CPP>").c_str(), "BehaviorTree.CPP");
 
-  const auto& p = stage->properties().get<geometry_msgs::Pose>("geometry_msgs::Pose");
+  const auto& p = stage->properties().get<geometry_msgs::msg::Pose>("geometry_msgs::msg::Pose");
   EXPECT_NEAR(p.position.x, pose.position.x, EPS_DOUBLE);
   EXPECT_NEAR(p.position.y, pose.position.y, EPS_DOUBLE);
   EXPECT_NEAR(p.position.z, pose.position.z, EPS_DOUBLE);
