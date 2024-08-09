@@ -101,9 +101,9 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreatePlanningSceneInterface>("CreatePlanningSceneInterface");
   factory.registerNodeType<AddObjectToPlanningScene>("AddObjectToPlanningScene");
   factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
-  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
+  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask", BT::RosNodeParams(node));
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
-  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
+  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner", BT::RosNodeParams(node));
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
   factory.registerNodeType<AllowCollisionPairs>("AllowCollisionPairs");
   factory.registerNodeType<ForbidAllCollisions>("ForbidAllCollisions");

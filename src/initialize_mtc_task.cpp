@@ -2,22 +2,19 @@
 
 #include <moveit/task_constructor/task.h>
 
-#include <rclcpp/node.hpp>
-
 namespace BT {
 namespace MTC {
 
 InitializeMTCTask::InitializeMTCTask(const std::string& name,
-                                     const BT::NodeConfig& config)
-  : SyncActionNode(name, config)
+                                     const BT::NodeConfig& config, 
+                                     const BT::RosNodeParams& params)
+  : SyncActionNode(name, config), node_(params.nh.lock())
 {}
 
 BT::NodeStatus InitializeMTCTask::tick()
 {
   auto task = std::make_shared<moveit::task_constructor::Task>();
-
-  auto node = std::make_shared<rclcpp::Node>("initialize_mtc_task");
-  task->loadRobotModel(node);
+  task->loadRobotModel(node_);
 
   //Convert raw pointer to share pointer
   auto container = std::shared_ptr<moveit::task_constructor::ContainerBase>(task->stages());

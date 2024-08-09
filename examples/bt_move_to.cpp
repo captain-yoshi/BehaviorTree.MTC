@@ -87,8 +87,8 @@ int main(int argc, char** argv)
 
   BehaviorTreeFactory factory;
 
-  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
-  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
+  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask", BT::RosNodeParams(node));
+  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner", BT::RosNodeParams(node));
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<CreateMTCMoveToNamedJointPose>("CreateMTCMoveToNamedJointPose");
   factory.registerNodeType<CreateMTCMoveToJoint>("CreateMTCMoveToJoint");

@@ -6,16 +6,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ament_cmake REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(behaviortree_ros2 REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(moveit_task_constructor_core REQUIRED)
 find_package(rclcpp REQUIRED)
 
 include_directories(
   include 
-  # include/${PROJECT_NAME}
 )
 
-# Create library
 add_library(${PROJECT_NAME}
   # utilities
   src/geometry_msgs.cpp
@@ -45,6 +44,7 @@ add_library(${PROJECT_NAME}
 
 ament_target_dependencies(${PROJECT_NAME} 
   behaviortree_cpp
+  behaviortree_ros2
   geometry_msgs
   moveit_task_constructor_core
   rclcpp
@@ -97,6 +97,4 @@ install(TARGETS
   LIBRARY DESTINATION lib/${PROJECT_NAME}
 )
 
-ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
 ament_package()

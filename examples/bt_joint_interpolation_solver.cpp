@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 
   BehaviorTreeFactory factory;
 
-  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
+  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask", BT::RosNodeParams(node));
   factory.registerNodeType<CreateMTCJointInterpolation>("CreateMTCJointInterpolation");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<CreateMTCMoveRelativeJoint>("CreateMTCMoveRelativeJoint");

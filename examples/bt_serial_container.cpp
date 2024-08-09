@@ -69,8 +69,8 @@ int main(int argc, char** argv)
 
   BehaviorTreeFactory factory;
 
-  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
-  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
+  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask", BT::RosNodeParams(node));
+  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner", BT::RosNodeParams(node));
   factory.registerNodeType<CreateMTCSerialContainer>("CreateMTCSerialContainer");
   factory.registerNodeType<CreateMTCMoveRelativeTranslate>("CreateMTCMoveRelativeTranslate");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
