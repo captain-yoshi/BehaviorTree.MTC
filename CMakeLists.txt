@@ -15,7 +15,7 @@ include_directories(
   include 
 )
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} 
   # utilities
   src/geometry_msgs.cpp
 
@@ -42,7 +42,8 @@ add_library(${PROJECT_NAME}
   src/plan_mtc_task.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} 
+ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_target_dependencies(${PROJECT_NAME}
   behaviortree_cpp
   behaviortree_ros2
   geometry_msgs
@@ -81,12 +82,12 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
-install(DIRECTORY include/
+install(
+  DIRECTORY include/${PROJECT_NAME}
   DESTINATION include
 )
 
-install(TARGETS
-  ${PROJECT_NAME} 
+install(TARGETS 
   bt_allow_collisions
   bt_create_collision_object
   bt_compute_ik
@@ -96,9 +97,16 @@ install(TARGETS
   bt_move_relative
   bt_move_to
   bt_serial_container
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
-  ARCHIVE DESTINATION lib/${PROJECT_NAME}
-  LIBRARY DESTINATION lib/${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
 ament_package()
