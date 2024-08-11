@@ -81,6 +81,10 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
+install(DIRECTORY include/
+  DESTINATION include
+)
+
 install(TARGETS
   ${PROJECT_NAME} 
   bt_allow_collisions
