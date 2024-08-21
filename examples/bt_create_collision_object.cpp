@@ -61,7 +61,11 @@ static const char* xml_text = R"(
 int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
-  auto node = rclcpp::Node::make_shared("test_behavior_tree");
+  rclcpp::NodeOptions options;
+  
+  // Declare parameters passed by a launch file
+  options.automatically_declare_parameters_from_overrides(true);
+  auto node = rclcpp::Node::make_shared("test_behavior_tree", options);
 
   BehaviorTreeFactory factory;
 
