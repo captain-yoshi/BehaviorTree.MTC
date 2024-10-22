@@ -4,12 +4,22 @@
   <description>Use MoveIt Task Constructor with BehaviorTree.CPP</description>
 
   <maintainer email="captain.yoshisaur@gmail.com">Captain Yoshi</maintainer>
+  <maintainer email="d.garcialopez@hotmail.com">Daniel Garcia Lopez</maintainer>
   <license>MIT</license>
   <author>Captain Yoshi</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>behaviortree_cpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>moveit_msgs</depend>
+  <depend>moveit_ros_planning_interface</depend>
   <depend>moveit_task_constructor_core</depend>
+  <depend>rclcpp</depend>
 
+  <test_depend>ament_cmake_gtest</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

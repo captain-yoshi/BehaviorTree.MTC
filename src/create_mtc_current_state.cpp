@@ -3,15 +3,8 @@
 
 #include <moveit/task_constructor/stages/current_state.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
-
-namespace
-{
-constexpr auto kPortStage = "stage";
-
-}  // namespace
+namespace BT {
+namespace MTC {
 
 CreateMTCCurrentState::CreateMTCCurrentState(const std::string& name,
                                              const BT::NodeConfig& config)
@@ -20,15 +13,15 @@ CreateMTCCurrentState::CreateMTCCurrentState(const std::string& name,
 
 BT::NodeStatus CreateMTCCurrentState::tick()
 {
-  std::shared_ptr<MTC::stages::CurrentState> stage{
-    new MTC::stages::CurrentState("current state"),
+  std::shared_ptr<moveit::task_constructor::stages::CurrentState> stage{
+    new moveit::task_constructor::stages::CurrentState("current state"),
     dirty::fake_deleter{}
   };
 
   // Upcast to base class
-  MTC::StagePtr base_stage = stage;
+  moveit::task_constructor::StagePtr base_stage = stage;
 
-  setOutput(kPortStage, base_stage);
+  setOutput("stage", base_stage);
 
   return NodeStatus::SUCCESS;
 }
@@ -36,7 +29,10 @@ BT::NodeStatus CreateMTCCurrentState::tick()
 BT::PortsList CreateMTCCurrentState::providedPorts()
 {
   return {
-    BT::OutputPort<MTC::StagePtr>(kPortStage, "{mtc_stage}",
-                                  "MoveIt Task Constructor stage."),
+    BT::OutputPort<moveit::task_constructor::StagePtr>("stage", "{mtc_stage}",
+                                                       "MoveIt Task Constructor stage."),
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

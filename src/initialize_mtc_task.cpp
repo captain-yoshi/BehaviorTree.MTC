@@ -2,29 +2,25 @@
 
 #include <moveit/task_constructor/task.h>
 
-using namespace BT;
-using namespace bt_mtc;
-namespace MTC = moveit::task_constructor;
-
-namespace
-{
-constexpr auto kPortTask = "task";
-constexpr auto kPortContainer = "container";
-
-}  // namespace
+namespace BT {
+namespace MTC {
 
 InitializeMTCTask::InitializeMTCTask(const std::string& name,
-                                     const BT::NodeConfig& config)
-  : SyncActionNode(name, config)
+                                     const BT::NodeConfig& config, 
+                                     const BT::RosNodeParams& params)
+  : SyncActionNode(name, config), node_(params.nh.lock())
 {}
 
 BT::NodeStatus InitializeMTCTask::tick()
 {
-  std::shared_ptr<MTC::Task> task = std::make_shared<MTC::Task>();
-  task->loadRobotModel();
+  auto task = std::make_shared<moveit::task_constructor::Task>();
+  task->loadRobotModel(node_);
 
-  setOutput(kPortTask, task);
-  setOutput(kPortContainer, task->stages());
+  //Convert raw pointer to share pointer
+  auto container = std::shared_ptr<moveit::task_constructor::ContainerBase>(task->stages());
+
+  setOutput("task", task);
+  setOutput("container", container);
 
   return NodeStatus::SUCCESS;
 }
@@ -32,9 +28,12 @@ BT::NodeStatus InitializeMTCTask::tick()
 BT::PortsList InitializeMTCTask::providedPorts()
 {
   return {
-    BT::OutputPort<MTC::TaskPtr>(kPortTask, "{mtc_task}",
-                                 "MoveIt Task Constructor task."),
-    BT::OutputPort<MTC::ContainerBase*>(kPortContainer),
+    BT::OutputPort<moveit::task_constructor::TaskPtr>("task", "{mtc_task}",
+                                                      "MoveIt Task Constructor task."),
+    BT::OutputPort<moveit::task_constructor::ContainerBasePtr>("container"),
 
   };
 }
+
+}  // namespace MTC
+}  // namespace BT

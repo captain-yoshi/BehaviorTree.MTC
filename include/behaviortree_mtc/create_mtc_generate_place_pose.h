@@ -5,10 +5,10 @@
 namespace BT {
 namespace MTC {
 
-class MoveMTCStageToContainer : public BT::SyncActionNode
+class CreateMTCGeneratePlacePose : public BT::SyncActionNode
 {
 public:
-  MoveMTCStageToContainer(const std::string& name, const BT::NodeConfig& config);
+  CreateMTCGeneratePlacePose(const std::string& name, const BT::NodeConfig& config);
 
   BT::NodeStatus tick() override;
   static BT::PortsList providedPorts();

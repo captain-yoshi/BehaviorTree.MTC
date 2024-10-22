@@ -1,9 +1,13 @@
 #include <rclcpp/rclcpp.hpp>
 
-#include <behaviortree_mtc/create_mtc_current_state.h>
 #include <behaviortree_mtc/initialize_mtc_task.h>
+#include <behaviortree_mtc/create_mtc_current_state.h>
+#include <behaviortree_mtc/create_mtc_move_relative.h>
 #include <behaviortree_mtc/move_mtc_stage_to_container.h>
+#include <behaviortree_mtc/create_mtc_joint_interpolation.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
+
+#include <behaviortree_mtc/geometry_msgs.h>
 
 #include "behaviortree_cpp/bt_factory.h"
 #include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
@@ -17,14 +21,24 @@ static const char* xml_text = R"(
 
  <root BTCPP_format="4" >
 
-     <BehaviorTree ID="MainTree">
-        <Sequence name="root">
-            <InitializeMTCTask        task="{mtc_task}" container="{container}" />
-            <CreateMTCCurrentState    stage="{stage}" />
-            <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
-            <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
-        </Sequence>
-     </BehaviorTree>
+   <BehaviorTree ID="MainTree">
+     <Sequence name="root">
+       <InitializeMTCTask        task="{mtc_task}" container="{container}" />
+       <CreateMTCJointInterpolation  solver="{joint_solver}" />
+       <CreateMTCCurrentState        stage="{stage}" />
+       <MoveMTCStageToContainer      container="{container}" stage="{stage}" />
+       <!-- Joint Motion -> return end joint to default value -->
+       <GeometryMsgsPoseStamped  frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
+       <CreateMTCMoveRelativeJoint name="move relative -> joint motion"
+                                   group="panda_arm"
+                                   solver="{joint_solver}"
+                                   ik_frame="{ik_frame}"
+                                   direction="panda_joint7:-1.57079632679"
+                                   stage="{stage_move_rel_joint}" />
+       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_rel_joint}" />
+       <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
+     </Sequence>
+   </BehaviorTree>
 
  </root>
  )";
@@ -42,9 +56,13 @@ int main(int argc, char** argv)
   BehaviorTreeFactory factory;
 
   factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask", BT::RosNodeParams(node));
+  factory.registerNodeType<CreateMTCJointInterpolation>("CreateMTCJointInterpolation");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
+  factory.registerNodeType<CreateMTCMoveRelativeJoint>("CreateMTCMoveRelativeJoint");
   factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
+
+  factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");
 
   auto tree = factory.createTreeFromText(xml_text);
 
@@ -63,8 +81,10 @@ int main(int argc, char** argv)
   int wait_time = 5000;
   std::cout << "Waiting " << wait_time << " msec for connection with Groot2...\n\n"
             << std::endl;
-  std::cout << "======================" << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
+
+  std::cout << "Starting Behavior Tree" << std::endl;
+  std::cout << "======================" << std::endl;
 
   NodeStatus status = NodeStatus::IDLE;
 
