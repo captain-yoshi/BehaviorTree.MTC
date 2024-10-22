@@ -18,23 +18,24 @@ BT::NodeStatus CreateMTCCartesianPath::tick()
   double max_velocity_scaling_factor;
   double max_acceleration_scaling_factor;
   double step_size;
-  double jump_treshold;
   double min_fraction;
+  moveit::core::CartesianPrecision precision;
 
   if(!getInput("max_velocity_scaling_factor", max_velocity_scaling_factor) ||
      !getInput("max_acceleration_scaling_factor", max_acceleration_scaling_factor) ||
      !getInput("step_size", step_size) ||
      !getInput("min_fraction", min_fraction) ||
-     !getInput("jump_threshold", jump_treshold))
+     !getInput("precision", precision))
     return NodeStatus::FAILURE;
 
-  //build solver
+  // Build solver
   auto solver = std::make_shared<moveit::task_constructor::solvers::CartesianPath>();
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setStepSize(step_size);
-  solver->setJumpThreshold(jump_treshold);
   solver->setMinFraction(min_fraction);
+  solver->setPrecision(precision);
+
   // Upcast to base class
   moveit::task_constructor::solvers::PlannerInterfacePtr base_solver = solver;
 
@@ -47,9 +48,9 @@ BT::PortsList CreateMTCCartesianPath::providedPorts()
   return {
     BT::InputPort<double>("max_velocity_scaling_factor", 0.1, "scale down max velocity by this factor"),
     BT::InputPort<double>("max_acceleration_scaling_factor", 0.1, "scale down max acceleration by this factor"),
-    BT::InputPort<double>("step_size", 0.01, "step size between consecutive waypoints"),
     BT::InputPort<double>("min_fraction", 1.0, "fraction of motion required for success"),
-    BT::InputPort<double>("jump_threshold", 1.5, "acceptable fraction of mean joint motion per step"),
+    BT::InputPort<moveit::core::CartesianPrecision>("precision", moveit::core::CartesianPrecision({ .translational = 0.001, .rotational = 0.01, .max_resolution = 1e-5 }), "linear and rotational precision"),
+    BT::InputPort<double>("step_size", 0.01, "step size between consecutive waypoints"),
     BT::OutputPort<moveit::task_constructor::solvers::PlannerInterfacePtr>("solver", "{solver}", "Planner interface using pipeline motion solver"),
   };
 }
