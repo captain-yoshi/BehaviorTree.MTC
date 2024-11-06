@@ -2,7 +2,7 @@
 
 #include <behaviortree_mtc/initialize_mtc_task.h>
 #include <behaviortree_mtc/create_mtc_current_state.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
+#include <behaviortree_mtc/move_mtc_stage.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 
 #include "behaviortree_cpp/bt_factory.h"
@@ -19,9 +19,9 @@ static const char* xml_text = R"(
 
      <BehaviorTree ID="MainTree">
         <Sequence name="root">
-            <InitializeMTCTask        task="{mtc_task}" container="{container}" />
+            <InitializeMTCTask        task="{mtc_task}" />
             <CreateMTCCurrentState    stage="{stage}" />
-            <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
+            <MoveMTCStageToTask       child="{stage}" parent="{mtc_task}" />
             <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
         </Sequence>
      </BehaviorTree>
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 
   factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
-  factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
 
   auto tree = factory.createTreeFromText(xml_text);

@@ -4,7 +4,7 @@
 #include <behaviortree_mtc/create_mtc_current_state.h>
 #include <behaviortree_mtc/create_mtc_move_to.h>
 #include <behaviortree_mtc/create_mtc_pipeline_planner.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
+#include <behaviortree_mtc/move_mtc_stage.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 
 #include <behaviortree_mtc/geometry_msgs.h>
@@ -23,12 +23,12 @@ static const char* xml_text = R"(
 
    <BehaviorTree ID="MainTree">
      <Sequence name="root">
-       <InitializeMTCTask        task="{mtc_task}" container="{container}" />
+       <InitializeMTCTask        task="{mtc_task}" />
        <CreateMTCPipelinePlanner pipeline_id="ompl"
                                  planner_id="RRTConnect"
                                  solver="{rrt_connect}"/>
        <CreateMTCCurrentState    stage="{stage}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
+       <MoveMTCStageToTask child="{stage}" parent="{mtc_task}" />
 
        <!-- joint named position motion -->
        <CreateMTCMoveToNamedJointPose name="move to -> close_hand motion"
@@ -36,13 +36,14 @@ static const char* xml_text = R"(
                                       solver="{rrt_connect}"
                                       goal="close"
                                       stage="{stage_move_to_close_hand}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_to_close_hand}" />
+       <MoveMTCStageToTask  parent="{mtc_task}" child="{stage_move_to_close_hand}" />
+
        <CreateMTCMoveToNamedJointPose name="move to -> open_hand motion"
                                       group="hand"
                                       solver="{rrt_connect}"
                                       goal="open"
                                       stage="{stage_move_to_open_hand}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_to_open_hand}" />
+       <MoveMTCStageToTask  child="{stage_move_to_open_hand}" parent="{mtc_task}" />
        
        <!-- joint motion -->
        <CreateMTCMoveToJoint       name="move to -> joint motion"
@@ -50,7 +51,7 @@ static const char* xml_text = R"(
                                    solver="{rrt_connect}"
                                    goal="panda_joint7:-1.57079632679,panda_joint6:3.14"
                                    stage="{stage_move_to_joint}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_to_joint}" />
+       <MoveMTCStageToTask  parent="{mtc_task}" child="{stage_move_to_joint}" />
        
        <!-- cartesian pose motion -->
        <GeometryMsgsPoseStamped frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
@@ -61,9 +62,9 @@ static const char* xml_text = R"(
                                 ik_frame="{ik_frame}"
                                 goal="{goal_pose}"
                                 stage="{stage_move_to_pose}" />
-      <MoveMTCStageToContainer  container="{container}" stage="{stage_move_to_pose}" />
+       <MoveMTCStageToTask      child="{stage_move_to_pose}" parent="{mtc_task}" />
       
-      <!-- cartesian point motion -->
+       <!-- cartesian point motion -->
        <GeometryMsgsPointStamped frame_id="panda_link8" point="0,0.05,0" point_stamped="{goal_point}"/>
        <CreateMTCMoveToPoint     name="move to -> cartesian point motion"
                                  group="panda_arm"
@@ -71,7 +72,7 @@ static const char* xml_text = R"(
                                  ik_frame="{ik_frame}"
                                  goal="{goal_point}"
                                  stage="{stage_move_to_point}" />
-      <MoveMTCStageToContainer  container="{container}" stage="{stage_move_to_point}" />
+       <MoveMTCStageToTask  child="{stage_move_to_point}" parent="{mtc_task}" />
        <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
      </Sequence>
    </BehaviorTree>
@@ -95,7 +96,7 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCMoveToJoint>("CreateMTCMoveToJoint");
   factory.registerNodeType<CreateMTCMoveToPose>("CreateMTCMoveToPose");
   factory.registerNodeType<CreateMTCMoveToPoint>("CreateMTCMoveToPoint");
-  factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
 
   factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");

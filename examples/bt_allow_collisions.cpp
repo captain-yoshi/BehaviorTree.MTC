@@ -2,7 +2,7 @@
 
 #include <behaviortree_mtc/initialize_mtc_task.h>
 #include <behaviortree_mtc/create_mtc_current_state.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
+#include <behaviortree_mtc/move_mtc_stage.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 #include <behaviortree_mtc/moveit_msgs.h>
 #include <behaviortree_mtc/geometry_msgs.h>
@@ -62,23 +62,23 @@ static const char* xml_text = R"(
                                                 collision_object="{cylinder}"  />
             <AddObjectToPlanningScene  planning_scene_interface="{psi}" 
                                        collision_object="{cylinder}"/> 
-            <InitializeMTCTask        task="{mtc_task}" container="{task_container}" />
+            <InitializeMTCTask        task="{mtc_task}" />
             <CreateMTCPipelinePlanner pipeline_id="ompl"
                                  planner_id="RRTConnect"
                                  solver="{rrt_connect}"
                                  goal_joint_tolerance="1e-5" />
             <CreateMTCCurrentState    stage="{current_state}" />
-            <MoveMTCStageToContainer  container="{task_container}" stage="{current_state}" />
+            <MoveMTCStageToTask  child="{current_state}" parent="{mtc_task}" />
             <AllowCollisionsJointModelGroup stage_name="allow collisions -> hand,object"
                                             stage="{allow_collisions}"
                                             objects="{object_name}"
                                             jmg_name="{hand_group_name}"
                                             task="{mtc_task}" />
-            <MoveMTCStageToContainer  container="{task_container}"  stage="{allow_collisions}" />
+            <MoveMTCStageToTask  child="{allow_collisions}" parent="{mtc_task}" />
             <ForbidAllCollisions  stage_name="forbid collisions -> hand,object"
                                   stage="{forbid_collisions}"
                                   objects="{object_name}" />
-            <MoveMTCStageToContainer  container="{task_container}"  stage="{forbid_collisions}" />
+            <MoveMTCStageToTask  child="{forbid_collisions}" parent="{mtc_task}" />
             <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
         </Sequence>
      </BehaviorTree>
@@ -102,10 +102,10 @@ int main(int argc, char** argv)
   factory.registerNodeType<MoveItMsgsCollisionObjectBox>("MoveItMsgsCollisionObjectBox");
   factory.registerNodeType<CreatePlanningSceneInterface>("CreatePlanningSceneInterface");
   factory.registerNodeType<AddObjectToPlanningScene>("AddObjectToPlanningScene");
-  factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
   factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
   factory.registerNodeType<AllowCollisionPairs>("AllowCollisionPairs");
   factory.registerNodeType<ForbidAllCollisions>("ForbidAllCollisions");
