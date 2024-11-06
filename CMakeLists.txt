@@ -52,8 +52,6 @@ add_library(${PROJECT_NAME}
   src/get_mtc_raw_stage.cpp
   src/initialize_mtc_task.cpp
   src/moveit_msgs.cpp
-  src/move_mtc_stage_to_container.cpp
-  src/move_mtc_container_to_parent_container.cpp
   src/plan_mtc_task.cpp
 )
 
