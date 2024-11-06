@@ -1,7 +1,6 @@
 #include <behaviortree_mtc/initialize_mtc_task.h>
 #include <behaviortree_mtc/create_mtc_current_state.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
-#include <behaviortree_mtc/move_mtc_container_to_parent_container.h>
+#include <behaviortree_mtc/move_mtc_stage.h>
 #include <behaviortree_mtc/create_mtc_serial_container.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 #include <behaviortree_mtc/moveit_msgs.h>
@@ -33,7 +32,6 @@ using namespace BT::MTC;
 
 int main(int argc, char** argv)
 {
-  
   BehaviorTreeFactory factory;
 
   factory.registerNodeType<GeometryMsgsPose>("GeometryMsgsPose");
@@ -44,8 +42,10 @@ int main(int argc, char** argv)
   factory.registerNodeType<MoveItMsgsCollisionObjectBox>("MoveItMsgsCollisionObjectBox");
   factory.registerNodeType<CreatePlanningSceneInterface>("CreatePlanningSceneInterface");
   factory.registerNodeType<AddObjectToPlanningScene>("AddObjectToPlanningScene");
-  factory.registerNodeType<MoveMTCContainerToParentContainer>("MoveMTCContainerToParentContainer");
-  factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::ContainerBase>>("MoveMTCStageToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::ContainerBase, moveit::task_constructor::ContainerBase>>("MoveMTCContainerToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::ContainerBase, moveit::task_constructor::Task>>("MoveMTCContainerToTask");
   factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
@@ -77,18 +77,18 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCGeneratePlacePose>("CreateMTCGeneratePlacePose");
 
   std::string xml_models = BT::writeTreeNodesModelXML(factory);
-  std::string filePath = "./config/bt_mtc.xml";
+  std::string filePath = "./config/bt_mtc_model.xml";
   std::ofstream file(filePath);
-    if (file.is_open())
-    {
-        file << xml_models;
-        file.close();
-        std::cout << "File saved successfully: " << filePath << std::endl;
-    }
-    else
-    {
-        std::cerr << "Unable to open file: " << filePath << std::endl;
-    }
+  if(file.is_open())
+  {
+    file << xml_models;
+    file.close();
+    std::cout << "File saved successfully: " << filePath << std::endl;
+  }
+  else
+  {
+    std::cerr << "Unable to open file: " << filePath << std::endl;
+  }
 
   return 0;
 }

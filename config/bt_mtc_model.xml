@@ -28,10 +28,10 @@
             <input_port name="source_flag" type="moveit::task_constructor::Stage::PropertyInitializerSource">Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}</input_port>
         </Action>
         <Action ID="CreateMTCCartesianPath">
-            <output_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;" default="{solver}">Planner interface using pipeline motion solver</output_port>
-            <input_port name="jump_threshold" type="double" default="1.500000">acceptable fraction of mean joint motion per step</input_port>
-            <input_port name="min_fraction" type="double" default="1.000000">fraction of motion required for success</input_port>
             <input_port name="step_size" type="double" default="0.010000">step size between consecutive waypoints</input_port>
+            <output_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;" default="{solver}">Planner interface using pipeline motion solver</output_port>
+            <input_port name="precision" type="moveit::core::CartesianPrecision" default="">linear and rotational precision</input_port>
+            <input_port name="min_fraction" type="double" default="1.000000">fraction of motion required for success</input_port>
             <input_port name="max_acceleration_scaling_factor" type="double" default="0.100000">scale down max acceleration by this factor</input_port>
             <input_port name="max_velocity_scaling_factor" type="double" default="0.100000">scale down max velocity by this factor</input_port>
         </Action>
@@ -226,7 +226,6 @@
             <input_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MTC stage</input_port>
         </Action>
         <Action ID="InitializeMTCTask">
-            <output_port name="container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
             <output_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;" default="{mtc_task}">MoveIt Task Constructor task.</output_port>
         </Action>
         <Action ID="MoveItMsgsCollisionObjectBox">
@@ -246,13 +245,21 @@
             <input_port name="radius" type="double" default="1.0">cylinder radius (m)</input_port>
             <input_port name="pose" type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
         </Action>
-        <Action ID="MoveMTCContainerToParentContainer">
-            <inout_port name="parent_container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
-            <input_port name="child_container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+        <Action ID="MoveMTCContainerToContainer">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+        </Action>
+        <Action ID="MoveMTCContainerToTask">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
         </Action>
         <Action ID="MoveMTCStageToContainer">
-            <inout_port name="container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
-            <input_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+        </Action>
+        <Action ID="MoveMTCStageToTask">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
         </Action>
         <Action ID="PlanMTCTask">
             <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
