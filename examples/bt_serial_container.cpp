@@ -5,8 +5,7 @@
 #include <behaviortree_mtc/create_mtc_move_relative.h>
 #include <behaviortree_mtc/create_mtc_serial_container.h>
 #include <behaviortree_mtc/create_mtc_pipeline_planner.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
-#include <behaviortree_mtc/move_mtc_container_to_parent_container.h>
+#include <behaviortree_mtc/move_mtc_stage.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 
 #include <behaviortree_mtc/geometry_msgs.h>
@@ -25,12 +24,12 @@ static const char* xml_text = R"(
 
    <BehaviorTree ID="MainTree">
      <Sequence name="root">
-       <InitializeMTCTask        task="{mtc_task}" container="{container}" />
+       <InitializeMTCTask        task="{mtc_task}" />
        <CreateMTCPipelinePlanner pipeline_id="ompl"
                                  planner_id="RRTConnect"
                                  solver="{rrt_connect}" />
        <CreateMTCCurrentState    stage="{stage}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage}" />
+       <MoveMTCStageToTask child="{stage}" parent="{mtc_task}" />
 
        <!-- Translate Motion -> 200mm towards x axis wrt. panda_link8 -->
        <GeometryMsgsPoseStamped  frame_id="panda_link8" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
@@ -41,7 +40,7 @@ static const char* xml_text = R"(
                                        ik_frame="{ik_frame}"
                                        direction="{tcp_translate}"
                                        stage="{stage_move_rel_translate}" />
-       <MoveMTCStageToContainer  container="{container}" stage="{stage_move_rel_translate}" />
+       <MoveMTCStageToTask child="{stage_move_rel_translate}" parent="{mtc_task}" />
        <CreateMTCSerialContainer container_name="approach_object"
                                  container="{serial_container}"/>
        <!-- Translate Motion-->
@@ -52,8 +51,8 @@ static const char* xml_text = R"(
                                        ik_frame="{ik_frame}"
                                        direction="{tcp_translate}"
                                        stage="{stage_move_rel_translate2}" />
-       <MoveMTCStageToContainer  container="{serial_container}" stage="{stage_move_rel_translate2}" />
-       <MoveMTCContainerToParentContainer  parent_container="{container}" child_container="{serial_container}" />
+       <MoveMTCStageToContainer  child="{stage_move_rel_translate2}" parent="{serial_container}" />
+       <MoveMTCContainerToTask   child="{serial_container}" parent="{mtc_task}" />
        <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
      </Sequence>
    </BehaviorTree>
@@ -76,8 +75,9 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreateMTCSerialContainer>("CreateMTCSerialContainer");
   factory.registerNodeType<CreateMTCMoveRelativeTranslate>("CreateMTCMoveRelativeTranslate");
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
-  factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
-  factory.registerNodeType<MoveMTCContainerToParentContainer>("MoveMTCContainerToParentContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::ContainerBase>>("MoveMTCStageToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::ContainerBase, moveit::task_constructor::Task>>("MoveMTCContainerToTask");
   factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
 
   factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");

@@ -1,9 +1,5 @@
 #include <ros/ros.h>
 
-#include <behaviortree_mtc/initialize_mtc_task.h>
-#include <behaviortree_mtc/create_mtc_current_state.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
-#include <behaviortree_mtc/plan_mtc_task.h>
 #include <behaviortree_mtc/moveit_msgs.h>
 #include <behaviortree_mtc/geometry_msgs.h>
 #include <behaviortree_mtc/create_planning_scene_interface.h>
