@@ -23,7 +23,6 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
   double timeout;
 
   if(!getInput("stage_name", name) ||
-     !getInput("group", group) ||
      !getInput("solver", solver) ||
      !getInput("ik_frame", ik_frame) ||
      !getInput("min_distance", min_distance) ||
@@ -37,7 +36,10 @@ BT::NodeStatus CreateMTCMoveRelativeBase::tick(std::shared_ptr<moveit::task_cons
     dirty::fake_deleter{}
   };
 
-  stage->setGroup(group);
+  //Optionnal
+  if(getInput("group", group))
+    stage->setGroup(group);
+
   stage->setIKFrame(*ik_frame);
   stage->setMinMaxDistance(min_distance, max_distance);
   stage->setTimeout(timeout);
