@@ -287,7 +287,7 @@ static const char* xml_text = R"(
             <MoveMTCStageToTask child="{stage_move_to_home}" parent="{mtc_task}" />
 
             <!-- Plan the Task -->
-            <PlanMTCTask task="{mtc_task}" max_solutions="5" />
+            <PlanMTCTask task="{mtc_task}" max_solutions="10" />
         </Sequence>
      </BehaviorTree>
 
