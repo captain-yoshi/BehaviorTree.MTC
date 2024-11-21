@@ -81,7 +81,7 @@ static const char* xml_text = R"(
 
             <!-- Create Solvers -->
             <CreateMTCPipelinePlanner pipeline_id="ompl" planner_id="RRTConnect" solver="{rrt_connect}" goal_joint_tolerance="1e-5" />
-            <CreateMTCCartesianPath solver="{cartesian}" max_velocity_scaling_factor="1.0" max_acceleration_scaling_factor="1.0" />
+            <CreateMTCCartesianPath solver="{cartesian_planner}" max_velocity_scaling_factor="1.0" max_acceleration_scaling_factor="1.0" />
 
             <!-- Current State -->
             <CreateMTCCurrentState stage="{current_state}" />
@@ -117,7 +117,7 @@ static const char* xml_text = R"(
                 <GeometryMsgsVector3Stamped frame_id="{hand_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
                 <CreateMTCMoveRelativeTranslate stage_name="approach object"
                                                 stage="{approach_object}"
-                                                solver="{rrt_connect}"
+                                                solver="{cartesian_planner}"
                                                 ik_frame="{ik_frame}"
                                                 direction="{tcp_translate}"
                                                 min_distance="0.1"
@@ -178,7 +178,7 @@ static const char* xml_text = R"(
                 <GeometryMsgsVector3Stamped frame_id="{reference_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
                 <CreateMTCMoveRelativeTranslate stage_name="lift object"
                                                 stage="{lift_object}"
-                                                solver="{cartesian}"
+                                                solver="{cartesian_planner}"
                                                 ik_frame="{ik_frame}"
                                                 direction="{tcp_translate}"
                                                 min_distance="0.01"
@@ -216,7 +216,7 @@ static const char* xml_text = R"(
                 <GeometryMsgsVector3Stamped frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate2}" />
                 <CreateMTCMoveRelativeTranslate stage_name="lower object"
                                                 stage="{lower_object}"
-                                                solver="{cartesian}"
+                                                solver="{cartesian_planner}"
                                                 ik_frame="{ik_frame}"
                                                 direction="{tcp_translate2}"
                                                 min_distance="0.03"
@@ -267,7 +267,7 @@ static const char* xml_text = R"(
                 <GeometryMsgsVector3Stamped frame_id="{hand_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate3}" />
                 <CreateMTCMoveRelativeTranslate stage_name="retreat after place"
                                                 stage="{retreat_after_place}"
-                                                solver="{cartesian}"
+                                                solver="{cartesian_planner}"
                                                 ik_frame="{ik_frame}"
                                                 direction="{tcp_translate3}"
                                                 min_distance="0.12"
