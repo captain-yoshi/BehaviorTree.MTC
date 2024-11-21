@@ -213,12 +213,12 @@ static const char* xml_text = R"(
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "test_behavior_tree");
+  ros::NodeHandle pnh("~");
 
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
   BehaviorTreeFactory factory;
-
   factory.registerNodeType<GeometryMsgsPose>("GeometryMsgsPose");
   factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");
   factory.registerNodeType<GeometryMsgsVector3Stamped>("GeometryMsgsVector3Stamped");
@@ -264,12 +264,17 @@ int main(int argc, char** argv)
   BT::FileLogger2 logger2(tree, "t12_logger2.btlog");
 
   // Gives the user time to connect to Groot2
-  int wait_time = 5000;
-  std::cout << "Waiting " << wait_time << " msec for connection with Groot2...\n\n"
-            << std::endl;
-  std::cout << "======================" << std::endl;
-  std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
+  int delay_ms;
+  pnh.param<int>("delay_ms", delay_ms, 0.0);
+  if(delay_ms)
+  {
+    std::cout << "Waiting " << delay_ms << " msec for connection with Groot2...\n\n"
+              << std::endl;
+    std::cout << "======================" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+  }
 
+  // Start ticking the Tree
   std::cout << "Starting Behavior Tree" << std::endl;
   std::cout << "======================" << std::endl;
 
@@ -288,70 +293,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
-/**
- * 
-            <CreateMTCModifyPlanningSceneAttachObjects  stage_name="attach object"
-                                                        stage="{attach_object}"
-                                                        object_names="{object_name}"
-                                                        link_name="{hand_frame}" />
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{attach_object}" />
-            <AllowCollisionPairs  stage_name="allow collisions -> object,support"
-                                  stage="{allow_collisions_table}"
-                                  first="{object_name}"
-                                  second="table" /> 
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{allow_collisions_table}" />
-            <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
-            <CreateMTCMoveRelativeTranslate  stage_name="lift object"
-                                             stage="{lift_object}"
-                                             group="{arm_group_name}"
-                                             solver="{cartesian}"
-                                             ik_frame="{ik_frame}"
-                                             direction="{tcp_translate}"
-                                             min_distance="0.01"
-                                             max_distance="0.1" />
-            <MoveMTCStageToContainer  container="{pick_object}" stage="{lift_object}" />
-            <ForbidCollisionPairs  stage_name="forbid collisions -> object,support"
-                                          stage="{forbid_collisions_table}"
-                                          first="{object_name}"
-                                          second="table" />
-            <GetMTCRawStage  stage="{forbid_collisions_table}" raw_stage="{raw_forbid_collisions_table}}"  /> 
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{forbid_collisions_table}" />    
-            <MoveMTCContainerToParentContainer parent_container="{task_container}"  child_container="{pick_object}" />
-            <CreateMTCConnect  stage_name="Move To Place"
-                               timeout="5.0"
-                               group="{arm_group_name}"
-                               planner="{rrt_connect}"
-                               stage="{connectPlace}" />
-            <MoveMTCStageToContainer  container="{task_container}" stage="{connectPlace}" />
-            <CreateMTCSerialContainer  container_name="place object"
-                                       serial_container="{place_object}" />
-            <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate}"/>
-            <CreateMTCMoveRelativeTranslate  stage_name="lower object"
-                                             stage="{lower_object}"
-                                             group="{arm_group_name}"
-                                             solver="{cartesian}"
-                                             ik_frame="{ik_frame}"
-                                             direction="{tcp_translate}"
-                                             min_distance="0.03"
-                                             max_distance="0.13" />
-            <MoveMTCStageToContainer  container="{place_object}" stage="{lower_object}" />
- */
-
-//
-
-//
-
-//
-//             <CreateMTCSerialContainer  container_name="place object"
-//                                        serial_container="{place_object}" />
-//             <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate}"/>
-//             <CreateMTCMoveRelativeTranslate  stage_name="lower object"
-//                                              stage="{lower_object}"
-//                                              group="{arm_group_name}"
-//                                              solver="{cartesian}"
-//                                              ik_frame="{ik_frame}"
-//                                              direction="{tcp_translate}"
-//                                              min_distance="0.03"
-//                                              max_distance="0.13" />
-//             <MoveMTCStageToContainer  container="{place_object}" stage="{lower_object}" />
