@@ -32,7 +32,7 @@ static const char* xml_text = R"(
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "test_behavior_tree");
+  ros::init(argc, argv, "bt_mtc_demo");
   ros::NodeHandle pnh("~");
 
   ros::AsyncSpinner spinner(1);
