@@ -87,6 +87,11 @@ install(
   DESTINATION include
 )
 
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 install(TARGETS 
   bt_allow_collisions
   bt_create_collision_object
