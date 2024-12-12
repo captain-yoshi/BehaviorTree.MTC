@@ -21,7 +21,6 @@ BT::NodeStatus CreateMTCGenerateGraspPose::tick()
   Eigen::Vector3d rotation_axis;
   moveit::task_constructor::Stage* monitored_stage;
   if(!getInput("stage_name", name) ||
-     !getInput("eef", eef) ||
      !getInput("angle_delta", angle_delta) ||
      !getInput("object", object) ||
      !getInput("pregrasp_pose", pregrasp_pose) ||
@@ -35,10 +34,14 @@ BT::NodeStatus CreateMTCGenerateGraspPose::tick()
     new moveit::task_constructor::stages::GenerateGraspPose(name),
     dirty::fake_deleter{}
   };
+
+  //Optionnal
+  if(getInput("eef", eef))
+    stage->setEndEffector(eef);
+  
   rotation_axis[0] = rotation_axis_input.x;
   rotation_axis[1] = rotation_axis_input.y;
   rotation_axis[2] = rotation_axis_input.z;
-  stage->setEndEffector(eef);
   stage->setObject(object);
   stage->setAngleDelta(angle_delta);
   stage->setRotationAxis(rotation_axis);

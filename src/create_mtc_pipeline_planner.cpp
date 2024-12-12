@@ -42,8 +42,7 @@ BT::NodeStatus CreateMTCPipelinePlanner::tick()
      !getInput("num_planning_attempts", num_planning_attemps))
     return NodeStatus::FAILURE;
   //build solver
-  auto solver = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(node_, pipeline_id);
-  solver->setPlannerId(planner_id);
+  auto solver = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(node_, pipeline_id, planner_id);
   solver->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
   solver->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
   solver->setProperty("goal_joint_tolerance", goal_joint_tolerance);
@@ -68,8 +67,8 @@ BT::PortsList CreateMTCPipelinePlanner::providedPorts()
     BT::InputPort<double>("goal_joint_tolerance", "1e-4", "tolerance for reaching joint goals"),
     BT::InputPort<double>("goal_position_tolerance", "1e-4", "tolerance for reaching position goals"),
     BT::InputPort<double>("goal_orientation_tolerance", "1e-4", "tolerance for reaching orientation goals"),
-    BT::InputPort<bool>("display_motion_plans", false, "publish generated solutions on topic " + planning_pipeline::PlanningPipeline::DISPLAY_PATH_TOPIC),
-    BT::InputPort<bool>("publish_planning_requests", false, "publish motion planning requests on topic " + planning_pipeline::PlanningPipeline::MOTION_PLAN_REQUEST_TOPIC),
+    BT::InputPort<bool>("display_motion_plans", false, "publish generated solutions on topic "),
+    BT::InputPort<bool>("publish_planning_requests", false, "publish motion planning requests on topic "),
     BT::InputPort<std::string>("planner_id"),
     BT::InputPort<std::string>("pipeline_id"),
     BT::InputPort<uint>("num_planning_attempts", "1u", "number of planning attempts"),
