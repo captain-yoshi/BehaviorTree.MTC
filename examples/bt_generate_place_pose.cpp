@@ -2,8 +2,7 @@
 
 #include <behaviortree_mtc/initialize_mtc_task.h>
 #include <behaviortree_mtc/create_mtc_current_state.h>
-#include <behaviortree_mtc/move_mtc_stage_to_container.h>
-#include <behaviortree_mtc/move_mtc_container_to_parent_container.h>
+#include <behaviortree_mtc/move_mtc_stage.h>
 #include <behaviortree_mtc/create_mtc_serial_container.h>
 #include <behaviortree_mtc/plan_mtc_task.h>
 #include <behaviortree_mtc/moveit_msgs.h>
@@ -72,7 +71,7 @@ static const char* xml_text = R"(
                                                 collision_object="{cylinder}"  />
             <AddObjectToPlanningScene  planning_scene_interface="{psi}" 
                          collision_object="{cylinder}"/> 
-            <InitializeMTCTask        task="{mtc_task}" container="{task_container}" />
+            <InitializeMTCTask        task="{mtc_task}" />
             <CreateMTCPipelinePlanner pipeline_id="ompl"
                                  planner_id="RRTConnect"
                                  solver="{rrt_connect}"
@@ -81,7 +80,7 @@ static const char* xml_text = R"(
                                      max_velocity_scaling_factor="1.0"
                                      max_acceleration_scaling_factor="1.0" />
             <CreateMTCCurrentState    stage="{current_state}" />
-            <MoveMTCStageToContainer  container="{task_container}" stage="{current_state}" />
+            <MoveMTCStageToTask child="{current_state}" parent="{mtc_task}"  />
             <GeometryMsgsPoseStamped  frame_id="{hand_frame}" position="0,0,0" quaternion="1,0,0,0" pose_stamped="{ik_frame}"/>
             <CreateMTCMoveToNamedJointPose name="move to -> open_hand motion"
                                       group="{hand_group_name}"
@@ -89,13 +88,13 @@ static const char* xml_text = R"(
                                       goal="open"
                                       stage="{stage_move_to_open_hand}" />
             <GetMTCRawStage  stage="{stage_move_to_open_hand}" raw_stage="{raw_stage}"  />
-            <MoveMTCStageToContainer  container="{task_container}" stage="{stage_move_to_open_hand}" />
+            <MoveMTCStageToTask child="{stage_move_to_open_hand}" parent="{mtc_task}"  />
             <CreateMTCConnect  stage_name="MoveToPick"
                                timeout="5.0"
                                group="{arm_group_name}"
                                planner="{rrt_connect}"
                                stage="{connect}" />
-            <MoveMTCStageToContainer  container="{task_container}" stage="{connect}" />  
+            <MoveMTCStageToTask child="{connect}" parent="{mtc_task}"  />
             <CreateMTCSerialContainer  container_name="pick object"
                                        container="{pick_object}" />
             <GeometryMsgsVector3Stamped  frame_id="{hand_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
@@ -107,7 +106,7 @@ static const char* xml_text = R"(
                                              direction="{tcp_translate}"
                                              min_distance="0.1"
                                              max_distance="0.15" />
-            <MoveMTCStageToContainer  container="{pick_object}" stage="{approach_object}" />    
+            <MoveMTCStageToContainer child="{approach_object}" parent="{pick_object}" />
             <CreateMTCGenerateGraspPose  stage_name="generate_grasp_pose"
                                          eef="{eef}"
                                          object="{object_name}"
@@ -127,31 +126,31 @@ static const char* xml_text = R"(
             <ConfigureInitFromMTCProperties  stage="{grasp_pose_IK}"
                                              property_names="target_pose"
                                              source_flag="INTERFACE" />
-            <MoveMTCStageToContainer  container="{pick_object}" stage="{grasp_pose_IK}" />
+            <MoveMTCStageToContainer child="{grasp_pose_IK}" parent="{pick_object}" />
             <AllowCollisionsJointModelGroup stage_name="allow collisions -> hand,object"
                                             stage="{allow_collisions}"
                                             objects="{object_name}"
                                             jmg_name="{hand_group_name}"
                                             task="{mtc_task}" />
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{allow_collisions}" />
+            <MoveMTCStageToContainer child="{allow_collisions}" parent="{pick_object}" />
             <CreateMTCMoveToNamedJointPose name="close hand"
-                                          group="{hand_group_name}"         
-                                          solver="{rrt_connect}"
+                                           group="{hand_group_name}"
+                                           solver="{rrt_connect}"
                                            goal="close"
-                                            stage="{stage_move_to_close_hand}" />
-             <MoveMTCStageToContainer  container="{pick_object}" stage="{stage_move_to_close_hand}" />
-             <CreateMTCModifyPlanningSceneAttachObjects  stage_name="attach object"
+                                           stage="{stage_move_to_close_hand}" />
+            <MoveMTCStageToContainer child="{stage_move_to_close_hand}" parent="{pick_object}" />
+            <CreateMTCModifyPlanningSceneAttachObjects  stage_name="attach object"
                                                          stage="{attach_object}"
                                                          object_names="{object_name}"
                                                          link_name="{hand_frame}" />
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{attach_object}" />
+            <MoveMTCStageToContainer child="{attach_object}" parent="{pick_object}" />
             <AllowCollisionPairs  stage_name="allow collisions -> object,support"
                                   stage="{allow_collisions_table}"
                                   first="{object_name}"
                                   second="table" /> 
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{allow_collisions_table}" />
+            <MoveMTCStageToContainer child="{allow_collisions_table}" parent="{pick_object}" />
             <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
-          <CreateMTCMoveRelativeTranslate  stage_name="lift object"
+            <CreateMTCMoveRelativeTranslate  stage_name="lift object"
                                            stage="{lift_object}"
                                            group="{arm_group_name}"
                                            solver="{cartesian}"
@@ -159,24 +158,24 @@ static const char* xml_text = R"(
                                            direction="{tcp_translate}"
                                            min_distance="0.01"
                                            max_distance="0.1" />
-            <MoveMTCStageToContainer  container="{pick_object}" stage="{lift_object}" />
+            <MoveMTCStageToContainer child="{lift_object}" parent="{pick_object}" />
             <ForbidCollisionPairs  stage_name="forbid collisions -> object,support"
                                    stage="{forbid_collisions_table}"
                                    first="{object_name}"
                                    second="table" />
-             <GetMTCRawStage  stage="{forbid_collisions_table}" raw_stage="{raw_forbid_collisions_table}"  /> 
-             <MoveMTCStageToContainer  container="{pick_object}"  stage="{forbid_collisions_table}" />
-            <MoveMTCContainerToParentContainer parent_container="{task_container}"  child_container="{pick_object}" />
-             <CreateMTCConnect  stage_name="Move To Place"
+            <GetMTCRawStage  stage="{forbid_collisions_table}" raw_stage="{raw_forbid_collisions_table}"  />
+            <MoveMTCStageToContainer child="{forbid_collisions_table}" parent="{pick_object}" />
+            <MoveMTCContainerToTask child="{pick_object}" parent="{mtc_task}" />
+            <CreateMTCConnect  stage_name="Move To Place"
                                 timeout="5.0"
                                 group="{arm_group_name}"
                                 planner="{rrt_connect}"
                                 stage="{connectPlace}" />
-             <MoveMTCStageToContainer  container="{task_container}" stage="{connectPlace}" />
-             <CreateMTCSerialContainer  container_name="place object"
-                                        container="{place_object}" />
-             <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate2}"/>
-             <CreateMTCMoveRelativeTranslate  stage_name="lower object"
+            <MoveMTCStageToTask child="{connectPlace}" parent="{mtc_task}"  />
+            <CreateMTCSerialContainer  container_name="place object"
+                                       container="{place_object}" />
+            <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate2}"/>
+            <CreateMTCMoveRelativeTranslate  stage_name="lower object"
                                               stage="{lower_object}"
                                               group="{arm_group_name}"
                                               solver="{cartesian}"
@@ -184,7 +183,7 @@ static const char* xml_text = R"(
                                               direction="{tcp_translate2}"
                                               min_distance="0.03"
                                               max_distance="0.13" />
-            <MoveMTCStageToContainer  container="{place_object}" stage="{lower_object}" />
+            <MoveMTCStageToContainer child="{lower_object}"  parent="{place_object}" />
             <GeometryMsgsPoseStamped  frame_id="world" position="0.6,-0.15,0.1251" quaternion="1,0,0,0" pose_stamped="{place_pose}" />
             <CreateMTCGeneratePlacePose  stage="{generate_place_pose}"
                                          stage_name="generate place pose"
@@ -201,8 +200,8 @@ static const char* xml_text = R"(
             <ConfigureInitFromMTCProperties  stage="{place_pose_IK}"
                                              property_names="target_pose"
                                              source_flag="INTERFACE" />
-            <MoveMTCStageToContainer  container="{place_object}" stage="{place_pose_IK}" />
-            <MoveMTCContainerToParentContainer  parent_container="{task_container}"  child_container="{place_object}" />
+            <MoveMTCStageToContainer child="{place_pose_IK}"  parent="{place_object}" />
+            <MoveMTCContainerToTask child="{place_object}" parent="{mtc_task}" />
             <PlanMTCTask              task="{mtc_task}" max_solutions="5" />
         </Sequence>
      </BehaviorTree>
@@ -218,10 +217,9 @@ int main(int argc, char** argv)
   
   // Declare parameters passed by a launch file
   options.automatically_declare_parameters_from_overrides(true);
-  auto node = rclcpp::Node::make_shared("test_behavior_tree", options);
+  auto node = rclcpp::Node::make_shared("bt_mtc_demo", options);
 
   BehaviorTreeFactory factory;
-
   factory.registerNodeType<GeometryMsgsPose>("GeometryMsgsPose");
   factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");
   factory.registerNodeType<GeometryMsgsVector3Stamped>("GeometryMsgsVector3Stamped");
@@ -230,7 +228,6 @@ int main(int argc, char** argv)
   factory.registerNodeType<CreatePlanningSceneInterface>("CreatePlanningSceneInterface");
   factory.registerNodeType<AddObjectToPlanningScene>("AddObjectToPlanningScene");
   factory.registerNodeType<CreateMTCGenerateGraspPose>("CreateMTCGenerateGraspPose");
-  factory.registerNodeType<MoveMTCStageToContainer>("MoveMTCStageToContainer");
   factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask", BT::RosNodeParams(node));
   factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
   factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner", BT::RosNodeParams(node));
@@ -238,7 +235,9 @@ int main(int argc, char** argv)
   factory.registerNodeType<GetMTCRawStage>("GetMTCRawStage");
   factory.registerNodeType<CreateMTCMoveToNamedJointPose>("CreateMTCMoveToNamedJointPose");
   factory.registerNodeType<CreateMTCConnect>("CreateMTCConnect");
-  factory.registerNodeType<MoveMTCContainerToParentContainer>("MoveMTCContainerToParentContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::ContainerBase>>("MoveMTCStageToContainer");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
+  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::ContainerBase, moveit::task_constructor::Task>>("MoveMTCContainerToTask");
   factory.registerNodeType<CreateMTCSerialContainer>("CreateMTCSerialContainer");
   factory.registerNodeType<CreateMTCMoveRelativeTranslate>("CreateMTCMoveRelativeTranslate");
   factory.registerNodeType<CreateMTCComputeIK>("CreateMTCComputeIK");
@@ -266,12 +265,16 @@ int main(int argc, char** argv)
   BT::FileLogger2 logger2(tree, "t12_logger2.btlog");
 
   // Gives the user time to connect to Groot2
-  int wait_time = 5000;
-  std::cout << "Waiting " << wait_time << " msec for connection with Groot2...\n\n"
-            << std::endl;
-  std::cout << "======================" << std::endl;
-  std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
+  int delay_ms = node->get_parameter("delay_ms").as_int();
+  if(delay_ms)
+  {
+    std::cout << "Waiting " << delay_ms << " msec for connection with Groot2...\n\n"
+              << std::endl;
+    std::cout << "======================" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+  }
 
+  // Start ticking the Tree
   std::cout << "Starting Behavior Tree" << std::endl;
   std::cout << "======================" << std::endl;
 
@@ -297,70 +300,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
-/**
- * 
-            <CreateMTCModifyPlanningSceneAttachObjects  stage_name="attach object"
-                                                        stage="{attach_object}"
-                                                        object_names="{object_name}"
-                                                        link_name="{hand_frame}" />
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{attach_object}" />
-            <AllowCollisionPairs  stage_name="allow collisions -> object,support"
-                                  stage="{allow_collisions_table}"
-                                  first="{object_name}"
-                                  second="table" /> 
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{allow_collisions_table}" />
-            <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,1" vector3_stamped="{tcp_translate}"/>
-            <CreateMTCMoveRelativeTranslate  stage_name="lift object"
-                                             stage="{lift_object}"
-                                             group="{arm_group_name}"
-                                             solver="{cartesian}"
-                                             ik_frame="{ik_frame}"
-                                             direction="{tcp_translate}"
-                                             min_distance="0.01"
-                                             max_distance="0.1" />
-            <MoveMTCStageToContainer  container="{pick_object}" stage="{lift_object}" />
-            <ForbidCollisionPairs  stage_name="forbid collisions -> object,support"
-                                          stage="{forbid_collisions_table}"
-                                          first="{object_name}"
-                                          second="table" />
-            <GetMTCRawStage  stage="{forbid_collisions_table}" raw_stage="{raw_forbid_collisions_table}}"  /> 
-            <MoveMTCStageToContainer  container="{pick_object}"  stage="{forbid_collisions_table}" />    
-            <MoveMTCContainerToParentContainer parent_container="{task_container}"  child_container="{pick_object}" />
-            <CreateMTCConnect  stage_name="Move To Place"
-                               timeout="5.0"
-                               group="{arm_group_name}"
-                               planner="{rrt_connect}"
-                               stage="{connectPlace}" />
-            <MoveMTCStageToContainer  container="{task_container}" stage="{connectPlace}" />
-            <CreateMTCSerialContainer  container_name="place object"
-                                       serial_container="{place_object}" />
-            <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate}"/>
-            <CreateMTCMoveRelativeTranslate  stage_name="lower object"
-                                             stage="{lower_object}"
-                                             group="{arm_group_name}"
-                                             solver="{cartesian}"
-                                             ik_frame="{ik_frame}"
-                                             direction="{tcp_translate}"
-                                             min_distance="0.03"
-                                             max_distance="0.13" />
-            <MoveMTCStageToContainer  container="{place_object}" stage="{lower_object}" />
- */
-
-//
-
-//
-
-//
-//             <CreateMTCSerialContainer  container_name="place object"
-//                                        serial_container="{place_object}" />
-//             <GeometryMsgsVector3Stamped  frame_id="{reference_frame}" vector="0,0,-1" vector3_stamped="{tcp_translate}"/>
-//             <CreateMTCMoveRelativeTranslate  stage_name="lower object"
-//                                              stage="{lower_object}"
-//                                              group="{arm_group_name}"
-//                                              solver="{cartesian}"
-//                                              ik_frame="{ik_frame}"
-//                                              direction="{tcp_translate}"
-//                                              min_distance="0.03"
-//                                              max_distance="0.13" />
-//             <MoveMTCStageToContainer  container="{place_object}" stage="{lower_object}" />

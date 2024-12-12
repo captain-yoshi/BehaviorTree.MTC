@@ -8,6 +8,12 @@ from moveit_configs_utils import MoveItConfigsBuilder
 
 
 def generate_launch_description():
+    delay_ms_arg = DeclareLaunchArgument(
+        'delay_ms',
+        default_value='0',
+        description='Delay (in milliseconds) to give the user time to connect to Groot2'
+    )
+
     moveit_config = (
         MoveItConfigsBuilder("moveit_resources_panda")
         .robot_description(file_path="config/panda.urdf.xacro")
@@ -16,7 +22,7 @@ def generate_launch_description():
 
     node = Node(
         package="behaviortree_mtc",
-        executable="bt_demo",
+        executable="bt_pick_place",
         output="screen",
         parameters=[
             moveit_config.robot_description,
@@ -25,7 +31,8 @@ def generate_launch_description():
             moveit_config.joint_limits,
             moveit_config.planning_pipelines,
             os.path.join(get_package_share_directory("moveit_task_constructor_demo"), "config", "panda_config.yaml"),
+            {'delay_ms': LaunchConfiguration('delay_ms')}
         ],
     )
 
-    return LaunchDescription([node])
+    return LaunchDescription([delay_ms_arg, node])

@@ -37,8 +37,6 @@ add_library(${PROJECT_NAME}
   src/get_mtc_raw_stage.cpp
   src/initialize_mtc_task.cpp
   src/moveit_msgs.cpp
-  src/move_mtc_stage_to_container.cpp
-  src/move_mtc_container_to_parent_container.cpp
   src/plan_mtc_task.cpp
 )
 
@@ -52,35 +50,32 @@ ament_target_dependencies(${PROJECT_NAME}
 )
 
 add_executable(bt_allow_collisions examples/bt_allow_collisions.cpp)
-target_link_libraries(bt_allow_collisions ${PROJECT_NAME} )
-
-add_executable(bt_create_collision_object examples/bt_create_collision_object.cpp)
-target_link_libraries(bt_create_collision_object ${PROJECT_NAME} )
-
 add_executable(bt_compute_ik examples/bt_compute_ik.cpp)
-target_link_libraries(bt_compute_ik ${PROJECT_NAME} )
-
+add_executable(bt_create_collision_object examples/bt_create_collision_object.cpp)
 add_executable(bt_demo examples/bt_demo.cpp)
-target_link_libraries(bt_demo ${PROJECT_NAME} )
-
 add_executable(bt_generate_place_pose examples/bt_generate_place_pose.cpp)
-target_link_libraries(bt_generate_place_pose ${PROJECT_NAME} )
-
 add_executable(bt_joint_interpolation_solver examples/bt_joint_interpolation_solver.cpp)
-target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME} )
-
 add_executable(bt_move_relative examples/bt_move_relative.cpp)
-target_link_libraries(bt_move_relative ${PROJECT_NAME} )
-
 add_executable(bt_move_to examples/bt_move_to.cpp)
-target_link_libraries(bt_move_to ${PROJECT_NAME} )
-
+add_executable(bt_pick_place examples/bt_pick_place.cpp)
 add_executable(bt_serial_container examples/bt_serial_container.cpp)
-target_link_libraries(bt_serial_container ${PROJECT_NAME} )
+add_executable(generate_xml_model src/generate_xml_model.cpp)
 
-if(BUILD_TESTING)
-  add_subdirectory(tests)
-endif()
+target_link_libraries(bt_allow_collisions ${PROJECT_NAME})
+target_link_libraries(bt_compute_ik ${PROJECT_NAME})
+target_link_libraries(bt_create_collision_object ${PROJECT_NAME})
+target_link_libraries(bt_demo ${PROJECT_NAME})
+target_link_libraries(bt_generate_place_pose ${PROJECT_NAME} )
+target_link_libraries(bt_joint_interpolation_solver ${PROJECT_NAME})
+target_link_libraries(bt_move_relative ${PROJECT_NAME})
+target_link_libraries(bt_move_to ${PROJECT_NAME})
+target_link_libraries(bt_pick_place ${PROJECT_NAME})
+target_link_libraries(bt_serial_container ${PROJECT_NAME})
+target_link_libraries(generate_xml_model ${PROJECT_NAME})
+
+
+add_subdirectory(tests)
+
 
 install(
   DIRECTORY include/${PROJECT_NAME}
@@ -88,20 +83,23 @@ install(
 )
 
 install(DIRECTORY
+  config
   launch
   DESTINATION share/${PROJECT_NAME}/
 )
 
 install(TARGETS 
   bt_allow_collisions
-  bt_create_collision_object
   bt_compute_ik
+  bt_create_collision_object
   bt_demo
   bt_generate_place_pose
   bt_joint_interpolation_solver
   bt_move_relative
   bt_move_to
+  bt_pick_place
   bt_serial_container
+  generate_xml_model
   DESTINATION lib/${PROJECT_NAME}
 )
 
