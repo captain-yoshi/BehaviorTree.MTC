@@ -19,7 +19,7 @@ static const char* xml_text = R"(
 
      <BehaviorTree ID="MainTree">
         <Sequence name="root">
-            <InitializeMTCTask        task="{mtc_task}" />
+            <InitializeMTCTask        task="{mtc_task}" task_name="demo" />
             <CreateMTCCurrentState    stage="{stage}" />
             <MoveMTCStageToTask       child="{stage}" parent="{mtc_task}" />
             <PlanMTCTask              task="{mtc_task}" max_solutions="5" />

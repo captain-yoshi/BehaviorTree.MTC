@@ -71,7 +71,7 @@ static const char* xml_text = R"(
                                                 collision_object="{cylinder}"  />
             <AddObjectToPlanningScene  planning_scene_interface="{psi}" 
                          collision_object="{cylinder}"/> 
-            <InitializeMTCTask        task="{mtc_task}" />
+            <InitializeMTCTask        task="{mtc_task}" task_name="generate_place_pose" />
             <CreateMTCPipelinePlanner pipeline_id="ompl"
                                  planner_id="RRTConnect"
                                  solver="{rrt_connect}"

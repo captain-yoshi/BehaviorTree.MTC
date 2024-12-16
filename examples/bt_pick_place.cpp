@@ -70,7 +70,7 @@ static const char* xml_text = R"(
             <AddObjectToPlanningScene planning_scene_interface="{psi}" collision_object="{cylinder}" />
 
             <!-- Create Task -->
-            <InitializeMTCTask task="{mtc_task}" />
+            <InitializeMTCTask task="{mtc_task}" task_name="pick_place" />
 
             <!-- Add properpties to the Task -->
             <SetMTCTaskPropertyString  stage="{mtc_task}"  property_name="eef"  property="{eef}" />

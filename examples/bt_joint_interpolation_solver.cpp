@@ -23,7 +23,7 @@ static const char* xml_text = R"(
 
    <BehaviorTree ID="MainTree">
      <Sequence name="root">
-       <InitializeMTCTask        task="{mtc_task}" />
+       <InitializeMTCTask        task="{mtc_task}" task_name="joint_interpolation_solver" />
        <CreateMTCJointInterpolation  solver="{joint_solver}" />
        <CreateMTCCurrentState        stage="{stage}" />
        <MoveMTCStageToTask      child="{stage}" parent="{mtc_task}" />
