@@ -23,7 +23,7 @@ static const char* xml_text = R"(
 
    <BehaviorTree ID="MainTree">
      <Sequence name="root">
-       <InitializeMTCTask        task="{mtc_task}" />
+       <InitializeMTCTask        task="{mtc_task}" task_name="move_to" />
        <CreateMTCPipelinePlanner pipeline_id="ompl"
                                  planner_id="RRTConnect"
                                  solver="{rrt_connect}"/>
