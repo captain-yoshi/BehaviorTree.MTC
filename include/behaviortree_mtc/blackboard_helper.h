@@ -28,7 +28,7 @@ std::unique_ptr<T> convertSharedToUniqueLocked(BT::AnyPtrLocked& any_locked_ptr)
     auto& t = *t_ptr;
 
     // actual conversion
-    unique_t = sharedToUnique(t);
+    unique_t = sharedToUnique(std::move(t));
 
     // Is this really necessary ?
     // set blackboard value to nullptr
