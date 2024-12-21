@@ -30,7 +30,7 @@ private:
 }  // namespace dirty
 
 template <typename T>
-std::unique_ptr<T> sharedToUnique(std::shared_ptr<T>& shp)
+std::unique_ptr<T> sharedToUnique(std::shared_ptr<T>&& shp)
 {
   std::unique_ptr<T> up{ nullptr };
 
