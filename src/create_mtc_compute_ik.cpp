@@ -32,7 +32,7 @@ BT::NodeStatus CreateMTCComputeIK::tick()
      !getInput("ik_frame", ik_frame))
     return NodeStatus::FAILURE;
 
-  // Transform stage from shared to unique
+  // Transform stage: shared -> unique
   auto unique_stage = convertSharedToUniqueLocked<moveit::task_constructor::Stage>(*this, "wrapped_stage");
 
   // Build stage
@@ -46,7 +46,7 @@ BT::NodeStatus CreateMTCComputeIK::tick()
   if(getInput("group", group))
     wrapper->setGroup(group);
   if(getInput("eef", eef))
-    wrapper->setEndEffector(eef);  
+    wrapper->setEndEffector(eef);
 
   wrapper->setMaxIKSolutions(max_ik_solutions);
   wrapper->setIgnoreCollisions(ignore_collisions);

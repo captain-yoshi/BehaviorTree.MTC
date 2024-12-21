@@ -1,7 +1,7 @@
 #pragma once
 
 #include <behaviortree_cpp/bt_factory.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/blackboard_helper.h>
 
 #include <moveit/task_constructor/task.h>
 
@@ -22,18 +22,8 @@ public:
 
   BT::NodeStatus tick() override
   {
-    // Transform stage from shared to unique
-    moveit::task_constructor::Stage::pointer unique_child{ nullptr };
-    if(auto any_child_ptr = getLockedPortContent("child"))
-    {
-      if(auto* stage_ptr = any_child_ptr->template castPtr<std::shared_ptr<C>>())
-      {
-        auto& stage = *stage_ptr;
-
-        unique_child = sharedToUnique(stage);
-        any_child_ptr.assign(nullptr);  // set blackboard value to nullptr
-      }
-    }
+    // Transform stage: shared -> unique
+    auto unique_child = convertSharedToUniqueLocked<moveit::task_constructor::Stage>(*this, "child");
 
     if(auto any_parent_ptr = getLockedPortContent("parent"); unique_child)
     {
