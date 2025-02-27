@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/create_mtc_pipeline_planner.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/solvers/create_mtc_pipeline_planner.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/solvers/pipeline_planner.h>
 #include <moveit/planning_pipeline/planning_pipeline.h>

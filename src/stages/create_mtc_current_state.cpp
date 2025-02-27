@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/create_mtc_current_state.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/stages/create_mtc_current_state.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/stages/current_state.h>
 

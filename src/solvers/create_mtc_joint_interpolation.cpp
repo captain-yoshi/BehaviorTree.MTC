@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/create_mtc_joint_interpolation.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/solvers/create_mtc_joint_interpolation.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/solvers/joint_interpolation.h>
 

@@ -4,7 +4,7 @@
 
 #include <behaviortree_cpp/tree_node.h>
 
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 namespace BT {
 namespace MTC {

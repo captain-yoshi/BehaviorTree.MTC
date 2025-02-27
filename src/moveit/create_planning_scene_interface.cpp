@@ -1,4 +1,4 @@
-#include <behaviortree_mtc/create_planning_scene_interface.h>
+#include <behaviortree_mtc/moveit/create_planning_scene_interface.h>
 
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 

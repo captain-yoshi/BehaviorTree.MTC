@@ -1,5 +1,5 @@
 #include <behaviortree_mtc/create_mtc_serial_container.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/task.h>
 #include <moveit/task_constructor/container.h>

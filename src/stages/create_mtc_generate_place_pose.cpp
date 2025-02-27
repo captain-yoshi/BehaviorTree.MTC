@@ -1,7 +1,7 @@
 #include <ros/ros.h>
-#include <behaviortree_mtc/create_mtc_generate_place_pose.h>
-#include <behaviortree_mtc/custom_types.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/stages/create_mtc_generate_place_pose.h>
+#include <behaviortree_mtc/serialization/custom_types.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/stages/generate_place_pose.h>
 

@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/geometry_msgs.h>
-#include <behaviortree_mtc/custom_types.h>
+#include <behaviortree_mtc/msgs/geometry_msgs.h>
+#include <behaviortree_mtc/serialization/custom_types.h>
 
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/PoseStamped.h>

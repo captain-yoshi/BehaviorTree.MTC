@@ -31,41 +31,36 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-  # utilities
-  src/geometry_msgs.cpp
-
-  # mtc
-  src/add_object_to_planning_scene.cpp
-  src/create_mtc_compute_ik.cpp
-  src/create_mtc_connect.cpp
-  src/create_mtc_current_state.cpp
-  src/create_mtc_modify_planning_scene.cpp
-  src/create_mtc_move_relative.cpp
-  src/create_mtc_move_to.cpp
-  src/create_mtc_pipeline_planner.cpp
-  src/create_mtc_cartesian_path.cpp
-  src/create_mtc_generate_grasp_pose.cpp
-  src/create_mtc_generate_place_pose.cpp
-  src/create_mtc_joint_interpolation.cpp
   src/create_mtc_serial_container.cpp
-  src/create_planning_scene_interface.cpp
   src/get_mtc_raw_stage.cpp
   src/initialize_mtc_task.cpp
-  src/moveit_msgs.cpp
   src/plan_mtc_task.cpp
+
+  src/moveit/add_object_to_planning_scene.cpp
+  src/moveit/create_planning_scene_interface.cpp
+
+  src/msgs/geometry_msgs.cpp
+  src/msgs/moveit_msgs.cpp
+
+  src/solvers/create_mtc_pipeline_planner.cpp
+  src/solvers/create_mtc_cartesian_path.cpp
+  src/solvers/create_mtc_joint_interpolation.cpp
+
+  src/stages/create_mtc_compute_ik.cpp
+  src/stages/create_mtc_connect.cpp
+  src/stages/create_mtc_current_state.cpp
+  src/stages/create_mtc_modify_planning_scene.cpp
+  src/stages/create_mtc_move_relative.cpp
+  src/stages/create_mtc_move_to.cpp
+  src/stages/create_mtc_generate_grasp_pose.cpp
+  src/stages/create_mtc_generate_place_pose.cpp
 )
-
-
-
-
-
-
 
 add_executable(bt_pick_place examples/bt_pick_place.cpp)
 target_include_directories(bt_pick_place PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_pick_place ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(generate_xml_model src/generate_xml_model.cpp)
+add_executable(generate_xml_model src/bt/generate_xml_model.cpp)
 target_include_directories(generate_xml_model PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(generate_xml_model ${PROJECT_NAME} ${catkin_LIBRARIES})
 

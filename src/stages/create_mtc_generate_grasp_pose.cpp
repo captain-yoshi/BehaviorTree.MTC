@@ -1,6 +1,6 @@
-#include <behaviortree_mtc/create_mtc_generate_grasp_pose.h>
-#include <behaviortree_mtc/custom_types.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/stages/create_mtc_generate_grasp_pose.h>
+#include <behaviortree_mtc/serialization/custom_types.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/stages/generate_grasp_pose.h>
 
@@ -38,7 +38,7 @@ BT::NodeStatus CreateMTCGenerateGraspPose::tick()
   //Optionnal
   if(getInput("eef", eef))
     stage->setEndEffector(eef);
-  
+
   rotation_axis[0] = rotation_axis_input.x;
   rotation_axis[1] = rotation_axis_input.y;
   rotation_axis[2] = rotation_axis_input.z;

@@ -1,7 +1,7 @@
-#include <behaviortree_mtc/create_mtc_compute_ik.h>
-#include <behaviortree_mtc/custom_types.h>
-#include <behaviortree_mtc/geometry_msgs.h>
-#include <behaviortree_mtc/blackboard_helper.h>
+#include <behaviortree_mtc/stages/create_mtc_compute_ik.h>
+#include <behaviortree_mtc/serialization/custom_types.h>
+#include <behaviortree_mtc/msgs/geometry_msgs.h>
+#include <behaviortree_mtc/bt/blackboard_helper.h>
 
 #include <moveit/task_constructor/stages/compute_ik.h>
 

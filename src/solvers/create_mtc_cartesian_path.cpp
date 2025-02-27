@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/create_mtc_cartesian_path.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/solvers/create_mtc_cartesian_path.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/task_constructor/solvers/cartesian_path.h>

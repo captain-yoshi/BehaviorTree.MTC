@@ -1,11 +1,11 @@
-#include <behaviortree_mtc/create_mtc_modify_planning_scene.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/stages/create_mtc_modify_planning_scene.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/task_constructor/stages/modify_planning_scene.h>
 #include <moveit/task_constructor/task.h>
 #include <moveit/robot_model/robot_model.h>
 
-#include <behaviortree_mtc/std_containers.h>
+#include <behaviortree_mtc/serialization/std_containers.h>
 
 namespace BT {
 namespace MTC {

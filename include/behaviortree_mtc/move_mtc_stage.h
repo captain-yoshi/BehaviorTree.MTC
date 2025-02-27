@@ -1,7 +1,7 @@
 #pragma once
 
 #include <behaviortree_cpp/bt_factory.h>
-#include <behaviortree_mtc/blackboard_helper.h>
+#include <behaviortree_mtc/bt/blackboard_helper.h>
 
 #include <moveit/task_constructor/task.h>
 

@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/add_object_to_planning_scene.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/moveit/add_object_to_planning_scene.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit_msgs/CollisionObject.h>

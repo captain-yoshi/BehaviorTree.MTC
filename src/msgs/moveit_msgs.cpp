@@ -1,5 +1,5 @@
-#include <behaviortree_mtc/moveit_msgs.h>
-#include <behaviortree_mtc/custom_types.h>
+#include <behaviortree_mtc/msgs/moveit_msgs.h>
+#include <behaviortree_mtc/serialization/custom_types.h>
 
 #include <moveit_msgs/CollisionObject.h>
 #include <geometry_msgs/Pose.h>

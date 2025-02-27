@@ -1,7 +1,7 @@
-#include <behaviortree_mtc/create_mtc_move_relative.h>
-#include <behaviortree_mtc/shared_to_unique.h>
+#include <behaviortree_mtc/stages/create_mtc_move_relative.h>
+#include <behaviortree_mtc/bt/shared_to_unique.h>
 
-#include <behaviortree_mtc/std_containers.h>
+#include <behaviortree_mtc/serialization/std_containers.h>
 
 namespace BT {
 namespace MTC {
