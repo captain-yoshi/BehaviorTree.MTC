@@ -19,7 +19,7 @@ namespace MTC {
  * @return               a unique pointer converted from the shared pointer
  */
 template <typename T>
-std::unique_ptr<T> convertSharedToUniqueLocked(BT::AnyPtrLocked& any_locked_ptr)
+std::unique_ptr<T> convertSharedToUniqueLocked(BT::AnyPtrLocked& any_locked_ptr, const std::string& key)
 {
   std::unique_ptr<T> unique_t{ nullptr };
 
@@ -35,8 +35,8 @@ std::unique_ptr<T> convertSharedToUniqueLocked(BT::AnyPtrLocked& any_locked_ptr)
 
     return unique_t;
   }
-  throw std::runtime_error("tried to cast a blackboard entry to the wrong type "
-                           "or Any is empty");
+  throw std::runtime_error("tried to cast the blackboard entry '" + key + "' to the wrong type "
+                                                                          "or Any is empty");
 }
 
 /** Converts a shared pointer to a unique pointer from a blackboard TreeNode (threadsafe)
@@ -57,11 +57,11 @@ std::unique_ptr<T> convertSharedToUniqueLocked(BT::TreeNode& tree_node, const st
 
   if(auto any_locked_ptr = tree_node.getLockedPortContent(key))
   {
-    return convertSharedToUniqueLocked<T>(any_locked_ptr);
+    return convertSharedToUniqueLocked<T>(any_locked_ptr, key);
   }
 
-  throw std::runtime_error("the blackboard entry doesn't exist or the content "
-                           "of the port was a static string");
+  throw std::runtime_error("the blackboard entry '" + key + "' doesn't exist or the content "
+                                                            "of the port was a static string");
 }
 
 /** Converts a shared pointer to a unique pointer from a blackboard (threadsafe)
@@ -82,11 +82,11 @@ std::unique_ptr<T> convertSharedToUniqueLocked(BT::Blackboard& blackboard, const
 
   if(auto any_locked_ptr = blackboard.getAnyLocked(key))
   {
-    return convertSharedToUniqueLocked<T>(any_locked_ptr);
+    return convertSharedToUniqueLocked<T>(any_locked_ptr, key);
   }
 
-  throw std::runtime_error("the blackboard entry doesn't exist or the content "
-                           "of the port was a static string");
+  throw std::runtime_error("the blackboard entry '" + key + "' doesn't exist or the content "
+                                                            "of the port was a static string");
 }
 
 }  // namespace MTC
