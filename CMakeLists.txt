@@ -57,6 +57,7 @@ add_library(${PROJECT_NAME}
 add_executable(bt_pick_place examples/bt_pick_place.cpp)
 target_include_directories(bt_pick_place PRIVATE ${catkin_INCLUDE_DIRS} include)
 target_link_libraries(bt_pick_place ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_compile_definitions(bt_pick_place PRIVATE PROJECT_WS="${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_executable(generate_xml_model src/bt/generate_xml_model.cpp)
 target_include_directories(generate_xml_model PRIVATE ${catkin_INCLUDE_DIRS} include)
