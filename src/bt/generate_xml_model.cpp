@@ -93,17 +93,20 @@ int main(int argc, char** argv)
   factory.registerNodeType<ModifyPlanningSceneForbidCollisionsJointModelGroup>("ModifyPlanningSceneForbidCollisionsJointModelGroup");
 
   std::string xml_models = BT::writeTreeNodesModelXML(factory);
-  std::string filePath = "./config/bt_mtc_model.xml";
-  std::ofstream file(filePath);
+
+  std::string path = PROJECT_WS;
+  path += "/config/bt_mtc_model.xml";
+
+  std::ofstream file(path);
   if(file.is_open())
   {
     file << xml_models;
     file.close();
-    std::cout << "File saved successfully: " << filePath << std::endl;
+    std::cout << "File saved successfully: " << path << std::endl;
   }
   else
   {
-    std::cerr << "Unable to open file: " << filePath << std::endl;
+    std::cerr << "Unable to open file: " << path << std::endl;
   }
 
   return 0;
