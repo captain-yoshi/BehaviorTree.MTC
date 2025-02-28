@@ -1,33 +1,10 @@
 <root BTCPP_format="4">
     <TreeNodesModel>
-        <Action ID="AddObjectToPlanningScene">
+        <Action ID="AddCollisionObjectToPlanningSceneInterface">
             <input_port name="collision_object" type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
             <input_port name="planning_scene_interface" type="std::shared_ptr&lt;moveit::planning_interface::PlanningSceneInterface&gt;"/>
         </Action>
-        <Action ID="AllowAllCollisions">
-            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid all collisions for given object/s</input_port>
-            <input_port name="stage_name" type="std::string"/>
-            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
-        </Action>
-        <Action ID="AllowCollisionPairs">
-            <input_port name="second" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">second object of collision pair</input_port>
-            <input_port name="first" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">first object of collision pair</input_port>
-            <input_port name="stage_name" type="std::string"/>
-            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
-        </Action>
-        <Action ID="AllowCollisionsJointModelGroup">
-            <input_port name="jmg_name" type="std::string">joint model group name</input_port>
-            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid collisions with joint model group links</input_port>
-            <input_port name="stage_name" type="std::string"/>
-            <input_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MTC task</input_port>
-            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
-        </Action>
-        <Action ID="ConfigureInitFromMTCProperties">
-            <inout_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
-            <input_port name="property_names" type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
-            <input_port name="source_flag" type="moveit::task_constructor::Stage::PropertyInitializerSource">Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}</input_port>
-        </Action>
-        <Action ID="CreateMTCCartesianPath">
+        <Action ID="CartesianPath">
             <input_port name="step_size" type="double" default="0.010000">step size between consecutive waypoints</input_port>
             <output_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;" default="{solver}">Planner interface using pipeline motion solver</output_port>
             <input_port name="precision" type="moveit::core::CartesianPrecision" default="">linear and rotational precision</input_port>
@@ -35,7 +12,24 @@
             <input_port name="max_acceleration_scaling_factor" type="double" default="0.100000">scale down max acceleration by this factor</input_port>
             <input_port name="max_velocity_scaling_factor" type="double" default="0.100000">scale down max velocity by this factor</input_port>
         </Action>
-        <Action ID="CreateMTCComputeIK">
+        <Action ID="CollisionObjectBoxMsg">
+            <input_port name="height" type="double" default="1.0">Box's size along Z axis (m)</input_port>
+            <input_port name="length" type="double" default="1.0">Box's size along X axis (m)</input_port>
+            <input_port name="object_id" type="std::string"/>
+            <input_port name="frame_id" type="std::string"/>
+            <output_port name="collision_object" type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+            <input_port name="width" type="double" default="1.0">Box's size along Y axis (m)</input_port>
+            <input_port name="pose" type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+        </Action>
+        <Action ID="CollisionObjectCylinderMsg">
+            <input_port name="height" type="double" default="1.0">cylinder height (m)</input_port>
+            <input_port name="object_id" type="std::string"/>
+            <input_port name="frame_id" type="std::string"/>
+            <output_port name="collision_object" type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+            <input_port name="radius" type="double" default="1.0">cylinder radius (m)</input_port>
+            <input_port name="pose" type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
+        </Action>
+        <Action ID="ComputeIK">
             <input_port name="ik_frame" type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
             <input_port name="min_solution_distance" type="double" default="0.100000">minimum distance between seperate IK solutions for the same target</input_port>
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
@@ -46,7 +40,17 @@
             <input_port name="eef" type="std::string">name of end-effector</input_port>
             <input_port name="stage_name" type="std::string"/>
         </Action>
-        <Action ID="CreateMTCConnect">
+        <Action ID="ConfigureContainerPropertiesInitFrom">
+            <inout_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <input_port name="property_names" type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+            <input_port name="source_flag" type="moveit::task_constructor::Stage::PropertyInitializerSource">Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}</input_port>
+        </Action>
+        <Action ID="ConfigureStagePropertiesInitFrom">
+            <inout_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+            <input_port name="property_names" type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+            <input_port name="source_flag" type="moveit::task_constructor::Stage::PropertyInitializerSource">Name for property initialization sources. {DEFAULT, MANUAL, PARENT, INTERFACE}</input_port>
+        </Action>
+        <Action ID="Connect">
             <input_port name="merge_mode" type="unsigned char" default="1">0 = SEQUENTIAL, 1 = WAYPOINTS</input_port>
             <input_port name="group" type="std::string"/>
             <input_port name="stage_name" type="std::string">connect</input_port>
@@ -55,10 +59,20 @@
             <input_port name="timeout" type="double" default="1.000000">timeout</input_port>
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;" default="{connect_stage}">Connect stage</output_port>
         </Action>
-        <Action ID="CreateMTCCurrentState">
+        <Action ID="CurrentState">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;" default="{mtc_stage}">MoveIt Task Constructor stage.</output_port>
         </Action>
-        <Action ID="CreateMTCGenerateGraspPose">
+        <Action ID="ExposeContainerPropertiesToContainer">
+            <inout_port name="to" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <inout_port name="from" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <input_port name="property_names" type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+        </Action>
+        <Action ID="ExposeTaskPropertiesToContainer">
+            <inout_port name="to" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <inout_port name="from" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="property_names" type="std::shared_ptr&lt;std::set&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+        </Action>
+        <Action ID="GenerateGraspPose">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;" default="{generate_grasp_pose}">GenerateGraspPose Stage</output_port>
             <input_port name="monitored_stage" type="moveit::task_constructor::Stage*"/>
             <input_port name="stage_name" type="std::string"/>
@@ -68,7 +82,7 @@
             <input_port name="rotation_axis" type="Vector3D" default="0,0,1">rotate object pose about given axis</input_port>
             <input_port name="eef" type="std::string">name of end-effector</input_port>
         </Action>
-        <Action ID="CreateMTCGeneratePlacePose">
+        <Action ID="GeneratePlacePose">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;" default="{generate_grasp_pose}">GenerateGraspPose Stage</output_port>
             <input_port name="pose" type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">target pose to pass on in spawned states</input_port>
             <input_port name="allow_z_flip" type="bool" default="false">allow placing objects upside down</input_port>
@@ -76,25 +90,73 @@
             <input_port name="stage_name" type="std::string"/>
             <input_port name="object" type="std::string">object on which we generate the place poses</input_port>
         </Action>
-        <Action ID="CreateMTCJointInterpolation">
+        <Action ID="GetStageRawPtr">
+            <output_port name="raw_stage" type="moveit::task_constructor::Stage*">MTC stage raw pointer</output_port>
+            <input_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MTC stage</input_port>
+        </Action>
+        <Action ID="JointInterpolation">
             <output_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;" default="{solver}">plan using simple interpolation in joint-space</output_port>
             <input_port name="max_step" type="double" default="0.100000">max joint step</input_port>
             <input_port name="max_acceleration_scaling_factor" type="double" default="0.100000">scale down max acceleration by this factor</input_port>
             <input_port name="max_velocity_scaling_factor" type="double" default="0.100000">scale down max velocity by this factor</input_port>
         </Action>
-        <Action ID="CreateMTCModifyPlanningSceneAttachObjects">
+        <Action ID="ModifyPlanningSceneAllowAllCollisions">
+            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid all collisions for given object/s</input_port>
+            <input_port name="stage_name" type="std::string"/>
+            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+        </Action>
+        <Action ID="ModifyPlanningSceneAllowCollisionPairs">
+            <input_port name="second" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">second object of collision pair</input_port>
+            <input_port name="first" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">first object of collision pair</input_port>
+            <input_port name="stage_name" type="std::string"/>
+            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+        </Action>
+        <Action ID="ModifyPlanningSceneAllowCollisionsJointModelGroup">
+            <input_port name="jmg_name" type="std::string">joint model group name</input_port>
+            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid collisions with joint model group links</input_port>
+            <input_port name="stage_name" type="std::string"/>
+            <input_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MTC task</input_port>
+            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+        </Action>
+        <Action ID="ModifyPlanningSceneAttachObjects">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
             <input_port name="object_names" type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">list of object names/id's.</input_port>
             <input_port name="link_name" type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">attach or detach a list of objects to the given link</input_port>
             <input_port name="stage_name" type="std::string"/>
         </Action>
-        <Action ID="CreateMTCModifyPlanningSceneDetachObjects">
+        <Action ID="ModifyPlanningSceneDetachObjects">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
             <input_port name="object_names" type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">list of object names/id's.</input_port>
             <input_port name="link_name" type="std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;">attach or detach a list of objects to the given link</input_port>
             <input_port name="stage_name" type="std::string"/>
         </Action>
-        <Action ID="CreateMTCMoveRelativeJoint">
+        <Action ID="ModifyPlanningSceneForbidAllCollisions">
+            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid all collisions for given object/s</input_port>
+            <input_port name="stage_name" type="std::string"/>
+            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+        </Action>
+        <Action ID="ModifyPlanningSceneForbidCollisionPairs">
+            <input_port name="second" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">second object of collision pair</input_port>
+            <input_port name="first" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">first object of collision pair</input_port>
+            <input_port name="stage_name" type="std::string"/>
+            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+        </Action>
+        <Action ID="ModifyPlanningSceneForbidCollisionsJointModelGroup">
+            <input_port name="jmg_name" type="std::string">joint model group name</input_port>
+            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid collisions with joint model group links</input_port>
+            <input_port name="stage_name" type="std::string"/>
+            <input_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MTC task</input_port>
+            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
+        </Action>
+        <Action ID="MoveContainerToContainer">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+        </Action>
+        <Action ID="MoveContainerToTask">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+        </Action>
+        <Action ID="MoveRelativeJoint">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveRelative stage</output_port>
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <input_port name="direction" type="std::shared_ptr&lt;std::map&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, double, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::pair&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const, double&gt; &gt; &gt; &gt;">move specified joint variables by given amount</input_port>
@@ -105,7 +167,7 @@
             <input_port name="group" type="std::string">name of planning group</input_port>
             <input_port name="stage_name" type="std::string" default="move relative">stage name</input_port>
         </Action>
-        <Action ID="CreateMTCMoveRelativeTranslate">
+        <Action ID="MoveRelativeTranslate">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveRelative stage</output_port>
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <input_port name="direction" type="std::shared_ptr&lt;geometry_msgs::Vector3Stamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">translate link along given direction</input_port>
@@ -116,7 +178,7 @@
             <input_port name="group" type="std::string">name of planning group</input_port>
             <input_port name="stage_name" type="std::string" default="move relative">stage name</input_port>
         </Action>
-        <Action ID="CreateMTCMoveRelativeTwist">
+        <Action ID="MoveRelativeTwist">
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveRelative stage</output_port>
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <input_port name="direction" type="std::shared_ptr&lt;geometry_msgs::TwistStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">perform twist motion on specified link</input_port>
@@ -127,7 +189,15 @@
             <input_port name="group" type="std::string">name of planning group</input_port>
             <input_port name="stage_name" type="std::string" default="move relative">stage name</input_port>
         </Action>
-        <Action ID="CreateMTCMoveToJoint">
+        <Action ID="MoveStageToContainer">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+        </Action>
+        <Action ID="MoveStageToTask">
+            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+        </Action>
+        <Action ID="MoveToJoint">
             <input_port name="goal" type="std::shared_ptr&lt;std::map&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, double, std::less&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;, std::allocator&lt;std::pair&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const, double&gt; &gt; &gt; &gt;">move joints by name to their mapped target value</input_port>
             <input_port name="stage_name" type="std::string" default="move to">stage name</input_port>
             <input_port name="group" type="std::string">name of planning group</input_port>
@@ -135,7 +205,7 @@
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveTo stage</output_port>
         </Action>
-        <Action ID="CreateMTCMoveToNamedJointPose">
+        <Action ID="MoveToNamedJointPose">
             <input_port name="goal" type="std::string">move joint model group to given named pose</input_port>
             <input_port name="stage_name" type="std::string" default="move to">stage name</input_port>
             <input_port name="group" type="std::string">name of planning group</input_port>
@@ -143,7 +213,7 @@
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveTo stage</output_port>
         </Action>
-        <Action ID="CreateMTCMoveToPoint">
+        <Action ID="MoveToPoint">
             <input_port name="goal" type="std::shared_ptr&lt;geometry_msgs::PointStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">move link to given point, keeping current orientation</input_port>
             <input_port name="ik_frame" type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">frame to be moved in Cartesian direction</input_port>
             <input_port name="stage_name" type="std::string" default="move to">stage name</input_port>
@@ -152,7 +222,7 @@
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveTo stage</output_port>
         </Action>
-        <Action ID="CreateMTCMoveToPose">
+        <Action ID="MoveToPose">
             <input_port name="goal" type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">move link to a given pose</input_port>
             <input_port name="ik_frame" type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;">frame to be moved in Cartesian direction</input_port>
             <input_port name="stage_name" type="std::string" default="move to">stage name</input_port>
@@ -161,7 +231,7 @@
             <input_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;">planner interface</input_port>
             <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MoveTo stage</output_port>
         </Action>
-        <Action ID="CreateMTCPipelinePlanner">
+        <Action ID="PipelinePlanner">
             <input_port name="max_acceleration_scaling_factor" type="double" default="0.100000">scale down max acceleration by this factor</input_port>
             <input_port name="num_planning_attempts" type="unsigned int" default="1u">number of planning attempts</input_port>
             <input_port name="pipeline_id" type="std::string"/>
@@ -174,96 +244,51 @@
             <input_port name="publish_planning_requests" type="bool" default="false">publish motion planning requests on topic motion_plan_request</input_port>
             <output_port name="solver" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;" default="{solver}">Planner interface using pipeline motion solver</output_port>
         </Action>
-        <Action ID="CreateMTCSerialContainer">
-            <output_port name="container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;">serial container</output_port>
-            <input_port name="container_name" type="std::string">serial container name</input_port>
+        <Action ID="PlanTask">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="max_solutions" type="unsigned long"/>
         </Action>
-        <Action ID="CreatePlanningSceneInterface">
+        <Action ID="PlanningSceneInterface">
             <output_port name="planning_scene_interface" type="std::shared_ptr&lt;moveit::planning_interface::PlanningSceneInterface&gt;">{planning_scene_interface}</output_port>
         </Action>
-        <Action ID="ForbidAllCollisions">
-            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid all collisions for given object/s</input_port>
-            <input_port name="stage_name" type="std::string"/>
-            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
-        </Action>
-        <Action ID="ForbidCollisionPairs">
-            <input_port name="second" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">second object of collision pair</input_port>
-            <input_port name="first" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">first object of collision pair</input_port>
-            <input_port name="stage_name" type="std::string"/>
-            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
-        </Action>
-        <Action ID="ForbidCollisionsJointModelGroup">
-            <input_port name="jmg_name" type="std::string">joint model group name</input_port>
-            <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid collisions with joint model group links</input_port>
-            <input_port name="stage_name" type="std::string"/>
-            <input_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;">MTC task</input_port>
-            <output_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">ModifyPlanningScene stage</output_port>
-        </Action>
-        <Action ID="GeometryMsgsPose">
+        <Action ID="PoseMsg">
             <output_port name="pose" type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
             <input_port name="quaternion" type="Vector4D"/>
             <input_port name="position" type="Vector3D"/>
         </Action>
-        <Action ID="GeometryMsgsPoseStamped">
+        <Action ID="PoseStampedMsg">
             <input_port name="quaternion" type="Vector4D"/>
             <input_port name="position" type="Vector3D"/>
             <output_port name="pose_stamped" type="std::shared_ptr&lt;geometry_msgs::PoseStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
             <input_port name="frame_id" type="std::string"/>
         </Action>
-        <Action ID="GeometryMsgsTwistStamped">
+        <Action ID="SerialContainer">
+            <output_port name="container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;">serial container</output_port>
+            <input_port name="container_name" type="std::string">serial container name</input_port>
+        </Action>
+        <Action ID="SetStagePropertiesString">
+            <input_port name="property" type="std::string"/>
+            <input_port name="property_name" type="std::string"/>
+            <inout_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
+        </Action>
+        <Action ID="SetTaskPropertiesString">
+            <input_port name="property" type="std::string"/>
+            <input_port name="property_name" type="std::string"/>
+            <inout_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+        <Action ID="Task">
+            <output_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;" default="{mtc_task}">MoveIt Task Constructor task.</output_port>
+        </Action>
+        <Action ID="TwistStampedMsg">
             <output_port name="twist_stamped" type="std::shared_ptr&lt;geometry_msgs::TwistStamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
             <input_port name="angular_velocity" type="Vector3D"/>
             <input_port name="linear_velocity" type="Vector3D"/>
             <input_port name="frame_id" type="std::string"/>
         </Action>
-        <Action ID="GeometryMsgsVector3Stamped">
+        <Action ID="Vector3StampedMsg">
             <output_port name="vector3_stamped" type="std::shared_ptr&lt;geometry_msgs::Vector3Stamped_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
             <input_port name="vector" type="Vector3D"/>
             <input_port name="frame_id" type="std::string"/>
-        </Action>
-        <Action ID="GetMTCRawStage">
-            <output_port name="raw_stage" type="moveit::task_constructor::Stage*">MTC stage raw pointer</output_port>
-            <input_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MTC stage</input_port>
-        </Action>
-        <Action ID="InitializeMTCTask">
-            <output_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;" default="{mtc_task}">MoveIt Task Constructor task.</output_port>
-        </Action>
-        <Action ID="MoveItMsgsCollisionObjectBox">
-            <input_port name="height" type="double" default="1.0">Box's size along Z axis (m)</input_port>
-            <input_port name="length" type="double" default="1.0">Box's size along X axis (m)</input_port>
-            <input_port name="object_id" type="std::string"/>
-            <input_port name="frame_id" type="std::string"/>
-            <output_port name="collision_object" type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
-            <input_port name="width" type="double" default="1.0">Box's size along Y axis (m)</input_port>
-            <input_port name="pose" type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
-        </Action>
-        <Action ID="MoveItMsgsCollisionObjectCylinder">
-            <input_port name="height" type="double" default="1.0">cylinder height (m)</input_port>
-            <input_port name="object_id" type="std::string"/>
-            <input_port name="frame_id" type="std::string"/>
-            <output_port name="collision_object" type="std::shared_ptr&lt;moveit_msgs::CollisionObject_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
-            <input_port name="radius" type="double" default="1.0">cylinder radius (m)</input_port>
-            <input_port name="pose" type="std::shared_ptr&lt;geometry_msgs::Pose_&lt;std::allocator&lt;void&gt; &gt; &gt;"/>
-        </Action>
-        <Action ID="MoveMTCContainerToContainer">
-            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
-            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
-        </Action>
-        <Action ID="MoveMTCContainerToTask">
-            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
-            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
-        </Action>
-        <Action ID="MoveMTCStageToContainer">
-            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;"/>
-            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
-        </Action>
-        <Action ID="MoveMTCStageToTask">
-            <inout_port name="parent" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
-            <input_port name="child" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;"/>
-        </Action>
-        <Action ID="PlanMTCTask">
-            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
-            <input_port name="max_solutions" type="unsigned long"/>
         </Action>
     </TreeNodesModel>
 </root>
