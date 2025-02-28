@@ -69,6 +69,7 @@ int main(int argc, char** argv)
   factory.registerNodeType<StageMove<moveit::task_constructor::ContainerBase, moveit::task_constructor::Task>>("MoveContainerToTask");
   factory.registerNodeType<SerialContainer>("SerialContainer");
   factory.registerNodeType<Task>("Task");
+  factory.registerNodeType<TaskLoadRobotModel>("LoadRobotModelToTask");
   factory.registerNodeType<TaskPlan>("PlanTask");
   factory.registerScriptingEnums<moveit::task_constructor::Stage::PropertyInitializerSource>();
 

@@ -16,6 +16,33 @@ public:
   static BT::PortsList providedPorts();
 };
 
+class TaskLoadRobotModel : public BT::SyncActionNode
+{
+public:
+  TaskLoadRobotModel(const std::string& name, const BT::NodeConfig& config);
+
+  BT::NodeStatus tick() override;
+  static BT::PortsList providedPorts();
+};
+
+class TaskGetRobotModel : public BT::SyncActionNode
+{
+public:
+  TaskGetRobotModel(const std::string& name, const BT::NodeConfig& config);
+
+  BT::NodeStatus tick() override;
+  static BT::PortsList providedPorts();
+};
+
+class TaskSetRobotModel : public BT::SyncActionNode
+{
+public:
+  TaskSetRobotModel(const std::string& name, const BT::NodeConfig& config);
+
+  BT::NodeStatus tick() override;
+  static BT::PortsList providedPorts();
+};
+
 class TaskPlan : public BT::ThreadedAction
 {
 public:

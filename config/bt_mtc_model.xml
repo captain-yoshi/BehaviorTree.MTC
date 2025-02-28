@@ -90,6 +90,10 @@
             <input_port name="stage_name" type="std::string"/>
             <input_port name="object" type="std::string">object on which we generate the place poses</input_port>
         </Action>
+        <Action ID="GetRobotModelToTask">
+            <output_port name="robot_model" type="std::shared_ptr&lt;moveit::core::RobotModel const&gt;"/>
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
         <Action ID="GetStageRawPtr">
             <output_port name="raw_stage" type="moveit::task_constructor::Stage*">MTC stage raw pointer</output_port>
             <input_port name="stage" type="std::shared_ptr&lt;moveit::task_constructor::Stage&gt;">MTC stage</input_port>
@@ -99,6 +103,10 @@
             <input_port name="max_step" type="double" default="0.100000">max joint step</input_port>
             <input_port name="max_acceleration_scaling_factor" type="double" default="0.100000">scale down max acceleration by this factor</input_port>
             <input_port name="max_velocity_scaling_factor" type="double" default="0.100000">scale down max velocity by this factor</input_port>
+        </Action>
+        <Action ID="LoadRobotModelToTask">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="robot_description" type="std::string">robot_description</input_port>
         </Action>
         <Action ID="ModifyPlanningSceneAllowAllCollisions">
             <input_port name="objects" type="std::shared_ptr&lt;std::vector&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;">allow/forbid all collisions for given object/s</input_port>
@@ -265,6 +273,10 @@
         <Action ID="SerialContainer">
             <output_port name="container" type="std::shared_ptr&lt;moveit::task_constructor::ContainerBase&gt;">serial container</output_port>
             <input_port name="container_name" type="std::string">serial container name</input_port>
+        </Action>
+        <Action ID="SetRobotModelToTask">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="robot_model" type="std::shared_ptr&lt;moveit::core::RobotModel const&gt;"/>
         </Action>
         <Action ID="SetStagePropertiesString">
             <input_port name="property" type="std::string"/>

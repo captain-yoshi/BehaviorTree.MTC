@@ -38,6 +38,7 @@
 
       <!-- Create Task -->
       <Task task="{mtc_task}" />
+      <LoadRobotModelToTask task="{mtc_task}" robot_description="robot_description" />
 
       <!-- Add properpties to the Task -->
       <SetTaskPropertiesString  stage="{mtc_task}"  property_name="eef"  property="{eef}" />
