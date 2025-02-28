@@ -1,26 +1,26 @@
-#include <behaviortree_mtc/initialize_mtc_task.h>
-#include <behaviortree_mtc/stages/create_mtc_current_state.h>
-#include <behaviortree_mtc/move_mtc_stage.h>
-#include <behaviortree_mtc/create_mtc_serial_container.h>
-#include <behaviortree_mtc/plan_mtc_task.h>
-#include <behaviortree_mtc/msgs/moveit_msgs.h>
+#include <behaviortree_mtc/container.h>
+#include <behaviortree_mtc/stage.h>
+#include <behaviortree_mtc/task.h>
+
+#include <behaviortree_mtc/moveit/planning_scene_interface.h>
+
 #include <behaviortree_mtc/msgs/geometry_msgs.h>
-#include <behaviortree_mtc/solvers/create_mtc_pipeline_planner.h>
-#include <behaviortree_mtc/moveit/create_planning_scene_interface.h>
-#include <behaviortree_mtc/moveit/add_object_to_planning_scene.h>
-#include <behaviortree_mtc/plan_mtc_task.h>
-#include <behaviortree_mtc/stages/create_mtc_generate_grasp_pose.h>
-#include <behaviortree_mtc/get_mtc_raw_stage.h>
-#include <behaviortree_mtc/stages/create_mtc_move_to.h>
-#include <behaviortree_mtc/stages/create_mtc_connect.h>
-#include <behaviortree_mtc/stages/create_mtc_move_relative.h>
-#include <behaviortree_mtc/stages/create_mtc_compute_ik.h>
-#include <behaviortree_mtc/configure_init_from_mtc_properties.h>
+#include <behaviortree_mtc/msgs/moveit_msgs.h>
+
+#include <behaviortree_mtc/solvers/cartesian_path.h>
+#include <behaviortree_mtc/solvers/joint_interpolation.h>
+#include <behaviortree_mtc/solvers/pipeline_planner.h>
+
 #include <behaviortree_mtc/serialization/std_containers.h>
-#include <behaviortree_mtc/solvers/create_mtc_cartesian_path.h>
-#include <behaviortree_mtc/stages/create_mtc_modify_planning_scene.h>
-#include <behaviortree_mtc/stages/create_mtc_generate_place_pose.h>
-#include <behaviortree_mtc/solvers/create_mtc_joint_interpolation.h>
+
+#include <behaviortree_mtc/stages/compute_ik.h>
+#include <behaviortree_mtc/stages/connect.h>
+#include <behaviortree_mtc/stages/current_state.h>
+#include <behaviortree_mtc/stages/generate_grasp_pose.h>
+#include <behaviortree_mtc/stages/generate_place_pose.h>
+#include <behaviortree_mtc/stages/modify_planning_scene.h>
+#include <behaviortree_mtc/stages/move_relative.h>
+#include <behaviortree_mtc/stages/move_to.h>
 
 #include "behaviortree_cpp/bt_factory.h"
 #include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
@@ -34,47 +34,63 @@ int main(int argc, char** argv)
 {
   BehaviorTreeFactory factory;
 
-  factory.registerNodeType<GeometryMsgsPose>("GeometryMsgsPose");
-  factory.registerNodeType<GeometryMsgsTwistStamped>("GeometryMsgsTwistStamped");
-  factory.registerNodeType<GeometryMsgsPoseStamped>("GeometryMsgsPoseStamped");
-  factory.registerNodeType<GeometryMsgsVector3Stamped>("GeometryMsgsVector3Stamped");
-  factory.registerNodeType<MoveItMsgsCollisionObjectCylinder>("MoveItMsgsCollisionObjectCylinder");
-  factory.registerNodeType<MoveItMsgsCollisionObjectBox>("MoveItMsgsCollisionObjectBox");
-  factory.registerNodeType<CreatePlanningSceneInterface>("CreatePlanningSceneInterface");
-  factory.registerNodeType<AddObjectToPlanningScene>("AddObjectToPlanningScene");
-  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::ContainerBase>>("MoveMTCStageToContainer");
-  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveMTCStageToTask");
-  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::ContainerBase, moveit::task_constructor::ContainerBase>>("MoveMTCContainerToContainer");
-  factory.registerNodeType<MoveMTCStage<moveit::task_constructor::ContainerBase, moveit::task_constructor::Task>>("MoveMTCContainerToTask");
-  factory.registerNodeType<InitializeMTCTask>("InitializeMTCTask");
-  factory.registerNodeType<CreateMTCCurrentState>("CreateMTCCurrentState");
-  factory.registerNodeType<CreateMTCPipelinePlanner>("CreateMTCPipelinePlanner");
-  factory.registerNodeType<CreateMTCCartesianPath>("CreateMTCCartesianPath");
-  factory.registerNodeType<CreateMTCJointInterpolation>("CreateMTCJointInterpolation");
-  factory.registerNodeType<PlanMTCTask>("PlanMTCTask");
-  factory.registerNodeType<GetMTCRawStage>("GetMTCRawStage");
-  factory.registerNodeType<CreateMTCMoveToNamedJointPose>("CreateMTCMoveToNamedJointPose");
-  factory.registerNodeType<CreateMTCMoveToJoint>("CreateMTCMoveToJoint");
-  factory.registerNodeType<CreateMTCMoveToPoint>("CreateMTCMoveToPoint");
-  factory.registerNodeType<CreateMTCMoveToPose>("CreateMTCMoveToPose");
-  factory.registerNodeType<CreateMTCMoveRelativeTranslate>("CreateMTCMoveRelativeTranslate");
-  factory.registerNodeType<CreateMTCMoveRelativeJoint>("CreateMTCMoveRelativeJoint");
-  factory.registerNodeType<CreateMTCMoveRelativeTwist>("CreateMTCMoveRelativeTwist");
-  factory.registerNodeType<CreateMTCConnect>("CreateMTCConnect");
-  factory.registerNodeType<CreateMTCSerialContainer>("CreateMTCSerialContainer");
-  factory.registerNodeType<CreateMTCComputeIK>("CreateMTCComputeIK");
-  factory.registerNodeType<ConfigureInitFromMTCProperties<moveit::task_constructor::Stage>>("ConfigureInitFromMTCProperties");
+  // geometry_msgs
+  factory.registerNodeType<GeometryMsgsPose>("PoseMsg");
+  factory.registerNodeType<GeometryMsgsPoseStamped>("PoseStampedMsg");
+  factory.registerNodeType<GeometryMsgsTwistStamped>("TwistStampedMsg");
+  factory.registerNodeType<GeometryMsgsVector3Stamped>("Vector3StampedMsg");
+
+  // moveit_msgs
+  factory.registerNodeType<MoveItMsgsCollisionObjectBox>("CollisionObjectBoxMsg");
+  factory.registerNodeType<MoveItMsgsCollisionObjectCylinder>("CollisionObjectCylinderMsg");
+
+  // moveit
+  factory.registerNodeType<PlanningSceneInterface>("PlanningSceneInterface");
+  factory.registerNodeType<PlanningSceneInterfaceAddCollisionObject>("AddCollisionObjectToPlanningSceneInterface");
+
+  // mtc stage/containers/task
+  factory.registerNodeType<PropertiesSet<moveit::task_constructor::Stage, std::string>>("SetStagePropertiesString");
+  factory.registerNodeType<PropertiesSet<moveit::task_constructor::Task, std::string>>("SetTaskPropertiesString");
+  factory.registerNodeType<PropertiesExposeTo<moveit::task_constructor::ContainerBase, moveit::task_constructor::ContainerBase>>("ExposeContainerPropertiesToContainer");
+  factory.registerNodeType<PropertiesExposeTo<moveit::task_constructor::Task, moveit::task_constructor::ContainerBase>>("ExposeTaskPropertiesToContainer");
+  factory.registerNodeType<PropertiesConfigureInitFrom<moveit::task_constructor::Stage>>("ConfigureStagePropertiesInitFrom");
+  factory.registerNodeType<PropertiesConfigureInitFrom<moveit::task_constructor::ContainerBase>>("ConfigureContainerPropertiesInitFrom");
+  factory.registerNodeType<StageGetRawPtr>("GetStageRawPtr");
+  factory.registerNodeType<StageMove<moveit::task_constructor::Stage, moveit::task_constructor::ContainerBase>>("MoveStageToContainer");
+  factory.registerNodeType<StageMove<moveit::task_constructor::Stage, moveit::task_constructor::Task>>("MoveStageToTask");
+  factory.registerNodeType<StageMove<moveit::task_constructor::ContainerBase, moveit::task_constructor::ContainerBase>>("MoveContainerToContainer");
+  factory.registerNodeType<StageMove<moveit::task_constructor::ContainerBase, moveit::task_constructor::Task>>("MoveContainerToTask");
+  factory.registerNodeType<SerialContainer>("SerialContainer");
+  factory.registerNodeType<Task>("Task");
+  factory.registerNodeType<TaskPlan>("PlanTask");
   factory.registerScriptingEnums<moveit::task_constructor::Stage::PropertyInitializerSource>();
-  factory.registerNodeType<CreateMTCModifyPlanningSceneAttachObjects>("CreateMTCModifyPlanningSceneAttachObjects");
-  factory.registerNodeType<CreateMTCModifyPlanningSceneDetachObjects>("CreateMTCModifyPlanningSceneDetachObjects");
-  factory.registerNodeType<ForbidCollisionPairs>("ForbidCollisionPairs");
-  factory.registerNodeType<AllowCollisionPairs>("AllowCollisionPairs");
-  factory.registerNodeType<AllowAllCollisions>("AllowAllCollisions");
-  factory.registerNodeType<ForbidAllCollisions>("ForbidAllCollisions");
-  factory.registerNodeType<AllowCollisionsJointModelGroup>("AllowCollisionsJointModelGroup");
-  factory.registerNodeType<ForbidCollisionsJointModelGroup>("ForbidCollisionsJointModelGroup");
-  factory.registerNodeType<CreateMTCGenerateGraspPose>("CreateMTCGenerateGraspPose");
-  factory.registerNodeType<CreateMTCGeneratePlacePose>("CreateMTCGeneratePlacePose");
+
+  // mtc solvers
+  factory.registerNodeType<CartesianPath>("CartesianPath");
+  factory.registerNodeType<JointInterpolation>("JointInterpolation");
+  factory.registerNodeType<PipelinePlanner>("PipelinePlanner");
+
+  // mtc stages
+  factory.registerNodeType<CurrentState>("CurrentState");
+  factory.registerNodeType<GenerateGraspPose>("GenerateGraspPose");
+  factory.registerNodeType<GeneratePlacePose>("GeneratePlacePose");
+  factory.registerNodeType<MoveToNamedJointPose>("MoveToNamedJointPose");
+  factory.registerNodeType<MoveToJoint>("MoveToJoint");
+  factory.registerNodeType<MoveToPoint>("MoveToPoint");
+  factory.registerNodeType<MoveToPose>("MoveToPose");
+  factory.registerNodeType<MoveRelativeTranslate>("MoveRelativeTranslate");
+  factory.registerNodeType<MoveRelativeJoint>("MoveRelativeJoint");
+  factory.registerNodeType<MoveRelativeTwist>("MoveRelativeTwist");
+  factory.registerNodeType<Connect>("Connect");
+  factory.registerNodeType<ComputeIK>("ComputeIK");
+  factory.registerNodeType<ModifyPlanningSceneAttachObjects>("ModifyPlanningSceneAttachObjects");
+  factory.registerNodeType<ModifyPlanningSceneDetachObjects>("ModifyPlanningSceneDetachObjects");
+  factory.registerNodeType<ModifyPlanningSceneForbidCollisionPairs>("ModifyPlanningSceneForbidCollisionPairs");
+  factory.registerNodeType<ModifyPlanningSceneAllowCollisionPairs>("ModifyPlanningSceneAllowCollisionPairs");
+  factory.registerNodeType<ModifyPlanningSceneAllowAllCollisions>("ModifyPlanningSceneAllowAllCollisions");
+  factory.registerNodeType<ModifyPlanningSceneForbidAllCollisions>("ModifyPlanningSceneForbidAllCollisions");
+  factory.registerNodeType<ModifyPlanningSceneAllowCollisionsJointModelGroup>("ModifyPlanningSceneAllowCollisionsJointModelGroup");
+  factory.registerNodeType<ModifyPlanningSceneForbidCollisionsJointModelGroup>("ModifyPlanningSceneForbidCollisionsJointModelGroup");
 
   std::string xml_models = BT::writeTreeNodesModelXML(factory);
   std::string filePath = "./config/bt_mtc_model.xml";

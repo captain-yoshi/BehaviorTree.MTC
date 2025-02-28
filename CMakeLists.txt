@@ -31,29 +31,27 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-  src/create_mtc_serial_container.cpp
-  src/get_mtc_raw_stage.cpp
-  src/initialize_mtc_task.cpp
-  src/plan_mtc_task.cpp
+  src/container.cpp
+  src/stage.cpp
+  src/task.cpp
 
-  src/moveit/add_object_to_planning_scene.cpp
-  src/moveit/create_planning_scene_interface.cpp
+  src/moveit/planning_scene_interface.cpp
 
   src/msgs/geometry_msgs.cpp
   src/msgs/moveit_msgs.cpp
 
-  src/solvers/create_mtc_pipeline_planner.cpp
-  src/solvers/create_mtc_cartesian_path.cpp
-  src/solvers/create_mtc_joint_interpolation.cpp
+  src/solvers/pipeline_planner.cpp
+  src/solvers/cartesian_path.cpp
+  src/solvers/joint_interpolation.cpp
 
-  src/stages/create_mtc_compute_ik.cpp
-  src/stages/create_mtc_connect.cpp
-  src/stages/create_mtc_current_state.cpp
-  src/stages/create_mtc_modify_planning_scene.cpp
-  src/stages/create_mtc_move_relative.cpp
-  src/stages/create_mtc_move_to.cpp
-  src/stages/create_mtc_generate_grasp_pose.cpp
-  src/stages/create_mtc_generate_place_pose.cpp
+  src/stages/compute_ik.cpp
+  src/stages/connect.cpp
+  src/stages/current_state.cpp
+  src/stages/modify_planning_scene.cpp
+  src/stages/move_relative.cpp
+  src/stages/move_to.cpp
+  src/stages/generate_grasp_pose.cpp
+  src/stages/generate_place_pose.cpp
 )
 
 add_executable(bt_pick_place examples/bt_pick_place.cpp)
